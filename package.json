@@ -1,0 +1,25 @@
+{
+  "name": "ts-it-solutions-poc",
+  "version": "1.0.0",
+  "description": "TS IT Solutions POC with React, Express, MongoDB, and Azure",
+  "main": "index.js",
+  "scripts": {
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "build": "./build-frontend.sh",
+    "seed": "cd server && npm run seed",
+    "start": "cd server && npm start"
+  },
+  "keywords": [
+    "react",
+    "express",
+    "mongodb",
+    "azure"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

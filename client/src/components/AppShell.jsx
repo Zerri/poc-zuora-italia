@@ -1,28 +1,29 @@
+// AppShell.js
 import React from 'react';
-import VaporPage from "@vapor/v3-components/VaporPage";
-import Typography from "@vapor/v3-components/Typography";
-import { Button, IconButton, VaporToolbar, VaporAppBar, VaporUIShellNav, VaporIcon, useMediaQuery, useTheme} from "@vapor/v3-components";
+import { 
+  VaporUIShellNav, 
+  VaporAppBar, 
+  IconButton, 
+  VaporIcon, 
+  useMediaQuery, 
+  useTheme 
+} from "@vapor/v3-components";
 import { faGrid } from "@fortawesome/pro-regular-svg-icons/faGrid";
 
 /**
- * @component Vapor
- * @description Componente principale che implementa un'interfaccia utente con la navigazione laterale di Vapor UI.
- * Questo componente utilizza VaporUIShellNav per creare un layout con menu di navigazione a più livelli
- * e una barra delle applicazioni reattiva che si adatta alle dimensioni dello schermo.
+ * @component AppShell
+ * @description Componente che implementa la shell di navigazione con UI.
+ * Gestisce il drawer di navigazione e la barra delle applicazioni.
  * 
- * Il componente gestisce automaticamente l'apertura e la chiusura del drawer di navigazione
- * in base alle dimensioni dello schermo (aperto su schermi grandi, chiuso su schermi piccoli).
+ * @param {Object} props - Le proprietà del componente
+ * @param {React.ReactNode} props.children - Il contenuto da visualizzare all'interno della shell
  */
-function Vapor() {
+function AppShell({ children }) {
   const theme = useTheme();
   const isLarge = useMediaQuery(theme["breakpoints"].up("lg"));
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
-  /**
-   * Gestisce l'apertura/chiusura automatica del drawer di navigazione in base alle dimensioni dello schermo.
-   * - Su schermi grandi (lg e superiori): il drawer rimane aperto
-   * - Su schermi piccoli: il drawer rimane chiuso
-   */
+  // Gestione automatica del drawer in base alle dimensioni dello schermo
   React.useEffect(() => {
     if (isLarge && !drawerOpen) {
       setDrawerOpen(true);
@@ -32,13 +33,10 @@ function Vapor() {
     }
   }, [isLarge]);
 
-  /**
-   * Funzione per alternare manualmente lo stato del drawer di navigazione
-   */
+  // Funzione per alternare manualmente lo stato del drawer
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
   };
-
 
   return (
     <VaporUIShellNav
@@ -50,7 +48,6 @@ function Vapor() {
           toggleDrawer={toggleDrawer}
           rightContent={
             <>
-              {/* Pulsante icona nella barra delle applicazioni */}
               <IconButton size="small" color="secondary" icon="fa-magnifying-glass">
                 <VaporIcon icon={faGrid} color="white" size="xxl" />
               </IconButton>
@@ -61,21 +58,21 @@ function Vapor() {
       menuLevels={{
         children: [
           {
-            label: "Home", // Voce principale Home
+            label: "Home",
             icon: "fa-house",
             onClickFunction: () => {
               console.log("Welcome Home!");
             },
             badgeProps: {
-              variant: "dot" // Badge a puntino per evidenziare la voce
+              variant: "dot"
             }
           },
           {
-            label: "Sales", // Voce principale Sales con sottomenu
+            label: "Sales",
             icon: "fa-briefcase",
             children: [
               {
-                label: "Invoicing", // Sottomenu per la fatturazione
+                label: "Invoicing",
                 children: [
                   {
                     label: "Invoices",
@@ -92,7 +89,7 @@ function Vapor() {
                 ]
               },
               {
-                label: "Customers", // Sottomenu per i clienti
+                label: "Customers",
                 children: [
                   {
                     label: "Customers",
@@ -119,7 +116,7 @@ function Vapor() {
             ]
           },
           {
-            label: "Purchase", // Voce principale Purchase con sottomenu
+            label: "Purchase",
             icon: "fa-bag-shopping",
             children: [
               {
@@ -137,41 +134,16 @@ function Vapor() {
               {
                 label: "Bills",
                 onClickFunction: () => {},
-                closePopoverAfterClick: true // Chiude il popover dopo il click
+                closePopoverAfterClick: true
               }
             ]
           }
         ]
       }}
     >
-      {/* 
-       * Contenuto principale della pagina 
-       * Utilizza VaporPage per organizzare il contenuto con una toolbar e sezioni
-       */}
-      <VaporPage
-        title="Title"
-        contentToolbar={
-          <VaporToolbar
-            variant="surface"
-            size="large"
-            contentLeft={[
-              <Button variant="outlined">Secondary Left</Button>,
-              <Button variant="contained">Primary Left</Button>
-            ]}
-          />
-        }
-      >
-        {/* Prima sezione con divisore */}
-        <VaporPage.Section divider>
-          <Typography variant="bodyInterfaceLargeExtended">Section 1</Typography>
-        </VaporPage.Section>
-        {/* Seconda sezione */}
-        <VaporPage.Section>
-          <Typography variant="bodyInterfaceLargeExtended">Section 2</Typography>
-        </VaporPage.Section>
-      </VaporPage>
+      {children}
     </VaporUIShellNav>
   );
 }
 
-export default Vapor;
+export default AppShell;

@@ -1,7 +1,7 @@
 // File: client/src/pages/Home.jsx
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import StatsPanel from '../components/StatsPanel'
+import StatsPanel from '../../components/StatsPanel'
 
 // Componente che gestisce la logica dell'applicazione
 function Home() {

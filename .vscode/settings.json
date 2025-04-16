@@ -2,5 +2,7 @@
   "appService.zipIgnorePattern": [
     "node_modules{,/**}",
     ".vscode{,/**}"
-  ]
+  ],
+  "appService.defaultWebAppToDeploy": "/subscriptions/2b3418f4-1d02-434a-8fc1-aefbc7278dc9/resourceGroups/it-solutions-poc/providers/Microsoft.Web/sites/zuora-poc",
+  "appService.deploySubpath": "server"
 }

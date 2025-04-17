@@ -1,4 +1,4 @@
-// AppShell.js
+// AppShell.jsx
 import React from 'react';
 import { 
   VaporUIShellNav, 
@@ -12,7 +12,7 @@ import { faGrid } from "@fortawesome/pro-regular-svg-icons/faGrid";
 
 /**
  * @component AppShell
- * @description Componente che implementa la shell di navigazione con UI.
+ * @description Componente che implementa la shell di navigazione.
  * Gestisce il drawer di navigazione e la barra delle applicazioni.
  * 
  * @param {Object} props - Le proprietà del componente

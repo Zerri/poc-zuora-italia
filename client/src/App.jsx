@@ -1,41 +1,46 @@
-// File: client/src/App.jsx
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// App.jsx - Componente principale con configurazione di routing e provider
+import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import VaporThemeProvider from "@vapor/v3-components/styles";
-// import Navbar from './components/Navbar';
-// import Home from './pages/Home';
-// import About from './pages/About';
-import Vapor from './pages/Vapor';
-// import './App.css';
+import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
+import { VaporThemeProvider } from '@vapor/v3-components';
+import AppShell from './components/AppShell';
+import Home from './pages/Home';
+import Customers from  './pages/Customers';
 
-// Crea un client di query
+// Creazione di un'istanza di QueryClient
 const queryClient = new QueryClient();
 
-// function App() {
-//   return (
-//     <QueryClientProvider client={queryClient}>
-//       <Router>
-//         <Navbar />
-//         <div className="content-container">
-//           <Routes>
-//             <Route path="/" element={<Home />} />
-//             <Route path="/about" element={<About />} />
-//             <Route path="/vapor" element={<Vapor />} />
-//           </Routes>
-//         </div>
-//       </Router>
-//     </QueryClientProvider>
-//   );
-// }
+/**
+ * @component LayoutWithShell
+ * @description Componente layout che include l'AppShell e renderizza le route annidate attraverso Outlet
+ */
+function LayoutWithShell() {
+  return (
+    <AppShell>
+      <Outlet />
+    </AppShell>
+  );
+}
 
+/**
+ * @component App
+ * @description Componente root dell'applicazione che configura i provider
+ * e il routing principale con layout condiviso.
+ */
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <VaporThemeProvider>
         <Router>
-            <Routes>
-              <Route path="/" element={<Vapor />} />
-            </Routes>
+          <Routes>
+            {/* Route principale con layout */}
+            <Route element={<LayoutWithShell />}>
+              {/* Route annidate che condividono lo stesso layout */}
+              <Route path="/" element={<Home />} />
+              <Route path="/customers" element={<Customers />} />
+              {/* Aggiungi altre route qui, tutte utilizzeranno automaticamente AppShell */}
+            </Route>
+          </Routes>
         </Router>
       </VaporThemeProvider>
     </QueryClientProvider>

@@ -6,10 +6,10 @@ cat > client/.env.production << EOL
 VITE_API_URL=/api
 EOL
 
-# Compila il frontend
+# Compila il frontend con memoria aumentata
 echo "Compilazione del frontend React..."
 cd client
-npm run build
+NODE_OPTIONS=--max-old-space-size=4096 npm run build
 cd ..
 
 # Copia i file buildati nel backend

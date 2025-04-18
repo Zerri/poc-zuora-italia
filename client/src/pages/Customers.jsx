@@ -1,8 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import VaporPage from "@vapor/v3-components/VaporPage";
 import Typography from "@vapor/v3-components/Typography";
-import { Button, VaporToolbar, CircularProgress, Alert, Card, CardContent, Chip, Divider, Grid, Box } from "@vapor/v3-components";
+import { 
+  Button, 
+  VaporToolbar, 
+  CircularProgress, 
+  Alert, 
+  Card, 
+  CardContent, 
+  Tag, 
+  Chip,
+  Divider, 
+  Grid, 
+  Box,
+  Paper
+} from "@vapor/v3-components";
+import SearchBar from "@vapor/v3-components/SearchBar";
 import { Link } from 'react-router-dom';
 
 /**
@@ -12,6 +26,10 @@ import { Link } from 'react-router-dom';
 function CustomersPage() {
   // URL base del backend (configurato per ambiente di sviluppo)
   const API_URL = import.meta.env.VITE_API_URL || '/api';
+  
+  // State per filtri ricerca
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState('Tutti');
 
   // Query per ottenere i customers
   const { 
@@ -34,10 +52,32 @@ function CustomersPage() {
     if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('it-IT');
   };
+  
+  // Funzione per cambiare il filtro
+  const handleFilterChange = (newFilter) => {
+    setFilterType(newFilter);
+  };
+  
+  // Funzione per filtrare i clienti
+  const filteredCustomers = React.useMemo(() => {
+    return customers.filter(customer => {
+      // Filtro per tipo (Cliente, Prospect, o Tutti)
+      const matchesType = filterType === 'Tutti' || customer.tipo === filterType;
+      
+      // Filtro per testo di ricerca
+      const matchesSearch = 
+        searchTerm === '' || 
+        customer.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.settore.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.email.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      return matchesType && matchesSearch;
+    });
+  }, [customers, filterType, searchTerm]);
 
   return (
     <VaporPage
-      title="Gestione Clienti"
+      title="Clienti"
       contentToolbar={
         <VaporToolbar
           variant="surface"
@@ -55,16 +95,69 @@ function CustomersPage() {
       }
     >
       <VaporPage.Section divider>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Lista Clienti
-        </Typography>
-        <Typography variant="bodyInterfaceLargeExtended" paragraph>
-          Visualizzazione di tutti i clienti presenti nel sistema
-        </Typography>
+        <Box sx={{ textAlign: 'center', mb: 2 }}>
+          <Typography
+            component="div"
+            gutterBottom
+            variant="headingsPage"
+          >
+            Cerca e seleziona un cliente
+          </Typography>
+          <Typography
+            component="div"
+            gutterBottom
+            variant="bodyLargeRegular"
+          >
+            Inizia una nuova offerta selezionando un Cliente o Prospect
+          </Typography>
+        </Box>
+        
+        {/* Form di ricerca clienti */}
+        <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Box sx={{ width: '100%', maxWidth: '500px', mb: 3 }}>
+            <SearchBar
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              handleClear={() => setSearchTerm("")}
+              placeholder="Cerca per nome settore o email..."
+              size='medium'
+              sx={{ width: '100%' }}
+            />
+          </Box>
+          
+          <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
+            <Chip 
+              label="Tutti" 
+              variant={filterType === 'Tutti' ? 'filled' : 'outlined'}
+              onClick={() => handleFilterChange('Tutti')}
+              color={filterType === 'Tutti' ? 'primary' : 'default'}
+            />
+            <Chip 
+              label="Cliente" 
+              variant={filterType === 'Cliente' ? 'filled' : 'outlined'}
+              onClick={() => handleFilterChange('Cliente')}
+              color={filterType === 'Cliente' ? 'primary' : 'default'}
+            />
+            <Chip 
+              label="Prospect" 
+              variant={filterType === 'Prospect' ? 'filled' : 'outlined'}
+              onClick={() => handleFilterChange('Prospect')}
+              color={filterType === 'Prospect' ? 'primary' : 'default'}
+            />
+          </Box>
+        </Box>
       </VaporPage.Section>
 
-      {/* Visualizzazione dei clienti */}
       <VaporPage.Section>
+        <Typography
+          component="div"
+          gutterBottom
+          variant="bodyLargeHeavy"
+        >
+          Recenti
+        </Typography>
+        
+        {/* Visualizzazione dei clienti */}
         {isLoading && (
           <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
             <CircularProgress />
@@ -81,10 +174,14 @@ function CustomersPage() {
           <Alert severity="info">
             Nessun cliente trovato nel database.
           </Alert>
+        ) : filteredCustomers.length === 0 ? (
+          <Alert severity="info">
+            Nessun cliente corrisponde ai criteri di ricerca.
+          </Alert>
         ) : (
           <Grid container spacing={3}>
-            {customers.map((customer) => (
-              <Grid item xs={12} md={6} lg={4} key={customer._id}>
+            {filteredCustomers.map((customer) => (
+              <Grid item xs={12} md={6} lg={4} xl={3} key={customer._id}>
                 <Card sx={{ 
                   height: '100%', 
                   display: 'flex', 
@@ -101,10 +198,11 @@ function CustomersPage() {
                       <Typography variant="h6" component="h2" fontWeight="bold">
                         {customer.nome}
                       </Typography>
-                      <Chip 
+                      <Tag 
                         label={customer.tipo} 
-                        color={customer.tipo === 'Cliente' ? 'success' : 'warning'}
-                        size="small"
+                        type={customer.tipo === 'Cliente' ? 'tone3' : 'tone7'}
+                        size="medium"
+                        variant='duotone'
                       />
                     </Box>
                     

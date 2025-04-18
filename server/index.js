@@ -39,6 +39,19 @@ const ItemSchema = new mongoose.Schema({
 
 const Item = mongoose.model('Item', ItemSchema);
 
+// Definizione modello Customer
+const CustomerSchema = new mongoose.Schema({
+  nome: { type: String, required: true },
+  settore: { type: String },
+  tipo: { type: String, enum: ['Cliente', 'Prospect'] },
+  email: { type: String },
+  ultimoContatto: { type: Date },
+  valore: { type: Number },
+  valoreAnnuo: { type: String }
+});
+
+const Customer = mongoose.model('Customer', CustomerSchema, 'Customers'); // 'Customers' è il nome della collezione in MongoDB
+
 // API Routes
 // GET - Ottieni statistiche degli items
 app.get('/api/stats', async (req, res) => {
@@ -88,13 +101,77 @@ app.post('/api/items', async (req, res) => {
   }
 });
 
-// Serve dei file statici dalla cartella public (React build)
-app.use(express.static(path.join(__dirname, 'public')));
+// GET - Ottieni tutti i clienti
+app.get('/api/customers', async (req, res) => {
+  try {
+    const customers = await Customer.find();
+    res.json(customers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// GET - Ottieni un cliente specifico per ID
+app.get('/api/customers/:id', async (req, res) => {
+  try {
+    const customer = await Customer.findById(req.params.id);
+    if (!customer) {
+      return res.status(404).json({ message: 'Cliente non trovato' });
+    }
+    res.json(customer);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// POST - Crea un nuovo cliente
+app.post('/api/customers', async (req, res) => {
+  try {
+    const newCustomer = new Customer(req.body);
+    const savedCustomer = await newCustomer.save();
+    res.status(201).json(savedCustomer);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// PUT - Aggiorna un cliente esistente
+app.put('/api/customers/:id', async (req, res) => {
+  try {
+    const updatedCustomer = await Customer.findByIdAndUpdate(
+      req.params.id, 
+      req.body, 
+      { new: true, runValidators: true }
+    );
+    if (!updatedCustomer) {
+      return res.status(404).json({ message: 'Cliente non trovato' });
+    }
+    res.json(updatedCustomer);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// DELETE - Elimina un cliente
+app.delete('/api/customers/:id', async (req, res) => {
+  try {
+    const customer = await Customer.findByIdAndDelete(req.params.id);
+    if (!customer) {
+      return res.status(404).json({ message: 'Cliente non trovato' });
+    }
+    res.json({ message: 'Cliente eliminato con successo' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 // API health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'API is running' });
 });
+
+// Serve dei file statici dalla cartella public (React build)
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Il "catchall handler": per qualsiasi richiesta che non corrisponde
 // alle rotte precedenti, invia il file index.html di React

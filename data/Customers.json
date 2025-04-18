@@ -1,0 +1,92 @@
+[
+  {
+    "nome": "Arredo Casa Design",
+    "settore": "Arredamento",
+    "tipo": "Cliente",
+    "email": "info@technospere.com",
+    "ultimoContatto": {"$date": "2024-11-25T00:00:00Z"},
+    "valore": 24500,
+    "valoreAnnuo": "€24.500/anno"
+  },
+  {
+    "nome": "AutoMotiveItalia",
+    "settore": "Automotive",
+    "tipo": "Cliente",
+    "email": "info@technospere.com",
+    "ultimoContatto": {"$date": "2024-09-30T00:00:00Z"},
+    "valore": 12500,
+    "valoreAnnuo": "€12.500/anno"
+  },
+  {
+    "nome": "Costruzioni Moderni",
+    "settore": "Edilizia",
+    "tipo": "Cliente",
+    "email": "info@technospere.com",
+    "ultimoContatto": {"$date": "2024-11-03T00:00:00Z"},
+    "valore": 24500,
+    "valoreAnnuo": "€24.500/anno"
+  },
+  {
+    "nome": "Digital Innovatori",
+    "settore": "Digital Marketing",
+    "tipo": "Prospect",
+    "email": "info@technospere.com",
+    "ultimoContatto": {"$date": "2024-11-25T00:00:00Z"},
+    "valore": null,
+    "valoreAnnuo": null
+  },
+  {
+    "nome": "Fin-Advisor Partners",
+    "settore": "Consulenza Finanziaria",
+    "tipo": "Prospect",
+    "email": "info@technospere.com",
+    "ultimoContatto": {"$date": "2024-07-07T00:00:00Z"},
+    "valore": null,
+    "valoreAnnuo": null
+  },
+  {
+    "nome": "MediPlus",
+    "settore": "Sanitario",
+    "tipo": "Cliente",
+    "email": "info@technospere.com",
+    "ultimoContatto": {"$date": "2024-06-25T00:00:00Z"},
+    "valore": 14500,
+    "valoreAnnuo": "€14.500/anno"
+  },
+  {
+    "nome": "Moda Visione S.p.A.",
+    "settore": "Fashion",
+    "tipo": "Prospect",
+    "email": "info@technospere.com",
+    "ultimoContatto": {"$date": "2024-02-05T00:00:00Z"},
+    "valore": null,
+    "valoreAnnuo": null
+  },
+  {
+    "nome": "Sapori d'Italia",
+    "settore": "Food & Beverage",
+    "tipo": "Cliente",
+    "email": "info@technospere.com",
+    "ultimoContatto": {"$date": "2024-04-19T00:00:00Z"},
+    "valore": 22000,
+    "valoreAnnuo": "€22.000/anno"
+  },
+  {
+    "nome": "TechnoSphere S.r.l.",
+    "settore": "Tecnologia",
+    "tipo": "Cliente",
+    "email": "info@technospere.com",
+    "ultimoContatto": {"$date": "2024-12-12T00:00:00Z"},
+    "valore": 11500,
+    "valoreAnnuo": "€11.500/anno"
+  },
+  {
+    "nome": "Trasporti Veloci",
+    "settore": "Logistica",
+    "tipo": "Prospect",
+    "email": "info@technospere.com",
+    "ultimoContatto": {"$date": "2024-08-25T00:00:00Z"},
+    "valore": null,
+    "valoreAnnuo": null
+  }
+]

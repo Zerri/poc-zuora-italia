@@ -58,8 +58,8 @@ function AppShell({ children }) {
       menuLevels={{
         children: [
           {
-            label: "Home",
-            icon: "fa-house",
+            label: "Dashboard",
+            icon: "fa-gauge",
             onClickFunction: () => {
               console.log("Welcome Home!");
             },
@@ -68,8 +68,36 @@ function AppShell({ children }) {
             }
           },
           {
-            label: "Sales",
-            icon: "fa-briefcase",
+            label: "Configuratore",
+            icon: "fa-cog",
+            onClickFunction: () => {
+              console.log("Welcome Configuratore!");
+            }
+          },
+          {
+            label: "Catalogo",
+            icon: "fa-book",
+            onClickFunction: () => {
+              console.log("Welcome Catalogo!");
+            }
+          },
+          {
+            label: "Preventivi",
+            icon: "fa-file-invoice",
+            onClickFunction: () => {
+              console.log("Welcome Preventivi!");
+            }
+          },
+          {
+            label: "Clienti",
+            icon: "fa-user-tie",
+            onClickFunction: () => {
+              console.log("Welcome Clienti!");
+            }
+          },
+          {
+            label: "Report",
+            icon: "fa-chart-simple",
             children: [
               {
                 label: "Invoicing",
@@ -116,8 +144,8 @@ function AppShell({ children }) {
             ]
           },
           {
-            label: "Purchase",
-            icon: "fa-bag-shopping",
+            label: "Settings",
+            icon: "fa-sliders",
             children: [
               {
                 label: "Vendors",

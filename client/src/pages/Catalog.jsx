@@ -62,7 +62,7 @@ function CatalogPage() {
   } = useQuery({ 
     queryKey: ['product-categories'], 
     queryFn: async () => {
-      const response = await fetch(`${API_URL}/product-categories`);
+      const response = await fetch(`${API_URL}/products/categories/all`);
       if (!response.ok) {
         throw new Error(`HTTP error: ${response.status}`);
       }

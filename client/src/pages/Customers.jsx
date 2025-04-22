@@ -14,7 +14,6 @@ import {
   Divider, 
   Grid, 
   Box,
-  Paper
 } from "@vapor/v3-components";
 import SearchBar from "@vapor/v3-components/SearchBar";
 import { Link } from 'react-router-dom';

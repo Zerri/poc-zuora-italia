@@ -73,7 +73,7 @@ function AppShell({ children }) {
             label: "Configuratore",
             icon: "fa-cog",
             onClickFunction: () => {
-              console.log("Welcome Configuratore!");
+              navigate('/quote');
             }
           },
           {

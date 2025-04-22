@@ -6,6 +6,7 @@ import { VaporThemeProvider } from '@vapor/v3-components';
 import AppShell from './components/AppShell';
 import Home from './pages/Home';
 import Customers from  './pages/Customers';
+import Catalog from  './pages/Catalog';
 
 // Creazione di un'istanza di QueryClient
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ function App() {
               {/* Route annidate che condividono lo stesso layout */}
               <Route path="/" element={<Home />} />
               <Route path="/customers" element={<Customers />} />
+              <Route path="/catalog" element={<Catalog />} />
               {/* Aggiungi altre route qui, tutte utilizzeranno automaticamente AppShell */}
             </Route>
           </Routes>

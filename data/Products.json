@@ -1,0 +1,282 @@
+[
+  {
+    "id": "TS001",
+    "nome": "TeamSystem Enterprise",
+    "descrizione": "Software ERP completo per la gestione aziendale",
+    "categoria": "enterprise",
+    "prezzo": 5000,
+    "caratteristiche": [
+      "Contabilità generale",
+      "Gestione del personale",
+      "Magazzino e logistica",
+      "Business intelligence",
+      "Pianificazione risorse"
+    ]
+  },
+  {
+    "id": "TS002",
+    "nome": "TeamSystem Digital Invoice",
+    "descrizione": "Soluzione avanzata per la fatturazione elettronica B2B e B2C",
+    "categoria": "professional",
+    "prezzo": 1800,
+    "caratteristiche": [
+      "Creazione e invio fatture elettroniche",
+      "Conservazione digitale a norma",
+      "Importazione automatica",
+      "Dashboard di controllo",
+      "Integrazione con gestionali"
+    ]
+  },
+  {
+    "id": "TS003",
+    "nome": "HR Portal Complete",
+    "descrizione": "Gestione completa delle risorse umane e amministrazione del personale",
+    "categoria": "hr",
+    "prezzo": 3200,
+    "caratteristiche": [
+      "Amministrazione personale",
+      "Gestione presenze",
+      "Buste paga",
+      "Onboarding dipendenti",
+      "Gestione ferie e permessi"
+    ]
+  },
+  {
+    "id": "TS004",
+    "nome": "TeamSystem CRM Professional",
+    "descrizione": "Soluzione per la gestione delle relazioni con i clienti",
+    "categoria": "professional",
+    "prezzo": 2500,
+    "caratteristiche": [
+      "Pipeline commerciale",
+      "Gestione opportunità",
+      "Analisi delle vendite",
+      "Automazione marketing",
+      "Integrazioni multicanale"
+    ]
+  },
+  {
+    "id": "TS005",
+    "nome": "TeamSystem Analytics",
+    "descrizione": "Piattaforma di business intelligence per analisi dati aziendali",
+    "categoria": "cross",
+    "prezzo": 2800,
+    "caratteristiche": [
+      "Dashboard personalizzabili",
+      "Report avanzati",
+      "Analisi predittive",
+      "Esportazione dati",
+      "Integrazione con tutte le soluzioni TeamSystem"
+    ]
+  },
+  {
+    "id": "TS006",
+    "nome": "TeamSystem Alyante Enterprise",
+    "descrizione": "ERP modulare per aziende di medie e grandi dimensioni",
+    "categoria": "enterprise",
+    "prezzo": 7500,
+    "caratteristiche": [
+      "Contabilità e finanza",
+      "Supply chain",
+      "Produzione",
+      "CRM integrato",
+      "Moduli verticali per settori specifici"
+    ]
+  },
+  {
+    "id": "TS007",
+    "nome": "TeamSystem DMS",
+    "descrizione": "Sistema di gestione documentale avanzato",
+    "categoria": "cross",
+    "prezzo": 1600,
+    "caratteristiche": [
+      "Archiviazione documentale",
+      "Workflow documentali",
+      "Firma digitale",
+      "Conservazione sostitutiva",
+      "Ricerca avanzata"
+    ]
+  },
+  {
+    "id": "TS008",
+    "nome": "TeamSystem B2B Portal",
+    "descrizione": "Portale B2B per la gestione dei rapporti con partner e fornitori",
+    "categoria": "professional",
+    "prezzo": 3100,
+    "caratteristiche": [
+      "Catalogo prodotti online",
+      "Gestione ordini",
+      "Tracciamento spedizioni",
+      "Area riservata clienti",
+      "Integrazioni API"
+    ]
+  },
+  {
+    "id": "TS009",
+    "nome": "TeamSystem Construction",
+    "descrizione": "Software gestionale specifico per il settore edile e costruzioni",
+    "categoria": "enterprise",
+    "prezzo": 4200,
+    "caratteristiche": [
+      "Gestione commesse",
+      "Preventivazione",
+      "Contabilità lavori",
+      "Sicurezza cantieri",
+      "Gestione subappalti"
+    ]
+  },
+  {
+    "id": "TS010",
+    "nome": "TeamSystem HR Budget",
+    "descrizione": "Soluzione per la pianificazione e il controllo dei costi del personale",
+    "categoria": "hr",
+    "prezzo": 2300,
+    "caratteristiche": [
+      "Budget del personale",
+      "Simulazioni di costo",
+      "Analisi scostamenti",
+      "Forecast HR",
+      "Reporting direzionale"
+    ]
+  },
+  {
+    "id": "TS011",
+    "nome": "TeamSystem Business Continuity",
+    "descrizione": "Soluzione per garantire la continuità operativa del business",
+    "categoria": "cross",
+    "prezzo": 1900,
+    "caratteristiche": [
+      "Backup automatizzati",
+      "Disaster recovery",
+      "Sistemi ridondanti",
+      "Monitoraggio continuo",
+      "Ripristino rapido"
+    ]
+  },
+  {
+    "id": "TS012",
+    "nome": "TeamSystem eCommerce Integration",
+    "descrizione": "Integrazioni avanzate per piattaforme di eCommerce",
+    "categoria": "professional",
+    "prezzo": 2200,
+    "caratteristiche": [
+      "Sincronizzazione prodotti",
+      "Gestione ordini multicanale",
+      "Inventario in tempo reale",
+      "Integrazione con marketplace",
+      "Logistica integrata"
+    ]
+  },
+  {
+    "id": "TS013",
+    "nome": "TeamSystem Retail",
+    "descrizione": "Soluzione completa per la gestione di negozi e catene retail",
+    "categoria": "enterprise",
+    "prezzo": 3800,
+    "caratteristiche": [
+      "Point of Sale",
+      "Fidelity card",
+      "Gestione magazzino",
+      "Analisi vendite",
+      "CRM integrato per retail"
+    ]
+  },
+  {
+    "id": "TS014",
+    "nome": "TeamSystem HR Performance",
+    "descrizione": "Soluzione per la gestione delle performance e lo sviluppo dei talenti",
+    "categoria": "hr",
+    "prezzo": 1700,
+    "caratteristiche": [
+      "Valutazione performance",
+      "Obiettivi e KPI",
+      "Piani di sviluppo",
+      "Feedback continuo",
+      "Analisi competenze"
+    ]
+  },
+  {
+    "id": "TS015",
+    "nome": "TeamSystem Digital Workspace",
+    "descrizione": "Ambiente di lavoro digitale integrato per la collaborazione aziendale",
+    "categoria": "cross",
+    "prezzo": 2100,
+    "caratteristiche": [
+      "Collaboration tools",
+      "Project management",
+      "Videoconferenze integrate",
+      "Knowledge base",
+      "Intranet aziendale"
+    ]
+  },
+  {
+    "id": "TS016",
+    "nome": "TeamSystem Manufacturing",
+    "descrizione": "Soluzione integrata per aziende manifatturiere",
+    "categoria": "enterprise",
+    "prezzo": 6200,
+    "caratteristiche": [
+      "Pianificazione produzione",
+      "MRP",
+      "Controllo qualità",
+      "Manutenzione impianti",
+      "Industry 4.0 ready"
+    ]
+  },
+  {
+    "id": "TS017",
+    "nome": "TeamSystem Tax & Legal",
+    "descrizione": "Suite di applicazioni per professionisti fiscali e legali",
+    "categoria": "professional",
+    "prezzo": 2900,
+    "caratteristiche": [
+      "Gestione studio professionale",
+      "Pratiche legali",
+      "Adempimenti fiscali",
+      "Fatturazione elettronica",
+      "Conservazione documenti"
+    ]
+  },
+  {
+    "id": "TS018",
+    "nome": "TeamSystem Financial Planning",
+    "descrizione": "Soluzioni per la pianificazione finanziaria e il controllo di gestione",
+    "categoria": "professional",
+    "prezzo": 3500,
+    "caratteristiche": [
+      "Budget e forecast",
+      "Analisi scostamenti",
+      "Cash flow management",
+      "Simulazioni finanziarie",
+      "Reporting direzionale"
+    ]
+  },
+  {
+    "id": "TS019",
+    "nome": "TeamSystem Smart Working",
+    "descrizione": "Piattaforma completa per la gestione del lavoro agile",
+    "categoria": "hr",
+    "prezzo": 1400,
+    "caratteristiche": [
+      "Gestione presenze remote",
+      "Task management",
+      "Reportistica attività",
+      "Monitoraggio produttività",
+      "Collaborazione virtuale"
+    ]
+  },
+  {
+    "id": "TS020",
+    "nome": "TeamSystem Cloud Security",
+    "descrizione": "Soluzioni di sicurezza avanzata per ambienti cloud",
+    "categoria": "cross",
+    "prezzo": 2400,
+    "caratteristiche": [
+      "Protezione dati",
+      "Autenticazione multifattore",
+      "Monitoraggio accessi",
+      "Prevenzione data breach",
+      "Compliance GDPR"
+    ]
+  }
+]

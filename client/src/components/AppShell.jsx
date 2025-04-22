@@ -1,5 +1,6 @@
 // AppShell.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   VaporUIShellNav, 
   VaporAppBar, 
@@ -22,6 +23,7 @@ function AppShell({ children }) {
   const theme = useTheme();
   const isLarge = useMediaQuery(theme["breakpoints"].up("lg"));
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const navigate = useNavigate();
 
   // Gestione automatica del drawer in base alle dimensioni dello schermo
   React.useEffect(() => {
@@ -61,11 +63,11 @@ function AppShell({ children }) {
             label: "Dashboard",
             icon: "fa-gauge",
             onClickFunction: () => {
-              console.log("Welcome Home!");
+              navigate('/');
             },
-            badgeProps: {
-              variant: "dot"
-            }
+            // badgeProps: {
+            //   variant: "dot"
+            // }
           },
           {
             label: "Configuratore",
@@ -92,7 +94,7 @@ function AppShell({ children }) {
             label: "Clienti",
             icon: "fa-user-tie",
             onClickFunction: () => {
-              console.log("Welcome Clienti!");
+              navigate('/customers');
             }
           },
           {

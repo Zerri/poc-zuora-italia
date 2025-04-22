@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import VaporPage from "@vapor/v3-components/VaporPage";
-import Typography from "@vapor/v3-components/Typography";
-import { 
+import {
+  VaporPage,
+  Typography,
   Button, 
   VaporToolbar, 
   CircularProgress, 
@@ -17,7 +17,7 @@ import {
   Drawer,
   Title,
   IconButton,
-  VaporIcon
+  VaporIcon,
 } from "@vapor/v3-components";
 import { faClose } from "@fortawesome/pro-regular-svg-icons/faClose";
 import SearchBar from "@vapor/v3-components/SearchBar";

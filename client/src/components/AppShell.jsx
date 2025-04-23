@@ -87,7 +87,7 @@ function AppShell({ children }) {
             label: "Preventivi",
             icon: "fa-file-invoice",
             onClickFunction: () => {
-              console.log("Welcome Preventivi!");
+              navigate('/quotes');
             }
           },
           {

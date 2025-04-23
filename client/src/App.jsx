@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import Customers from  './pages/Customers';
 import Catalog from  './pages/Catalog';
 import Quote from  './pages/Quote';
+import Quotes from './pages/Quotes';
 
 // Creazione di un'istanza di QueryClient
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ function App() {
               <Route path="/customers" element={<Customers />} />
               <Route path="/catalog" element={<Catalog />} />
               <Route path="/quote" element={<Quote />} />
+              <Route path="/quotes" element={<Quotes />} />
               {/* Aggiungi altre route qui, tutte utilizzeranno automaticamente AppShell */}
             </Route>
           </Routes>

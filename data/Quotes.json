@@ -1,0 +1,133 @@
+[
+  {
+    "number": "0123456789",
+    "customer": {
+      "name": "Arredo Casa Design",
+      "sector": "Arredamento"
+    },
+    "status": "Draft",
+    "type": "New",
+    "value": 4500,
+    "date": "2024-11-25T00:00:00.000Z",
+    "products": [
+      {
+        "id": "TS001",
+        "name": "TeamSystem Enterprise",
+        "price": 4500,
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "number": "0123456788",
+    "customer": {
+      "name": "TechnoSphere S.r.l.",
+      "sector": "Tecnologia"
+    },
+    "status": "Sent",
+    "type": "New",
+    "value": 11500,
+    "date": "2024-11-25T00:00:00.000Z",
+    "products": [
+      {
+        "id": "TS006",
+        "name": "TeamSystem Alyante Enterprise",
+        "price": 7500,
+        "quantity": 1
+      },
+      {
+        "id": "TS007",
+        "name": "TeamSystem DMS",
+        "price": 4000,
+        "quantity": 2.5
+      }
+    ]
+  },
+  {
+    "number": "0123456787",
+    "customer": {
+      "name": "Costruzioni Moderni",
+      "sector": "Edilizia"
+    },
+    "status": "Accepted",
+    "type": "Migration",
+    "value": 9500,
+    "date": "2024-11-03T00:00:00.000Z",
+    "products": [
+      {
+        "id": "TS009",
+        "name": "TeamSystem Construction",
+        "price": 4200,
+        "quantity": 1
+      },
+      {
+        "id": "TS020",
+        "name": "TeamSystem Cloud Security",
+        "price": 2400,
+        "quantity": 1
+      },
+      {
+        "id": "TS015",
+        "name": "TeamSystem Digital Workspace",
+        "price": 2900,
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "number": "0123456767",
+    "customer": {
+      "name": "Sapori d'Italia",
+      "sector": "Food & Beverage"
+    },
+    "status": "Rejected",
+    "type": "Migration",
+    "value": 22500,
+    "date": "2024-11-03T00:00:00.000Z",
+    "products": [
+      {
+        "id": "TS016",
+        "name": "TeamSystem Manufacturing",
+        "price": 6200,
+        "quantity": 1
+      },
+      {
+        "id": "TS002",
+        "name": "TeamSystem Digital Invoice",
+        "price": 1800,
+        "quantity": 1
+      },
+      {
+        "id": "TS008",
+        "name": "TeamSystem B2B Portal",
+        "price": 3100,
+        "quantity": 3
+      },
+      {
+        "id": "TS005",
+        "name": "TeamSystem Analytics",
+        "price": 2800,
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "number": "0123456734",
+    "customer": {
+      "name": "AutoMotiveItalia",
+      "sector": "Automotive"
+    },
+    "status": "Sent",
+    "type": "New",
+    "value": 2500,
+    "date": "2024-11-03T00:00:00.000Z",
+    "products": [
+      {
+        "id": "TS017",
+        "name": "TeamSystem Tax & Legal",
+        "price": 2500,
+        "quantity": 1
+      }
+    ]
+  }
+]

@@ -24,12 +24,14 @@ const itemRoutes = require('./routes/items');
 const customerRoutes = require('./routes/customers');
 const productRoutes = require('./routes/products');
 const statsRoutes = require('./routes/stats');
+const quotesRoutes = require('./routes/quotes');
 
 // Utilizzo routes
 app.use('/api/items', itemRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/quotes', quotesRoutes);
 
 // API health check
 app.get('/api/health', (req, res) => {

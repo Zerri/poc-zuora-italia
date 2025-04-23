@@ -375,12 +375,20 @@ function QuotesPage() {
                 <Typography variant="body1" fontWeight="medium">
                   Settore: {selectedQuote.customer.sector}
                 </Typography>
-                <Tag 
-                  label={statusTranslations[selectedQuote.status]} 
-                  type={getStatusTagType(selectedQuote.status)}
-                  size="medium"
-                  variant='duotone'
-                />
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Tag 
+                    label={typeTranslations[selectedQuote.type]} 
+                    type="warning"
+                    size="medium"
+                    variant={getTypeTagVariant(selectedQuote.type)}
+                  />
+                  <Tag 
+                    label={statusTranslations[selectedQuote.status]} 
+                    type={getStatusTagType(selectedQuote.status)}
+                    size="medium"
+                    variant={getStatusTagVariant(selectedQuote.status)}
+                  />
+                </Box>
               </Box>
               
               <Divider sx={{ my: 3 }} />

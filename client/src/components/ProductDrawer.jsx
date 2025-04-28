@@ -13,69 +13,44 @@ import {
   TextField,
   Box,
   Divider,
-  VaporToolbar
+  VaporToolbar,
+  Chip
 } from "@vapor/v3-components";
 import { faClose } from "@fortawesome/pro-regular-svg-icons/faClose";
 
 /**
  * @component ProductDrawer
- * @description Componente Drawer per visualizzare i dettagli di un prodotto e aggiungere all'offerta
- * @param {Object} props - Proprietà del componente
- * @param {boolean} props.open - Stato del drawer (aperto/chiuso)
- * @param {Function} props.onClose - Funzione di callback per chiudere il drawer
- * @param {Object} props.product - Prodotto selezionato da visualizzare
- * @param {Function} props.translateCategory - Funzione per tradurre la categoria del prodotto
- * @param {Function} props.onAddToOffer - Funzione callback quando si aggiunge il prodotto all'offerta
+ * @description Drawer per configurare un prodotto nell'offerta
  */
 function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer }) {
   const [selectedProductRatePlan, setSelectedProductRatePlan] = useState('');
-  // Stato per tenere traccia dei valori inseriti per i productRatePlanCharge
   const [chargeValues, setChargeValues] = useState({});
-  
-  // Resetta la selezione del rate plan e i valori dei charge quando cambia il prodotto
+
   useEffect(() => {
-    if (product && product.productRatePlans && product.productRatePlans.length > 0) {
+    if (product && product.productRatePlans?.length > 0) {
       const initialRatePlanId = product.productRatePlans[0]?.id || '';
       setSelectedProductRatePlan(initialRatePlanId);
-      
-      // Inizializza i valori dei charge per il rate plan selezionato
       resetChargeValues(initialRatePlanId);
     }
   }, [product]);
 
-  // Reinizializza i valori dei charge quando cambia il rate plan
   useEffect(() => {
     if (selectedProductRatePlan) {
       resetChargeValues(selectedProductRatePlan);
     }
   }, [selectedProductRatePlan]);
 
-  // Funzione per inizializzare i valori dei charge
   const resetChargeValues = (ratePlanId) => {
     if (!product) return;
-    
     const ratePlan = product.productRatePlans.find(rp => rp.id === ratePlanId);
     if (!ratePlan) return;
-    
     const initialValues = {};
     ratePlan.productRatePlanCharges.forEach(charge => {
       initialValues[charge.id] = '';
     });
-    
     setChargeValues(initialValues);
   };
 
-  // Se non c'è nessun prodotto selezionato, non renderizzare nulla
-  if (!product) {
-    return null;
-  }
-
-  // Trova il rate plan selezionato
-  const selectedRatePlan = product.productRatePlans.find(
-    ratePlan => ratePlan.id === selectedProductRatePlan
-  );
-
-  // Handler per aggiornare il valore di un charge
   const handleChargeValueChange = (chargeId, value) => {
     setChargeValues(prevValues => ({
       ...prevValues,
@@ -83,15 +58,12 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
     }));
   };
 
-  // Handler per aggiungere all'offerta
   const handleAddToOffer = () => {
     if (onAddToOffer) {
-      // Prepara i dati dei charge con i valori inseriti
       const chargesWithValues = selectedRatePlan.productRatePlanCharges.map(charge => ({
         ...charge,
         value: chargeValues[charge.id]
       }));
-      
       onAddToOffer({
         product,
         selectedRatePlan: {
@@ -103,10 +75,53 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
     onClose();
   };
 
-  // Handler per il cambio del rate plan
   const handleRatePlanChange = (event) => {
     setSelectedProductRatePlan(event.target.value);
   };
+
+  const getChargeTypeLabel = (type) => {
+    switch (type) {
+      case 'Recurring': return 'Ricorrente';
+      case 'OneTime': return 'Una Tantum';
+      case 'Usage': return 'A Consumo';
+      default: return 'Altro';
+    }
+  };
+
+  const calculateChargeTotal = (charge) => {
+    const value = parseFloat(chargeValues[charge.id] || 0);
+
+    if (charge.model === 'PerUnit') {
+      const unitPrice = charge.pricing?.[0]?.price || 0;
+      return value * unitPrice;
+    }
+
+    if (charge.model === 'Volume') {
+      const tiers = charge.pricing?.[0]?.tiers || [];
+      if (tiers.length === 0 || value <= 0) return 0;
+      const tier = tiers.find(t => value >= t.startingUnit && value <= t.endingUnit);
+      return tier ? tier.price : 0;
+    }
+
+    if (charge.model === 'FlatFee') {
+      return charge.pricing?.[0]?.price || 0;
+    }
+
+    return 0;
+  };
+
+  const calculateTotal = () => {
+    if (!selectedRatePlan) return 0;
+    return selectedRatePlan.productRatePlanCharges.reduce((acc, charge) => {
+      return acc + calculateChargeTotal(charge);
+    }, 0);
+  };
+
+  if (!product) return null;
+
+  const selectedRatePlan = product.productRatePlans.find(
+    ratePlan => ratePlan.id === selectedProductRatePlan
+  );
 
   return (
     <Drawer
@@ -119,32 +134,30 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
     >
       <Title
         title={product.name}
-        description={translateCategory(product.categoria)}
+        description={translateCategory(product.category)}
         divider
         rightItems={[
-          <IconButton size="small" variant='outlined' onClick={onClose}>
+          <IconButton size="small" variant="outlined" onClick={onClose}>
             <VaporIcon icon={faClose} size="xl" />
           </IconButton>
         ]}
       />
-      
+
       <Box sx={{ p: 4, flex: 1, overflowY: 'auto' }}>
         <Typography variant="body1" paragraph>
           {product.description || 'Nessuna descrizione disponibile.'}
         </Typography>
-        
+
         <Divider sx={{ my: 3 }} />
-        
+
         <FormControl fullWidth sx={{ mb: 3 }}>
-          <InputLabel>
-            Rate Plan
-          </InputLabel>
+          <InputLabel>Rate Plan</InputLabel>
           <Select
             label="Rate Plan"
             onChange={handleRatePlanChange}
             value={selectedProductRatePlan}
           >
-            {product.productRatePlans && product.productRatePlans.map((ratePlan, index) => (
+            {product.productRatePlans?.map((ratePlan, index) => (
               <MenuItem value={ratePlan.id} key={index}>
                 {ratePlan.name}
               </MenuItem>
@@ -152,32 +165,77 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
           </Select>
         </FormControl>
 
-        {selectedRatePlan && selectedRatePlan.productRatePlanCharges.map((charge, index) => (
-          <FormControl fullWidth sx={{ mb: 3 }} key={index}>
-            <TextField
-              label={charge.name}
-              value={chargeValues[charge.id] || ''}
-              onChange={(e) => handleChargeValueChange(charge.id, e.target.value)}
-            />
-          </FormControl>
-        ))}
+        {selectedRatePlan && selectedRatePlan.productRatePlanCharges.map((charge, index) => {
+          const model = charge.model;
+          const type = charge.type;
+
+          return (
+            <Box key={index} sx={{ mb: 4 }}>
+              <Box display="flex" alignItems="center" gap={1} sx={{ mb: 1 }}>
+                <Typography variant="subtitle2">{charge.name}</Typography>
+                <Chip
+                  label={getChargeTypeLabel(type)}
+                  size="small"
+                  variant="outlined"
+                  color="primary"
+                />
+              </Box>
+
+              {model === 'FlatFee' && (
+                <>
+                  <Typography variant="body2">
+                    Prezzo fisso: €{charge.pricing?.[0]?.price ?? 0}
+                  </Typography>
+                </>
+              )}
+
+              {(model === 'PerUnit' || model === 'Volume') && (
+                <>
+                  <FormControl fullWidth>
+                    <TextField
+                      type="number"
+                      label="Quantità"
+                      value={chargeValues[charge.id] || ''}
+                      onChange={(e) => handleChargeValueChange(charge.id, e.target.value)}
+                      InputProps={{ inputProps: { min: 0 } }}
+                    />
+                  </FormControl>
+
+                  <Typography variant="body2" sx={{ mt: 1 }}>
+                    Prezzo unitario: €{charge.pricing?.[0]?.price ?? 'n.d.'}
+                  </Typography>
+
+                  <Typography variant="body2" sx={{ mt: 1 }}>
+                    Prezzo calcolato: €{calculateChargeTotal(charge).toFixed(2)}
+                  </Typography>
+                </>
+              )}
+
+              {model === 'Usage' && (
+                <>
+                  <Typography variant="body2">
+                    Prezzo a consumo: €{charge.pricing?.[0]?.price ?? 0} per {charge.uom || 'unità'}
+                  </Typography>
+                </>
+              )}
+            </Box>
+          );
+        })}
       </Box>
-      
+
+      <Divider />
+
       <VaporToolbar
+        contentLeft={[
+          <Typography variant="subtitle1">
+            Totale: €{calculateTotal().toFixed(2)}
+          </Typography>
+        ]}
         contentRight={[
-          <Button 
-            variant="outlined" 
-            color="secondary"
-            onClick={onClose}
-          >
+          <Button variant="outlined" color="secondary" onClick={onClose}>
             Chiudi
           </Button>,
-          <Button 
-            variant="contained" 
-            color="primary"
-            startIcon={<span>+</span>}
-            onClick={handleAddToOffer}
-          >
+          <Button variant="contained" color="primary" startIcon={<span>+</span>} onClick={handleAddToOffer}>
             Aggiungi all'offerta
           </Button>
         ]}

@@ -80,7 +80,7 @@ function AppShell({ children }) {
             label: "Catalogo",
             icon: "fa-book",
             onClickFunction: () => {
-              navigate('/catalog');
+              navigate('/catalog1');
             }
           },
           {

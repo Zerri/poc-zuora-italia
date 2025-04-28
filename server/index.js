@@ -23,6 +23,7 @@ connectDB();
 const itemRoutes = require('./routes/items');
 const customerRoutes = require('./routes/customers');
 const productRoutes = require('./routes/products');
+const product1Routes = require('./routes/products1');
 const statsRoutes = require('./routes/stats');
 const quotesRoutes = require('./routes/quotes');
 
@@ -30,6 +31,7 @@ const quotesRoutes = require('./routes/quotes');
 app.use('/api/items', itemRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/products1', product1Routes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/quotes', quotesRoutes);
 

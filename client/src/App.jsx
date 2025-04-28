@@ -7,6 +7,7 @@ import AppShell from './components/AppShell';
 import Home from './pages/Home';
 import Customers from  './pages/Customers';
 import Catalog from  './pages/Catalog';
+import Catalog1 from  './pages/Catalog1';
 import Quote from  './pages/Quote';
 import Quotes from './pages/Quotes';
 
@@ -42,6 +43,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/catalog" element={<Catalog />} />
+              <Route path="/catalog1" element={<Catalog1 />} />
               <Route path="/quote" element={<Quote />} />
               <Route path="/quotes" element={<Quotes />} />
               {/* Aggiungi altre route qui, tutte utilizzeranno automaticamente AppShell */}

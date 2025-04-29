@@ -301,10 +301,10 @@ function QuotesPage() {
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                       <Box>
                         <Typography variant="body2" color="text.secondary">
-                          Data
+                          Creato il
                         </Typography>
                         <Typography variant="body1">
-                          {formatDate(quote.date)}
+                          {formatDate(quote.createdAt)}
                         </Typography>
                       </Box>
                       
@@ -399,8 +399,8 @@ function QuotesPage() {
               
               <Grid container spacing={2} sx={{ mb: 3 }}>
                 <Grid item xs={6}>
-                  <Typography variant="body2" color="text.secondary">Data</Typography>
-                  <Typography variant="body1" fontWeight="medium">{formatDate(selectedQuote.date)}</Typography>
+                  <Typography variant="body2" color="text.secondary">Creato il</Typography>
+                  <Typography variant="body1" fontWeight="medium">{formatDate(selectedQuote.createdAt)}</Typography>
                 </Grid>
                 <Grid item xs={6}>
                   <Typography variant="body2" color="text.secondary">Valore totale</Typography>

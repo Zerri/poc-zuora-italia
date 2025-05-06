@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import VaporPage from "@vapor/v3-components/VaporPage";
 import Typography from "@vapor/v3-components/Typography";
 import { 
@@ -29,6 +30,12 @@ function CustomersPage() {
   // State per filtri ricerca
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('Tutti');
+  
+  // Hook per la navigazione
+  const navigate = useNavigate();
+  
+  // QueryClient per interagire con la cache
+  const queryClient = useQueryClient();
 
   // Query per ottenere i customers
   const { 
@@ -45,6 +52,34 @@ function CustomersPage() {
       return response.json();
     }
   });
+  
+  // Mutazione per creare un nuovo preventivo
+  const createQuoteMutation = useMutation({
+    mutationFn: (quoteData) => {
+      return fetch(`${API_URL}/quotes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(quoteData)
+      }).then(response => {
+        if (!response.ok) {
+          throw new Error('Errore durante la creazione del preventivo');
+        }
+        return response.json();
+      });
+    },
+    onSuccess: (data) => {
+      // Invalidate la cache per i preventivi
+      queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      // Reindirizza alla pagina di modifica del preventivo
+      navigate(`/quote/${data._id}`);
+    },
+    onError: (error) => {
+      console.error('Errore:', error);
+      alert('Impossibile creare il preventivo. Riprova più tardi.');
+    }
+  });
 
   // Funzione per formattare la data
   const formatDate = (dateString) => {
@@ -57,6 +92,38 @@ function CustomersPage() {
     setFilterType(newFilter);
   };
   
+  // Funzione per iniziare una nuova offerta
+  const handleNewQuote = (customer) => {
+    createQuoteMutation.mutate({
+      customer: {
+        name: customer.nome,
+        sector: customer.settore,
+        id: customer._id
+      },
+      status: 'Draft',
+      type: 'New',
+      value: 0,
+      products: [],
+      notes: `Preventivo creato per ${customer.nome}`
+    });
+  };
+  
+  // Funzione per avviare una migrazione
+  const handleMigration = (customer) => {
+    createQuoteMutation.mutate({
+      customer: {
+        name: customer.nome,
+        sector: customer.settore,
+        id: customer._id
+      },
+      status: 'Draft',
+      type: 'Migration',
+      value: 0,
+      products: [],
+      notes: `Preventivo di migrazione creato per ${customer.nome}`
+    });
+  };
+  
   // Funzione per filtrare i clienti
   const filteredCustomers = React.useMemo(() => {
     return customers.filter(customer => {
@@ -67,8 +134,8 @@ function CustomersPage() {
       const matchesSearch = 
         searchTerm === '' || 
         customer.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.settore.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.email.toLowerCase().includes(searchTerm.toLowerCase());
+        customer.settore?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.email?.toLowerCase().includes(searchTerm.toLowerCase());
       
       return matchesType && matchesSearch;
     });
@@ -241,8 +308,10 @@ function CustomersPage() {
                         color="primary"
                         size="small"
                         startIcon={<span>+</span>}
+                        onClick={() => handleNewQuote(customer)}
+                        disabled={createQuoteMutation.isPending}
                       >
-                        Nuova offerta
+                        {createQuoteMutation.isPending ? 'Creazione...' : 'Nuova offerta'}
                       </Button>
                       
                       {customer.tipo === 'Cliente' && (
@@ -250,8 +319,10 @@ function CustomersPage() {
                           variant="outlined" 
                           color="primary"
                           size="small"
+                          onClick={() => handleMigration(customer)}
+                          disabled={createQuoteMutation.isPending}
                         >
-                          Migrazione
+                          {createQuoteMutation.isPending ? 'Creazione...' : 'Migrazione'}
                         </Button>
                       )}
                     </Box>

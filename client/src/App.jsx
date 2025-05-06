@@ -45,6 +45,7 @@ function App() {
               <Route path="/catalog" element={<Catalog />} />
               <Route path="/catalog1" element={<Catalog1 />} />
               <Route path="/quote" element={<Quote />} />
+              <Route path="/quote/:id" element={<Quote />} />
               <Route path="/quotes" element={<Quotes />} />
               {/* Aggiungi altre route qui, tutte utilizzeranno automaticamente AppShell */}
             </Route>

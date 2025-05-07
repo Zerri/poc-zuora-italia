@@ -164,11 +164,6 @@ function QuotesPage() {
   return (
     <VaporPage>
       <Title
-        leftItems={[
-          <IconButton color="primary" size="small">
-            <VaporIcon icon={faArrowLeft} size="xl" />
-          </IconButton>
-        ]}
         rightItems={[
           <Button key="1" size="small" variant="contained" startIcon={<VaporIcon icon={faPlus} />}>Nuovo preventivo</Button>,
           <IconButton key="2" size="small">

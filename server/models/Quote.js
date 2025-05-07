@@ -29,6 +29,7 @@ const QuoteSchema = new mongoose.Schema({
 
   // Informazioni sul cliente
   customer: {
+    email: { type: String },
     name: { type: String, required: true },
     sector: { type: String },
     id: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer' }

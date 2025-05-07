@@ -324,7 +324,7 @@ function QuotesPage() {
                         color="primary"
                         size="small"
                         component={Link}
-                        to={`/quote/${quote._id}/edit`}
+                        to={`/quote/${quote._id}`}
                         startIcon={<VaporIcon icon={faPen} />}
                       >
                         Modifica
@@ -465,7 +465,7 @@ function QuotesPage() {
                   variant="contained" 
                   color="primary"
                   component={Link}
-                  to={`/quote/${selectedQuote._id}/edit`}
+                  to={`/quote/${selectedQuote._id}`}
                 >
                   Modifica preventivo
                 </Button>

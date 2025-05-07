@@ -98,6 +98,7 @@ function CustomersPage() {
       customer: {
         name: customer.nome,
         sector: customer.settore,
+        email: customer.email,
         id: customer._id
       },
       status: 'Draft',

@@ -22,7 +22,7 @@ import { faClose } from "@fortawesome/pro-regular-svg-icons/faClose";
  * @component ProductDrawer
  * @description Drawer per configurare un prodotto nell'offerta
  */
-function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer }) {
+function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer, isAddingToQuote }) {
   const [selectedProductRatePlan, setSelectedProductRatePlan] = useState('');
   const [chargeValues, setChargeValues] = useState({});
 

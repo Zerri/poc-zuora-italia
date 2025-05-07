@@ -281,6 +281,7 @@ function Quote() {
               size="small" 
               variant="contained" 
               startIcon={<VaporIcon icon={faPlus} />}
+              onClick={() => navigate(`/catalog1?quoteId=${id}`)}
             >
               Aggiungi articolo
             </Button>,
@@ -606,9 +607,11 @@ function Quote() {
                       Non ci sono articoli selezionati. Aggiungi articoli dal catalogo per creare il preventivo.
                     </Typography>
                     <Button 
+                      key="add-article" 
+                      size="small" 
                       variant="contained" 
-                      startIcon={<VaporIcon icon={faPlus} />} 
-                      sx={{ mt: 2 }}
+                      startIcon={<VaporIcon icon={faPlus} />}
+                      onClick={() => navigate(`/catalog1?quoteId=${id}`)}
                     >
                       Aggiungi articolo
                     </Button>

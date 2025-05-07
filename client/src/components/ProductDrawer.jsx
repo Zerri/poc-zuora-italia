@@ -27,7 +27,18 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
   const [chargeValues, setChargeValues] = useState({});
 
   useEffect(() => {
-    if (product && product.productRatePlans?.length > 0) {
+    // Se il prodotto è già configurato (ha charges e ratePlan), recupera i valori salvati
+    if (product && product.charges && product.ratePlan) {
+      setSelectedProductRatePlan(product.ratePlan.id);
+      
+      // Recupera i valori delle charges
+      const savedValues = {};
+      product.charges.forEach(charge => {
+        savedValues[charge.id] = charge.value.toString();
+      });
+      setChargeValues(savedValues);
+    } else if (product && product.productRatePlans?.length > 0) {
+      // Comportamento esistente per un nuovo prodotto
       const initialRatePlanId = product.productRatePlans[0]?.id || '';
       setSelectedProductRatePlan(initialRatePlanId);
       resetChargeValues(initialRatePlanId);
@@ -35,7 +46,7 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
   }, [product]);
 
   useEffect(() => {
-    if (selectedProductRatePlan) {
+    if (selectedProductRatePlan && !product.charges) {
       resetChargeValues(selectedProductRatePlan);
     }
   }, [selectedProductRatePlan]);
@@ -60,15 +71,33 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
 
   const handleAddToOffer = () => {
     if (onAddToOffer) {
-      const chargesWithValues = selectedRatePlan.productRatePlanCharges.map(charge => ({
-        ...charge,
-        value: chargeValues[charge.id]
-      }));
+      // Determina se stiamo lavorando con un prodotto già configurato o un nuovo prodotto
+      let selectedRatePlanData;
+      let productRatePlanCharges;
+      
+      if (product.charges && product.ratePlan) {
+        // Prodotto già configurato
+        selectedRatePlanData = product.ratePlan;
+        productRatePlanCharges = product.charges.map(charge => ({
+          ...charge,
+          value: chargeValues[charge.id]
+        }));
+      } else {
+        // Nuovo prodotto
+        selectedRatePlanData = product.productRatePlans.find(
+          ratePlan => ratePlan.id === selectedProductRatePlan
+        );
+        productRatePlanCharges = selectedRatePlanData.productRatePlanCharges.map(charge => ({
+          ...charge,
+          value: chargeValues[charge.id]
+        }));
+      }
+      
       onAddToOffer({
         product,
         selectedRatePlan: {
-          ...selectedRatePlan,
-          productRatePlanCharges: chargesWithValues
+          ...selectedRatePlanData,
+          productRatePlanCharges: productRatePlanCharges
         }
       });
     }
@@ -119,9 +148,24 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
 
   if (!product) return null;
 
-  const selectedRatePlan = product.productRatePlans.find(
-    ratePlan => ratePlan.id === selectedProductRatePlan
-  );
+  // Determina quale rate plan mostrare
+  let selectedRatePlan;
+  let charges;
+  
+  if (product.charges && product.ratePlan) {
+    // Se il prodotto è già configurato, usa i dati salvati
+    selectedRatePlan = {
+      ...product.ratePlan,
+      productRatePlanCharges: product.charges
+    };
+    charges = product.charges;
+  } else {
+    // Altrimenti, usa i dati del rate plan selezionato
+    selectedRatePlan = product.productRatePlans.find(
+      ratePlan => ratePlan.id === selectedProductRatePlan
+    );
+    charges = selectedRatePlan?.productRatePlanCharges || [];
+  }
 
   return (
     <Drawer
@@ -134,7 +178,7 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
     >
       <Title
         title={product.name}
-        description={translateCategory(product.category)}
+        description={translateCategory(product.category || product.categoria)}
         divider
         rightItems={[
           <IconButton size="small" variant="outlined" onClick={onClose}>
@@ -150,22 +194,36 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
 
         <Divider sx={{ my: 3 }} />
 
-        <FormControl fullWidth sx={{ mb: 3 }}>
-          <InputLabel>Rate Plan</InputLabel>
-          <Select
-            label="Rate Plan"
-            onChange={handleRatePlanChange}
-            value={selectedProductRatePlan}
-          >
-            {product.productRatePlans?.map((ratePlan, index) => (
-              <MenuItem value={ratePlan.id} key={index}>
-                {ratePlan.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        {/* Rate Plan Selection */}
+        {product.productRatePlans && product.productRatePlans.length > 0 ? (
+          <FormControl fullWidth sx={{ mb: 3 }}>
+            <InputLabel>Rate Plan</InputLabel>
+            <Select
+              label="Rate Plan"
+              onChange={handleRatePlanChange}
+              value={selectedProductRatePlan}
+              disabled={!!product.ratePlan} // Disabilita se il prodotto è già configurato
+            >
+              {product.productRatePlans.map((ratePlan, index) => (
+                <MenuItem value={ratePlan.id} key={index}>
+                  {ratePlan.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        ) : product.ratePlan ? (
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="subtitle1" gutterBottom>
+              Rate Plan
+            </Typography>
+            <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+              {product.ratePlan.name}
+            </Typography>
+          </Box>
+        ) : null}
 
-        {selectedRatePlan && selectedRatePlan.productRatePlanCharges.map((charge, index) => {
+        {/* Charges Configuration */}
+        {charges && charges.map((charge, index) => {
           const model = charge.model;
           const type = charge.type;
 
@@ -235,8 +293,13 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
           <Button variant="outlined" color="secondary" onClick={onClose}>
             Chiudi
           </Button>,
-          <Button variant="contained" color="primary" startIcon={<span>+</span>} onClick={handleAddToOffer}>
-            Aggiungi all'offerta
+          <Button 
+            variant="contained" 
+            color="primary" 
+            startIcon={<span>+</span>} 
+            onClick={handleAddToOffer}
+          >
+            {isAddingToQuote ? 'Aggiungi al preventivo' : 'Aggiungi all\'offerta'}
           </Button>
         ]}
         size="medium"

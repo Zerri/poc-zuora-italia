@@ -25,13 +25,11 @@ import {
   CardContent,
   Divider,
   Tag,
-  Drawer,
   Title,
   VaporIcon,
   Snackbar,
   Alert
 } from "@vapor/v3-components";
-import { faClose } from "@fortawesome/pro-regular-svg-icons/faClose";
 import { faArrowLeft } from "@fortawesome/pro-regular-svg-icons/faArrowLeft";
 import { faEllipsisVertical } from "@fortawesome/pro-regular-svg-icons/faEllipsisVertical";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons/faPlus";
@@ -187,21 +185,6 @@ function Quote() {
     };
     
     saveQuoteMutation.mutate(quoteToSave);
-  };
-
-  // Gestione drawer
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedArticle, setSelectedArticle] = useState(null);
-
-  // Funzione per aprire il drawer con l'articolo selezionato
-  const handleOpenDrawer = (article) => {
-    setSelectedArticle(article);
-    setDrawerOpen(true);
-  };
-
-  // Funzione per chiudere il drawer
-  const handleCloseDrawer = () => {
-    setDrawerOpen(false);
   };
 
   // Funzione per rimuovere un prodotto dal preventivo
@@ -526,12 +509,14 @@ function Quote() {
                               <Typography variant="subtitle1" component="h3" fontWeight="bold" sx={{ flex: 1 }}>
                                 {product.name}
                               </Typography>
-                              <Tag 
-                                label={translateCategory(product.category || 'Default')} 
-                                type={getCategoryTagType(product.category || 'Default')}
-                                size="small"
-                                variant='duotone'
-                              />
+                              {product.category && (
+                                <Tag 
+                                  label={translateCategory(product.category)} 
+                                  type={getCategoryTagType(product.category)}
+                                  size="small"
+                                  variant='duotone'
+                                />
+                              )}
                             </Box>
                             
                             <Typography variant="body2" color="text.secondary" gutterBottom sx={{ minHeight: '40px' }}>
@@ -540,46 +525,35 @@ function Quote() {
                             
                             <Divider sx={{ my: 1 }} />
                             
-                            {product.features && (
-                              <Box sx={{ flex: 1 }}>
-                                <Typography variant="body2" color="text.secondary" gutterBottom>
-                                  Caratteristiche principali:
+                            {/* Informazioni sul Rate Plan */}
+                            {product.ratePlan && (
+                              <Box sx={{ my: 1 }}>
+                                <Typography variant="body2" color="text.primary" fontWeight="bold">
+                                  Piano: {product.ratePlan.name}
                                 </Typography>
-                                <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                                  {product.features.slice(0, 2).map((feature, index) => (
-                                    <Typography component="li" variant="body2" key={index}>
-                                      {feature}
-                                    </Typography>
-                                  ))}
-                                  {product.features.length > 2 && (
-                                    <Typography component="li" variant="body2" fontStyle="italic">
-                                      e altro...
-                                    </Typography>
-                                  )}
-                                </ul>
+                                {product.charges && product.charges.length > 0 && (
+                                  <Box sx={{ mt: 1 }}>
+                                    {product.charges.slice(0, 2).map((charge, idx) => (
+                                      <Typography key={idx} variant="body2" color="text.secondary">
+                                        {charge.name}: {charge.value} ({formatPrice(charge.calculatedPrice)})
+                                      </Typography>
+                                    ))}
+                                    {product.charges.length > 2 && (
+                                      <Typography variant="body2" color="text.secondary" fontStyle="italic">
+                                        ...e altri componenti
+                                      </Typography>
+                                    )}
+                                  </Box>
+                                )}
                               </Box>
                             )}
                             
                             <Divider sx={{ my: 1 }} />
                             
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                              <Typography variant="body2" color="text.secondary">
-                                {product.quantity > 1 ? `${product.quantity} x ${formatPrice(product.price)}` : 'Prezzo base'}
-                              </Typography>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
                               <Typography variant="body1" fontWeight="bold">
                                 {formatPrice(product.price * (product.quantity || 1))}
                               </Typography>
-                            </Box>
-                            
-                            <Box sx={{ display: 'flex', gap: 2, mt: 1, justifyContent: 'flex-end' }}>
-                              <Button 
-                                variant="outlined" 
-                                color="primary"
-                                size="small"
-                                onClick={() => handleOpenDrawer(product)}
-                              >
-                                Dettagli
-                              </Button>
                               
                               <Button 
                                 variant="contained" 
@@ -737,96 +711,6 @@ function Quote() {
           )}
         </VaporPage.Section>
       </VaporPage>
-      
-      {/* Drawer con dettagli articolo */}
-      <Drawer
-        anchor="right"
-        open={drawerOpen}
-        onClose={handleCloseDrawer}
-        width="30vw"
-        hideBackdrop={false}
-        sx={{ "& .MuiDrawer-paperAnchorRight": { marginTop: "48px" } }}
-      >
-        {selectedArticle && (
-          <>
-            <Title
-              title={selectedArticle.name}
-              description={selectedArticle.category}
-              divider
-              rightItems={[
-                <IconButton size="small" variant='outlined' onClick={handleCloseDrawer}>
-                  <VaporIcon icon={faClose} size="xl" />
-                </IconButton>
-              ]}
-            />
-            
-            <Box sx={{ p: 4, flex: 1, overflowY: 'auto' }}>
-              <Typography variant="body1" paragraph>
-                {selectedArticle.description || 'Nessuna descrizione disponibile.'}
-              </Typography>
-              
-              <Divider sx={{ my: 3 }} />
-              
-              {selectedArticle.features && selectedArticle.features.length > 0 && (
-                <>
-                  <Typography variant="h6" gutterBottom>
-                    Caratteristiche dell'articolo
-                  </Typography>
-                  
-                  <ul style={{ paddingLeft: '20px' }}>
-                    {selectedArticle.features.map((feature, index) => (
-                      <Typography component="li" variant="body1" key={index} gutterBottom>
-                        {feature}
-                      </Typography>
-                    ))}
-                  </ul>
-                  
-                  <Divider sx={{ my: 3 }} />
-                </>
-              )}
-              
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h6">
-                  Prezzo base
-                </Typography>
-                <Typography variant="h6" fontWeight="bold">
-                  {formatPrice(selectedArticle.price)}
-                </Typography>
-              </Box>
-              
-              <Typography variant="body1" paragraph>
-                Questo articolo fa parte della categoria {selectedArticle.category || 'Default'}.
-                Eventuali personalizzazioni o configurazioni aggiuntive possono essere applicate in fase di definizione dell'offerta.
-              </Typography>
-            </Box>
-            
-            <VaporToolbar
-              contentRight={[
-                <Button 
-                  variant="outlined" 
-                  color="secondary"
-                  onClick={handleCloseDrawer}
-                >
-                  Chiudi
-                </Button>,
-                <Button 
-                  variant="contained" 
-                  color="error"
-                  onClick={() => {
-                    handleRemoveProduct(selectedArticle.id);
-                    handleCloseDrawer();
-                  }}
-                >
-                  Rimuovi dall'offerta
-                </Button>
-              ]}
-              size="medium"
-              variant="regular"
-              withoutAppBar
-            />
-          </>
-        )}
-      </Drawer>
 
       {/* Snackbar per notifiche */}
       <Snackbar

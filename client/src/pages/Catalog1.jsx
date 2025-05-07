@@ -244,14 +244,29 @@ function CatalogPage() {
         (total, charge) => total + calculateChargeTotal(charge), 0
       );
       
-      // Prepara il prodotto da aggiungere al preventivo
+      // Prepara il prodotto da aggiungere al preventivo con tutti i dettagli
       const productToAdd = {
         id: data.product.id,
         name: data.product.name,
         price: totalPrice,
         quantity: 1,
-        // Puoi aggiungere altri campi utili qui, come la categoria
-        category: data.product.categoria
+        category: data.product.categoria,
+        description: data.product.description,
+        // Informazioni sul rate plan selezionato
+        ratePlan: {
+          id: data.selectedRatePlan.id,
+          name: data.selectedRatePlan.name,
+          description: data.selectedRatePlan.description || ''
+        },
+        // Informazioni sulle charges configurate dall'utente
+        charges: data.selectedRatePlan.productRatePlanCharges.map(charge => ({
+          id: charge.id,
+          name: charge.name,
+          type: charge.type,
+          model: charge.model,
+          value: parseFloat(charge.value || 0),
+          calculatedPrice: calculateChargeTotal(charge)
+        }))
       };
       
       // Utilizza la mutation per aggiungere il prodotto

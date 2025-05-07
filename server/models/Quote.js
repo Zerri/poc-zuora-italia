@@ -57,9 +57,25 @@ const QuoteSchema = new mongoose.Schema({
     id: { type: String },
     name: { type: String },
     price: { type: Number },
-    quantity: { type: Number, default: 1 }
+    quantity: { type: Number, default: 1 },
+    category: { type: String },
+    description: { type: String },
+    // Informazioni sul rate plan
+    ratePlan: {
+      id: { type: String },
+      name: { type: String },
+      description: { type: String }
+    },
+    // Informazioni sulle charges
+    charges: [{
+      id: { type: String },
+      name: { type: String },
+      type: { type: String },
+      model: { type: String },
+      value: { type: Number },
+      calculatedPrice: { type: Number }
+    }]
   }],
-
   // Note testuali aggiuntive
   notes: { type: String },
 

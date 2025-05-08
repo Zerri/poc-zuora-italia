@@ -1,0 +1,109 @@
+{
+  "_id": {
+    "$oid": "68091d63d5566f254d05a597"
+  },
+  "id": "8ad0912495aa414f0195ad77cd9a6a61",
+  "sku": "SKU-00000135",
+  "name": "Cassa in Cloud - Stand Tablet HW-MV-CN-STAND PoC",
+  "description": "Servizi professionali per avviamento SW in ore",
+  "category": "Base Products",
+  "effectiveStartDate": "2024-02-01",
+  "effectiveEndDate": "2030-02-01",
+  "productNumber": null,
+  "allowFeatureChanges": false,
+  "ProductCode__c": "CassaCloudTablet",
+  "ProductType__c": "Commerciale",
+  "productRatePlans": [
+    {
+      "id": "93360368c1e95aa41305ad77cdbd0028",
+      "status": "Active",
+      "name": "Servizi Professionali IAAS",
+      "description": "",
+      "effectiveStartDate": "2024-02-01",
+      "effectiveEndDate": "2030-02-01",
+      "Infrastructure__c": "IAAS",
+      "ProductRatePlanCode__c": null,
+      "ConfigurationType__c": "N/A",
+      "UdM__c": null,
+      "Duration__c": 0,
+      "DutationType__c": null,
+      "QuantityUdM__c": 0,
+      "ModalitaDiVendita__c": "Servizi Professionali",
+      "externalIdSourceSystem": "",
+      "externallyManagedPlanIds": [],
+      "productRatePlanCharges": [
+        {
+          "id": "93360368c1e95aa41305ad77cdde0029",
+          "name": "One-Shot",
+          "type": "OneTime",
+          "model": "FlatFee",
+          "uom": null,
+          "pricingSummary": [
+            "EUR81"
+          ],
+          "pricing": [
+            {
+              "currency": "EUR",
+              "price": 81,
+              "tiers": null,
+              "includedUnits": null,
+              "overagePrice": null,
+              "discountPercentage": null,
+              "discountAmount": null
+            }
+          ],
+          "defaultQuantity": null,
+          "applyDiscountTo": null,
+          "discountLevel": null,
+          "discountClass": null,
+          "applyToBillingPeriodPartially": false,
+          "productDiscountApplyDetails": [],
+          "endDateCondition": "One_Time",
+          "upToPeriods": null,
+          "upToPeriodsType": null,
+          "billingDay": null,
+          "listPriceBase": null,
+          "specificListPriceBase": null,
+          "billingTiming": null,
+          "ratingGroup": null,
+          "billingPeriod": null,
+          "billingPeriodAlignment": null,
+          "specificBillingPeriod": null,
+          "smoothingModel": null,
+          "numberOfPeriods": null,
+          "overageCalculationOption": null,
+          "overageUnusedUnitsCreditOption": null,
+          "unusedIncludedUnitPrice": null,
+          "usageRecordRatingOption": null,
+          "priceChangeOption": null,
+          "priceIncreasePercentage": null,
+          "useTenantDefaultForPriceChange": null,
+          "taxable": true,
+          "taxCode": "Italy",
+          "taxMode": "TaxExclusive",
+          "prorationOption": null,
+          "triggerEvent": "CustomerAcceptance",
+          "description": "",
+          "revRecCode": null,
+          "revRecTriggerCondition": null,
+          "revenueRecognitionRuleName": "Recognize upon invoicing",
+          "useDiscountSpecificAccountingCode": null,
+          "financeInformation": {
+            "deferredRevenueAccountingCode": "HW",
+            "deferredRevenueAccountingCodeType": "SalesRevenue",
+            "recognizedRevenueAccountingCode": "HW",
+            "recognizedRevenueAccountingCodeType": "SalesRevenue",
+            "accountsReceivableAccountingCode": "Accounts Receivable",
+            "accountsReceivableAccountingCodeType": "AccountsReceivable"
+          },
+          "deliverySchedule": null,
+          "reflectDiscountInNetAmount": false,
+          "isStackedDiscount": false,
+          "productRatePlanChargeNumber": null
+        }
+      ],
+      "productRatePlanNumber": null
+    }
+  ],
+  "productFeatures": []
+}

@@ -1,0 +1,109 @@
+{
+  "_id": {
+    "$oid": "68091d63d5566f254d05a5a0"
+  },
+  "id": "8ad086fa95a3ed780195a49f61bf1c5a",
+  "sku": "SKU-00000126",
+  "name": "Servizio di telefonia software-lP con sistema telefonico sw VOIspeed VOIS_CLOUD PoC",
+  "description": "",
+  "category": "Base Products",
+  "effectiveStartDate": "2023-01-01",
+  "effectiveEndDate": "2030-02-01",
+  "productNumber": null,
+  "allowFeatureChanges": false,
+  "ProductCode__c": "VOIspeed",
+  "ProductType__c": "Commerciale",
+  "productRatePlans": [
+    {
+      "id": "9336383e2ff95a3ed5a5a49f62060014",
+      "status": "Active",
+      "name": "Full Subscription SAAS",
+      "description": "Ricavo totale da data attivazione a 31 dic",
+      "effectiveStartDate": "2023-01-01",
+      "effectiveEndDate": "2030-02-01",
+      "Infrastructure__c": "SAAS",
+      "ProductRatePlanCode__c": null,
+      "ConfigurationType__c": "N/A",
+      "UdM__c": null,
+      "Duration__c": 1,
+      "DutationType__c": "Year",
+      "QuantityUdM__c": 0,
+      "ModalitaDiVendita__c": "Full Subscription",
+      "externalIdSourceSystem": "",
+      "externallyManagedPlanIds": [],
+      "productRatePlanCharges": [
+        {
+          "id": "9336383e2ff95a3ed5a5a49f621b0015",
+          "name": "Canone Mensile",
+          "type": "Recurring",
+          "model": "FlatFee",
+          "uom": null,
+          "pricingSummary": [
+            "EUR44"
+          ],
+          "pricing": [
+            {
+              "currency": "EUR",
+              "price": 44,
+              "tiers": null,
+              "includedUnits": null,
+              "overagePrice": null,
+              "discountPercentage": null,
+              "discountAmount": null
+            }
+          ],
+          "defaultQuantity": null,
+          "applyDiscountTo": null,
+          "discountLevel": null,
+          "discountClass": null,
+          "applyToBillingPeriodPartially": false,
+          "productDiscountApplyDetails": [],
+          "endDateCondition": "Subscription_End",
+          "upToPeriods": null,
+          "upToPeriodsType": null,
+          "billingDay": "TermStartDay",
+          "listPriceBase": "Per_Billing_Period",
+          "specificListPriceBase": null,
+          "billingTiming": "IN_ADVANCE",
+          "ratingGroup": null,
+          "billingPeriod": "Month",
+          "billingPeriodAlignment": "AlignToTermStart",
+          "specificBillingPeriod": null,
+          "smoothingModel": null,
+          "numberOfPeriods": null,
+          "overageCalculationOption": null,
+          "overageUnusedUnitsCreditOption": null,
+          "unusedIncludedUnitPrice": null,
+          "usageRecordRatingOption": null,
+          "priceChangeOption": null,
+          "priceIncreasePercentage": null,
+          "useTenantDefaultForPriceChange": true,
+          "taxable": true,
+          "taxCode": "Italy",
+          "taxMode": "TaxExclusive",
+          "prorationOption": "DefaultFromTenantSetting",
+          "triggerEvent": "CustomerAcceptance",
+          "description": "",
+          "revRecCode": null,
+          "revRecTriggerCondition": null,
+          "revenueRecognitionRuleName": "Recognize daily over time",
+          "useDiscountSpecificAccountingCode": null,
+          "financeInformation": {
+            "deferredRevenueAccountingCode": "Canoni",
+            "deferredRevenueAccountingCodeType": "SalesRevenue",
+            "recognizedRevenueAccountingCode": "Canoni",
+            "recognizedRevenueAccountingCodeType": "SalesRevenue",
+            "accountsReceivableAccountingCode": "Accounts Receivable",
+            "accountsReceivableAccountingCodeType": "AccountsReceivable"
+          },
+          "deliverySchedule": null,
+          "reflectDiscountInNetAmount": false,
+          "isStackedDiscount": false,
+          "productRatePlanChargeNumber": null
+        }
+      ],
+      "productRatePlanNumber": null
+    }
+  ],
+  "productFeatures": []
+}

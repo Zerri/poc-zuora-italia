@@ -1,0 +1,219 @@
+{
+  "_id": {
+    "$oid": "68091d63d5566f254d05a5a1"
+  },
+  "id": "8ad0912495a403b40195a474096813bc",
+  "sku": "SKU-00000125",
+  "name": "Servizio di Contabilità Advanced DG-CONT-ADV PoC",
+  "description": "",
+  "category": "Base Products",
+  "effectiveStartDate": "2023-01-01",
+  "effectiveEndDate": "2030-02-01",
+  "productNumber": null,
+  "allowFeatureChanges": false,
+  "ProductCode__c": "ServContabilitaAdvanced",
+  "ProductType__c": "Commerciale",
+  "productRatePlans": [
+    {
+      "id": "93360368c2195a403965a4740bfa00ad",
+      "status": "Active",
+      "name": "Full Subscription (online) SAAS",
+      "description": "Ricavo totale da data attivazione a 31 dic",
+      "effectiveStartDate": "2023-01-01",
+      "effectiveEndDate": "2030-02-01",
+      "Infrastructure__c": "SAAS",
+      "ProductRatePlanCode__c": null,
+      "ConfigurationType__c": "N/A",
+      "UdM__c": "Each",
+      "Duration__c": 1,
+      "DutationType__c": "Year",
+      "QuantityUdM__c": 0,
+      "ModalitaDiVendita__c": "Full subscription (online)",
+      "externalIdSourceSystem": "",
+      "externallyManagedPlanIds": [],
+      "productRatePlanCharges": [
+        {
+          "id": "93360368c2195a403965a4740c1600ae",
+          "name": "Canone",
+          "type": "Recurring",
+          "model": "Volume",
+          "uom": "Each",
+          "pricingSummary": [
+            "Up to 1000 Each: EUR1920 flat fee;  Up to 3000 Each: EUR5220 flat fee;  Up to 5000 Each: EUR8280 flat fee;  Up to 10000 Each: EUR15600 flat fee;  Up to 20000 Each: EUR30096 flat fee"
+          ],
+          "pricing": [
+            {
+              "currency": "EUR",
+              "price": null,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "startingUnit": 1,
+                  "endingUnit": 1000,
+                  "price": 1920,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 2,
+                  "startingUnit": 1001,
+                  "endingUnit": 3000,
+                  "price": 5220,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 3,
+                  "startingUnit": 3001,
+                  "endingUnit": 5000,
+                  "price": 8280,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 4,
+                  "startingUnit": 5001,
+                  "endingUnit": 10000,
+                  "price": 15600,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 5,
+                  "startingUnit": 10001,
+                  "endingUnit": 20000,
+                  "price": 30096,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                }
+              ],
+              "includedUnits": null,
+              "overagePrice": null,
+              "discountPercentage": null,
+              "discountAmount": null
+            }
+          ],
+          "defaultQuantity": 1,
+          "applyDiscountTo": null,
+          "discountLevel": null,
+          "discountClass": null,
+          "applyToBillingPeriodPartially": false,
+          "productDiscountApplyDetails": [],
+          "endDateCondition": "Subscription_End",
+          "upToPeriods": null,
+          "upToPeriodsType": null,
+          "billingDay": "TermEndDay",
+          "listPriceBase": "Per_Billing_Period",
+          "specificListPriceBase": null,
+          "billingTiming": "IN_ADVANCE",
+          "ratingGroup": null,
+          "billingPeriod": "Annual",
+          "billingPeriodAlignment": "AlignToTermEnd",
+          "specificBillingPeriod": null,
+          "smoothingModel": null,
+          "numberOfPeriods": null,
+          "overageCalculationOption": null,
+          "overageUnusedUnitsCreditOption": null,
+          "unusedIncludedUnitPrice": null,
+          "usageRecordRatingOption": null,
+          "priceChangeOption": null,
+          "priceIncreasePercentage": null,
+          "useTenantDefaultForPriceChange": true,
+          "taxable": true,
+          "taxCode": "Italy",
+          "taxMode": "TaxExclusive",
+          "prorationOption": "DefaultFromTenantSetting",
+          "triggerEvent": "ServiceActivation",
+          "description": "",
+          "revRecCode": null,
+          "revRecTriggerCondition": null,
+          "revenueRecognitionRuleName": "Recognize daily over time",
+          "useDiscountSpecificAccountingCode": null,
+          "financeInformation": {
+            "deferredRevenueAccountingCode": "Canoni",
+            "deferredRevenueAccountingCodeType": "SalesRevenue",
+            "recognizedRevenueAccountingCode": "Canoni",
+            "recognizedRevenueAccountingCodeType": "SalesRevenue",
+            "accountsReceivableAccountingCode": "Accounts Receivable",
+            "accountsReceivableAccountingCodeType": "AccountsReceivable"
+          },
+          "deliverySchedule": null,
+          "reflectDiscountInNetAmount": false,
+          "isStackedDiscount": false,
+          "productRatePlanChargeNumber": null
+        },
+        {
+          "id": "93360368c8495a403965a47a61d50001",
+          "name": "Reg aggiuntive",
+          "type": "Usage",
+          "model": "PerUnit",
+          "uom": "Each",
+          "pricingSummary": [
+            "EUR1.73/Each"
+          ],
+          "pricing": [
+            {
+              "currency": "EUR",
+              "price": 1.73,
+              "tiers": null,
+              "includedUnits": null,
+              "overagePrice": null,
+              "discountPercentage": null,
+              "discountAmount": null
+            }
+          ],
+          "defaultQuantity": 0,
+          "applyDiscountTo": null,
+          "discountLevel": null,
+          "discountClass": null,
+          "applyToBillingPeriodPartially": false,
+          "productDiscountApplyDetails": [],
+          "endDateCondition": "Subscription_End",
+          "upToPeriods": null,
+          "upToPeriodsType": null,
+          "billingDay": "SubscriptionStartDay",
+          "listPriceBase": null,
+          "specificListPriceBase": null,
+          "billingTiming": null,
+          "ratingGroup": "ByBillingPeriod",
+          "billingPeriod": "Annual",
+          "billingPeriodAlignment": "AlignToTermStart",
+          "specificBillingPeriod": null,
+          "smoothingModel": null,
+          "numberOfPeriods": null,
+          "overageCalculationOption": null,
+          "overageUnusedUnitsCreditOption": null,
+          "unusedIncludedUnitPrice": null,
+          "usageRecordRatingOption": "EndOfBillingPeriod",
+          "priceChangeOption": null,
+          "priceIncreasePercentage": null,
+          "useTenantDefaultForPriceChange": true,
+          "taxable": true,
+          "taxCode": "Italy",
+          "taxMode": "TaxExclusive",
+          "prorationOption": null,
+          "triggerEvent": "ServiceActivation",
+          "description": "",
+          "revRecCode": null,
+          "revRecTriggerCondition": null,
+          "revenueRecognitionRuleName": "Recognize daily over time",
+          "useDiscountSpecificAccountingCode": null,
+          "financeInformation": {
+            "deferredRevenueAccountingCode": "Canoni",
+            "deferredRevenueAccountingCodeType": "SalesRevenue",
+            "recognizedRevenueAccountingCode": "Canoni",
+            "recognizedRevenueAccountingCodeType": "SalesRevenue",
+            "accountsReceivableAccountingCode": "Accounts Receivable",
+            "accountsReceivableAccountingCodeType": "AccountsReceivable"
+          },
+          "deliverySchedule": null,
+          "reflectDiscountInNetAmount": false,
+          "isStackedDiscount": false,
+          "productRatePlanChargeNumber": "PRPC-00000165"
+        }
+      ],
+      "productRatePlanNumber": null
+    }
+  ],
+  "productFeatures": []
+}

@@ -1,0 +1,322 @@
+{
+  "_id": {
+    "$oid": "68091d63d5566f254d05a5ae"
+  },
+  "id": "8ad0869c958d2d3b019590582ae4672f",
+  "sku": "SKU-00000113",
+  "name": "Discount Poc",
+  "description": "",
+  "category": "Base Products",
+  "effectiveStartDate": "2022-02-01",
+  "effectiveEndDate": "2030-02-01",
+  "productNumber": "PC-00000057",
+  "allowFeatureChanges": false,
+  "ProductCode__c": "Discount",
+  "ProductType__c": "Commerciale",
+  "productRatePlans": [
+    {
+      "id": "9336166289395cd789e5dbd17d6d00c4",
+      "status": "Active",
+      "name": "Promo Code 1Y Annual Discount",
+      "description": "",
+      "effectiveStartDate": "2022-02-01",
+      "effectiveEndDate": "2030-02-01",
+      "Infrastructure__c": null,
+      "ProductRatePlanCode__c": null,
+      "ConfigurationType__c": "N/A",
+      "UdM__c": null,
+      "Duration__c": 0,
+      "DutationType__c": null,
+      "QuantityUdM__c": 0,
+      "ModalitaDiVendita__c": "ALL",
+      "externalIdSourceSystem": "",
+      "externallyManagedPlanIds": [],
+      "productRatePlanCharges": [
+        {
+          "id": "9336166289395cd789e5dbd17d8500c5",
+          "name": "Evergreen Promotional Discount Percentage",
+          "type": "Recurring",
+          "model": "DiscountPercentage",
+          "uom": null,
+          "pricingSummary": [
+            "0%  discount"
+          ],
+          "pricing": [
+            {
+              "currency": "EUR",
+              "price": null,
+              "tiers": null,
+              "includedUnits": null,
+              "overagePrice": null,
+              "discountPercentage": 0,
+              "discountAmount": null
+            }
+          ],
+          "defaultQuantity": null,
+          "applyDiscountTo": "ONETIMERECURRINGUSAGE",
+          "discountLevel": "rateplan",
+          "discountClass": null,
+          "applyToBillingPeriodPartially": false,
+          "productDiscountApplyDetails": [],
+          "endDateCondition": "Fixed_Period",
+          "upToPeriods": 1,
+          "upToPeriodsType": "Billing_Periods",
+          "billingDay": "TermEndDay",
+          "listPriceBase": null,
+          "specificListPriceBase": null,
+          "billingTiming": null,
+          "ratingGroup": null,
+          "billingPeriod": "Annual",
+          "billingPeriodAlignment": "AlignToTermEnd",
+          "specificBillingPeriod": null,
+          "smoothingModel": null,
+          "numberOfPeriods": null,
+          "overageCalculationOption": null,
+          "overageUnusedUnitsCreditOption": null,
+          "unusedIncludedUnitPrice": null,
+          "usageRecordRatingOption": null,
+          "priceChangeOption": "NoChange",
+          "priceIncreasePercentage": null,
+          "useTenantDefaultForPriceChange": false,
+          "taxable": false,
+          "taxCode": null,
+          "taxMode": null,
+          "prorationOption": "DefaultFromTenantSetting",
+          "triggerEvent": "ServiceActivation",
+          "description": "",
+          "revRecCode": null,
+          "revRecTriggerCondition": null,
+          "revenueRecognitionRuleName": null,
+          "useDiscountSpecificAccountingCode": false,
+          "financeInformation": {
+            "deferredRevenueAccountingCode": null,
+            "deferredRevenueAccountingCodeType": null,
+            "recognizedRevenueAccountingCode": null,
+            "recognizedRevenueAccountingCodeType": null,
+            "accountsReceivableAccountingCode": null,
+            "accountsReceivableAccountingCodeType": null
+          },
+          "deliverySchedule": null,
+          "reflectDiscountInNetAmount": false,
+          "isStackedDiscount": false,
+          "productRatePlanChargeNumber": null
+        }
+      ],
+      "productRatePlanNumber": null
+    },
+    {
+      "id": "9336383e29b95cd656b5dbcf5a4b010a",
+      "status": "Active",
+      "name": "Promo Code Evergreen Annual Discount",
+      "description": "",
+      "effectiveStartDate": "2022-02-01",
+      "effectiveEndDate": "2030-02-01",
+      "Infrastructure__c": null,
+      "ProductRatePlanCode__c": null,
+      "ConfigurationType__c": "N/A",
+      "UdM__c": null,
+      "Duration__c": 0,
+      "DutationType__c": null,
+      "QuantityUdM__c": 0,
+      "ModalitaDiVendita__c": "ALL",
+      "externalIdSourceSystem": "",
+      "externallyManagedPlanIds": [],
+      "productRatePlanCharges": [
+        {
+          "id": "9336166288a95cd789e5dbd10e8900df",
+          "name": "Evergreen Promotional Discount Percentage",
+          "type": "Recurring",
+          "model": "DiscountPercentage",
+          "uom": null,
+          "pricingSummary": [
+            "0%  discount"
+          ],
+          "pricing": [
+            {
+              "currency": "EUR",
+              "price": null,
+              "tiers": null,
+              "includedUnits": null,
+              "overagePrice": null,
+              "discountPercentage": 0,
+              "discountAmount": null
+            }
+          ],
+          "defaultQuantity": null,
+          "applyDiscountTo": "ONETIMERECURRINGUSAGE",
+          "discountLevel": "rateplan",
+          "discountClass": null,
+          "applyToBillingPeriodPartially": false,
+          "productDiscountApplyDetails": [],
+          "endDateCondition": "Subscription_End",
+          "upToPeriods": null,
+          "upToPeriodsType": null,
+          "billingDay": "TermEndDay",
+          "listPriceBase": null,
+          "specificListPriceBase": null,
+          "billingTiming": null,
+          "ratingGroup": null,
+          "billingPeriod": "Annual",
+          "billingPeriodAlignment": "AlignToTermEnd",
+          "specificBillingPeriod": null,
+          "smoothingModel": null,
+          "numberOfPeriods": null,
+          "overageCalculationOption": null,
+          "overageUnusedUnitsCreditOption": null,
+          "unusedIncludedUnitPrice": null,
+          "usageRecordRatingOption": null,
+          "priceChangeOption": "NoChange",
+          "priceIncreasePercentage": null,
+          "useTenantDefaultForPriceChange": false,
+          "taxable": false,
+          "taxCode": null,
+          "taxMode": null,
+          "prorationOption": "DefaultFromTenantSetting",
+          "triggerEvent": "ServiceActivation",
+          "description": "",
+          "revRecCode": null,
+          "revRecTriggerCondition": null,
+          "revenueRecognitionRuleName": null,
+          "useDiscountSpecificAccountingCode": false,
+          "financeInformation": {
+            "deferredRevenueAccountingCode": null,
+            "deferredRevenueAccountingCodeType": null,
+            "recognizedRevenueAccountingCode": null,
+            "recognizedRevenueAccountingCodeType": null,
+            "accountsReceivableAccountingCode": null,
+            "accountsReceivableAccountingCodeType": null
+          },
+          "deliverySchedule": null,
+          "reflectDiscountInNetAmount": false,
+          "isStackedDiscount": false,
+          "productRatePlanChargeNumber": "PRPC-00000166"
+        }
+      ],
+      "productRatePlanNumber": "PRP-00000109"
+    },
+    {
+      "id": "9336166280e958d569159058d0c2004c",
+      "status": "Active",
+      "name": "CRM discount for Migration to SAAS",
+      "description": "",
+      "effectiveStartDate": "2022-02-01",
+      "effectiveEndDate": "2030-02-01",
+      "Infrastructure__c": "ALL",
+      "ProductRatePlanCode__c": null,
+      "ConfigurationType__c": "N/A",
+      "UdM__c": null,
+      "Duration__c": 0,
+      "DutationType__c": null,
+      "QuantityUdM__c": 0,
+      "ModalitaDiVendita__c": "ALL",
+      "externalIdSourceSystem": "",
+      "externallyManagedPlanIds": [],
+      "productRatePlanCharges": [
+        {
+          "id": "93361662829958d56915905b9a1b0075",
+          "name": "Promotional Discount Percentage",
+          "type": "Recurring",
+          "model": "DiscountPercentage",
+          "uom": null,
+          "pricingSummary": [
+            "0%  discount"
+          ],
+          "pricing": [
+            {
+              "currency": "EUR",
+              "price": null,
+              "tiers": null,
+              "includedUnits": null,
+              "overagePrice": null,
+              "discountPercentage": 0,
+              "discountAmount": null
+            }
+          ],
+          "defaultQuantity": null,
+          "applyDiscountTo": "ONETIMERECURRINGUSAGE",
+          "discountLevel": "subscription",
+          "discountClass": "Promotional Discounts",
+          "applyToBillingPeriodPartially": false,
+          "productDiscountApplyDetails": [
+            {
+              "appliedProductRatePlanId": "9336166289b958d5691590064bc60025",
+              "appliedProductRatePlanChargeId": "9336166280e958d56915900eaa920047"
+            },
+            {
+              "appliedProductRatePlanId": "93360368c46958d568658eb3dd6e0019",
+              "appliedProductRatePlanChargeId": "93360368c46958d568658eb3dd9b001a"
+            },
+            {
+              "appliedProductRatePlanId": "9336383e229958d2d0f58fe48fc8007e",
+              "appliedProductRatePlanChargeId": "9336383e229958d2d0f58fe48fdc007f"
+            },
+            {
+              "appliedProductRatePlanId": "9336383e2cb958d2d0f59001888d0070",
+              "appliedProductRatePlanChargeId": "9336383e2cb958d2d0f59001889e0071"
+            },
+            {
+              "appliedProductRatePlanId": "9336bebf6c3958d2d1958fee16a3000b",
+              "appliedProductRatePlanChargeId": "9336bebf6c3958d2d1958fee16b6000c"
+            },
+            {
+              "appliedProductRatePlanId": "9336bebf61e958d2d1958fe8daeb0076",
+              "appliedProductRatePlanChargeId": "9336bebf61e958d2d1958fe8dafd0077"
+            },
+            {
+              "appliedProductRatePlanId": "9336166289b958d5691590064bc60025",
+              "appliedProductRatePlanChargeId": "9336166289b958d5691590064bee0026"
+            },
+            {
+              "appliedProductRatePlanId": "9336bebf61e958d2d1958ff789a400c4",
+              "appliedProductRatePlanChargeId": "9336bebf61e958d2d1958ff789ba00c5"
+            }
+          ],
+          "endDateCondition": "Subscription_End",
+          "upToPeriods": null,
+          "upToPeriodsType": null,
+          "billingDay": "TermEndDay",
+          "listPriceBase": null,
+          "specificListPriceBase": null,
+          "billingTiming": null,
+          "ratingGroup": null,
+          "billingPeriod": "Annual",
+          "billingPeriodAlignment": "AlignToTermEnd",
+          "specificBillingPeriod": null,
+          "smoothingModel": null,
+          "numberOfPeriods": null,
+          "overageCalculationOption": null,
+          "overageUnusedUnitsCreditOption": null,
+          "unusedIncludedUnitPrice": null,
+          "usageRecordRatingOption": null,
+          "priceChangeOption": "NoChange",
+          "priceIncreasePercentage": null,
+          "useTenantDefaultForPriceChange": false,
+          "taxable": false,
+          "taxCode": null,
+          "taxMode": null,
+          "prorationOption": "DefaultFromTenantSetting",
+          "triggerEvent": "ServiceActivation",
+          "description": "",
+          "revRecCode": null,
+          "revRecTriggerCondition": null,
+          "revenueRecognitionRuleName": null,
+          "useDiscountSpecificAccountingCode": false,
+          "financeInformation": {
+            "deferredRevenueAccountingCode": null,
+            "deferredRevenueAccountingCodeType": null,
+            "recognizedRevenueAccountingCode": null,
+            "recognizedRevenueAccountingCodeType": null,
+            "accountsReceivableAccountingCode": null,
+            "accountsReceivableAccountingCodeType": null
+          },
+          "deliverySchedule": null,
+          "reflectDiscountInNetAmount": false,
+          "isStackedDiscount": false,
+          "productRatePlanChargeNumber": "PRPC-00000164"
+        }
+      ],
+      "productRatePlanNumber": "PRP-00000108"
+    }
+  ],
+  "productFeatures": []
+}

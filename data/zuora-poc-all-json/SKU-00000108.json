@@ -1,0 +1,661 @@
+{
+  "_id": {
+    "$oid": "68091d63d5566f254d05a5b2"
+  },
+  "id": "8ad0869c958d2d3b01958fee165c5075",
+  "sku": "SKU-00000108",
+  "name": "Kit Corrispettivi LS-85535 PoC",
+  "description": "",
+  "category": "Base Products",
+  "effectiveStartDate": "2022-02-01",
+  "effectiveEndDate": "2030-02-01",
+  "productNumber": null,
+  "allowFeatureChanges": false,
+  "ProductCode__c": "kitCorrispettivi",
+  "ProductType__c": "Commerciale",
+  "productRatePlans": [
+    {
+      "id": "9336383e2cb958d2d0f58ff2d3d70052",
+      "status": "Active",
+      "name": "LTA On Premise",
+      "description": "Rateo da data attivazione a 31 dic",
+      "effectiveStartDate": "2022-02-01",
+      "effectiveEndDate": "2030-02-01",
+      "Infrastructure__c": "On Premise",
+      "ProductRatePlanCode__c": null,
+      "ConfigurationType__c": "N/A",
+      "UdM__c": "Pdl",
+      "Duration__c": 1,
+      "DutationType__c": "Year",
+      "QuantityUdM__c": 0,
+      "ModalitaDiVendita__c": "LTA",
+      "externalIdSourceSystem": "",
+      "externallyManagedPlanIds": [],
+      "productRatePlanCharges": [
+        {
+          "id": "9336383e2cb958d2d0f58ff2d3ea0053",
+          "name": "Canone x PDL",
+          "type": "Recurring",
+          "model": "Volume",
+          "uom": "Pdl",
+          "pricingSummary": [
+            "Up to 1 Pdl: USD225 flat fee;  Up to 2 Pdl: USD285 flat fee;  Up to 3 Pdl: USD320 flat fee;  Up to 4 Pdl: USD360 flat fee;  Up to 5 Pdl: USD385 flat fee;  Up to 6 Pdl: USD263.75 flat fee;  Up to 7 Pdl: USD430 flat fee",
+            "Up to 1 Pdl: EUR225 flat fee;  Up to 2 Pdl: EUR285 flat fee;  Up to 3 Pdl: EUR320 flat fee;  Up to 4 Pdl: EUR360 flat fee;  Up to 5 Pdl: EUR385 flat fee;  Up to 6 Pdl: EUR263.75 flat fee;  Up to 7 Pdl: EUR430 flat fee"
+          ],
+          "pricing": [
+            {
+              "currency": "USD",
+              "price": null,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "startingUnit": 1,
+                  "endingUnit": 1,
+                  "price": 225,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 2,
+                  "startingUnit": 2,
+                  "endingUnit": 2,
+                  "price": 285,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 3,
+                  "startingUnit": 3,
+                  "endingUnit": 3,
+                  "price": 320,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 4,
+                  "startingUnit": 4,
+                  "endingUnit": 4,
+                  "price": 360,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 5,
+                  "startingUnit": 5,
+                  "endingUnit": 5,
+                  "price": 385,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 6,
+                  "startingUnit": 6,
+                  "endingUnit": 6,
+                  "price": 263.75,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 7,
+                  "startingUnit": 7,
+                  "endingUnit": 7,
+                  "price": 430,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                }
+              ],
+              "includedUnits": null,
+              "overagePrice": null,
+              "discountPercentage": null,
+              "discountAmount": null
+            },
+            {
+              "currency": "EUR",
+              "price": null,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "startingUnit": 1,
+                  "endingUnit": 1,
+                  "price": 225,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 2,
+                  "startingUnit": 2,
+                  "endingUnit": 2,
+                  "price": 285,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 3,
+                  "startingUnit": 3,
+                  "endingUnit": 3,
+                  "price": 320,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 4,
+                  "startingUnit": 4,
+                  "endingUnit": 4,
+                  "price": 360,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 5,
+                  "startingUnit": 5,
+                  "endingUnit": 5,
+                  "price": 385,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 6,
+                  "startingUnit": 6,
+                  "endingUnit": 6,
+                  "price": 263.75,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 7,
+                  "startingUnit": 7,
+                  "endingUnit": 7,
+                  "price": 430,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                }
+              ],
+              "includedUnits": null,
+              "overagePrice": null,
+              "discountPercentage": null,
+              "discountAmount": null
+            }
+          ],
+          "defaultQuantity": 1,
+          "applyDiscountTo": null,
+          "discountLevel": null,
+          "discountClass": null,
+          "applyToBillingPeriodPartially": false,
+          "productDiscountApplyDetails": [],
+          "endDateCondition": "Subscription_End",
+          "upToPeriods": null,
+          "upToPeriodsType": null,
+          "billingDay": "TermEndDay",
+          "listPriceBase": "Per_Billing_Period",
+          "specificListPriceBase": null,
+          "billingTiming": "IN_ADVANCE",
+          "ratingGroup": null,
+          "billingPeriod": "Annual",
+          "billingPeriodAlignment": "AlignToTermEnd",
+          "specificBillingPeriod": null,
+          "smoothingModel": null,
+          "numberOfPeriods": null,
+          "overageCalculationOption": null,
+          "overageUnusedUnitsCreditOption": null,
+          "unusedIncludedUnitPrice": null,
+          "usageRecordRatingOption": null,
+          "priceChangeOption": null,
+          "priceIncreasePercentage": null,
+          "useTenantDefaultForPriceChange": true,
+          "taxable": true,
+          "taxCode": "Italy",
+          "taxMode": "TaxExclusive",
+          "prorationOption": "DefaultFromTenantSetting",
+          "triggerEvent": "ServiceActivation",
+          "description": "",
+          "revRecCode": null,
+          "revRecTriggerCondition": null,
+          "revenueRecognitionRuleName": "Recognize daily over time",
+          "useDiscountSpecificAccountingCode": null,
+          "financeInformation": {
+            "deferredRevenueAccountingCode": "Canoni",
+            "deferredRevenueAccountingCodeType": "SalesRevenue",
+            "recognizedRevenueAccountingCode": "Canoni",
+            "recognizedRevenueAccountingCodeType": "SalesRevenue",
+            "accountsReceivableAccountingCode": "Accounts Receivable",
+            "accountsReceivableAccountingCodeType": "AccountsReceivable"
+          },
+          "deliverySchedule": null,
+          "reflectDiscountInNetAmount": false,
+          "isStackedDiscount": false,
+          "productRatePlanChargeNumber": null
+        }
+      ],
+      "productRatePlanNumber": null
+    },
+    {
+      "id": "9336bebf6c3958d2d1958fee16a3000b",
+      "status": "Active",
+      "name": "LTA Abbonamento SAAS",
+      "description": "Rateo da data attivazione a 31 dic",
+      "effectiveStartDate": "2022-02-01",
+      "effectiveEndDate": "2030-02-01",
+      "Infrastructure__c": "SAAS",
+      "ProductRatePlanCode__c": null,
+      "ConfigurationType__c": "N/A",
+      "UdM__c": "Pdl",
+      "Duration__c": 1,
+      "DutationType__c": "Year",
+      "QuantityUdM__c": 0,
+      "ModalitaDiVendita__c": "LTA Abbonamento",
+      "externalIdSourceSystem": "",
+      "externallyManagedPlanIds": [],
+      "productRatePlanCharges": [
+        {
+          "id": "9336bebf6c3958d2d1958fee16b6000c",
+          "name": "Canone x PDL",
+          "type": "Recurring",
+          "model": "Volume",
+          "uom": "Pdl",
+          "pricingSummary": [
+            "Up to 1 Pdl: USD225 flat fee;  Up to 2 Pdl: USD285 flat fee;  Up to 3 Pdl: USD320 flat fee;  Up to 4 Pdl: USD360 flat fee;  Up to 5 Pdl: USD385 flat fee;  Up to 6 Pdl: USD410 flat fee;  Up to 7 Pdl: USD465 flat fee",
+            "Up to 1 Pdl: EUR225 flat fee;  Up to 2 Pdl: EUR285 flat fee;  Up to 3 Pdl: EUR320 flat fee;  Up to 4 Pdl: EUR360 flat fee;  Up to 5 Pdl: EUR385 flat fee;  Up to 6 Pdl: EUR410 flat fee;  Up to 7 Pdl: EUR465 flat fee"
+          ],
+          "pricing": [
+            {
+              "currency": "USD",
+              "price": null,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "startingUnit": 1,
+                  "endingUnit": 1,
+                  "price": 225,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 2,
+                  "startingUnit": 2,
+                  "endingUnit": 2,
+                  "price": 285,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 3,
+                  "startingUnit": 3,
+                  "endingUnit": 3,
+                  "price": 320,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 4,
+                  "startingUnit": 4,
+                  "endingUnit": 4,
+                  "price": 360,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 5,
+                  "startingUnit": 5,
+                  "endingUnit": 5,
+                  "price": 385,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 6,
+                  "startingUnit": 6,
+                  "endingUnit": 6,
+                  "price": 410,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 7,
+                  "startingUnit": 7,
+                  "endingUnit": 7,
+                  "price": 465,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                }
+              ],
+              "includedUnits": null,
+              "overagePrice": null,
+              "discountPercentage": null,
+              "discountAmount": null
+            },
+            {
+              "currency": "EUR",
+              "price": null,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "startingUnit": 1,
+                  "endingUnit": 1,
+                  "price": 225,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 2,
+                  "startingUnit": 2,
+                  "endingUnit": 2,
+                  "price": 285,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 3,
+                  "startingUnit": 3,
+                  "endingUnit": 3,
+                  "price": 320,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 4,
+                  "startingUnit": 4,
+                  "endingUnit": 4,
+                  "price": 360,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 5,
+                  "startingUnit": 5,
+                  "endingUnit": 5,
+                  "price": 385,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 6,
+                  "startingUnit": 6,
+                  "endingUnit": 6,
+                  "price": 410,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 7,
+                  "startingUnit": 7,
+                  "endingUnit": 7,
+                  "price": 465,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                }
+              ],
+              "includedUnits": null,
+              "overagePrice": null,
+              "discountPercentage": null,
+              "discountAmount": null
+            }
+          ],
+          "defaultQuantity": 1,
+          "applyDiscountTo": null,
+          "discountLevel": null,
+          "discountClass": null,
+          "applyToBillingPeriodPartially": false,
+          "productDiscountApplyDetails": [],
+          "endDateCondition": "Subscription_End",
+          "upToPeriods": null,
+          "upToPeriodsType": null,
+          "billingDay": "TermEndDay",
+          "listPriceBase": "Per_Billing_Period",
+          "specificListPriceBase": null,
+          "billingTiming": "IN_ADVANCE",
+          "ratingGroup": null,
+          "billingPeriod": "Annual",
+          "billingPeriodAlignment": "AlignToTermEnd",
+          "specificBillingPeriod": null,
+          "smoothingModel": null,
+          "numberOfPeriods": null,
+          "overageCalculationOption": null,
+          "overageUnusedUnitsCreditOption": null,
+          "unusedIncludedUnitPrice": null,
+          "usageRecordRatingOption": null,
+          "priceChangeOption": null,
+          "priceIncreasePercentage": null,
+          "useTenantDefaultForPriceChange": true,
+          "taxable": true,
+          "taxCode": "Italy",
+          "taxMode": "TaxExclusive",
+          "prorationOption": "DefaultFromTenantSetting",
+          "triggerEvent": "ServiceActivation",
+          "description": "",
+          "revRecCode": null,
+          "revRecTriggerCondition": null,
+          "revenueRecognitionRuleName": "Recognize daily over time",
+          "useDiscountSpecificAccountingCode": null,
+          "financeInformation": {
+            "deferredRevenueAccountingCode": "Canoni",
+            "deferredRevenueAccountingCodeType": "SalesRevenue",
+            "recognizedRevenueAccountingCode": "Canoni",
+            "recognizedRevenueAccountingCodeType": "SalesRevenue",
+            "accountsReceivableAccountingCode": "Accounts Receivable",
+            "accountsReceivableAccountingCodeType": "AccountsReceivable"
+          },
+          "deliverySchedule": null,
+          "reflectDiscountInNetAmount": false,
+          "isStackedDiscount": false,
+          "productRatePlanChargeNumber": null
+        }
+      ],
+      "productRatePlanNumber": null
+    },
+    {
+      "id": "93361662829958d569158ff389e5004d",
+      "status": "Active",
+      "name": "LTA Abbonamento IAAS",
+      "description": "Rateo da data attivazione a 31 dic",
+      "effectiveStartDate": "2022-02-01",
+      "effectiveEndDate": "2030-02-01",
+      "Infrastructure__c": "IAAS",
+      "ProductRatePlanCode__c": null,
+      "ConfigurationType__c": "N/A",
+      "UdM__c": "Pdl",
+      "Duration__c": 1,
+      "DutationType__c": "Year",
+      "QuantityUdM__c": 0,
+      "ModalitaDiVendita__c": "LTA Abbonamento",
+      "externalIdSourceSystem": "",
+      "externallyManagedPlanIds": [],
+      "productRatePlanCharges": [
+        {
+          "id": "93361662829958d569158ff38a37004e",
+          "name": "Canone x PDL",
+          "type": "Recurring",
+          "model": "Volume",
+          "uom": "Pdl",
+          "pricingSummary": [
+            "Up to 1 Pdl: USD225 flat fee;  Up to 2 Pdl: USD285 flat fee;  Up to 3 Pdl: USD320 flat fee;  Up to 4 Pdl: USD360 flat fee;  Up to 5 Pdl: USD385 flat fee;  Up to 6 Pdl: USD410 flat fee;  Up to 7 Pdl: USD430 flat fee",
+            "Up to 1 Pdl: EUR225 flat fee;  Up to 2 Pdl: EUR285 flat fee;  Up to 3 Pdl: EUR320 flat fee;  Up to 4 Pdl: EUR360 flat fee;  Up to 5 Pdl: EUR385 flat fee;  Up to 6 Pdl: EUR410 flat fee;  Up to 7 Pdl: EUR430 flat fee"
+          ],
+          "pricing": [
+            {
+              "currency": "USD",
+              "price": null,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "startingUnit": 1,
+                  "endingUnit": 1,
+                  "price": 225,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 2,
+                  "startingUnit": 2,
+                  "endingUnit": 2,
+                  "price": 285,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 3,
+                  "startingUnit": 3,
+                  "endingUnit": 3,
+                  "price": 320,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 4,
+                  "startingUnit": 4,
+                  "endingUnit": 4,
+                  "price": 360,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 5,
+                  "startingUnit": 5,
+                  "endingUnit": 5,
+                  "price": 385,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 6,
+                  "startingUnit": 6,
+                  "endingUnit": 6,
+                  "price": 410,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 7,
+                  "startingUnit": 7,
+                  "endingUnit": 7,
+                  "price": 430,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                }
+              ],
+              "includedUnits": null,
+              "overagePrice": null,
+              "discountPercentage": null,
+              "discountAmount": null
+            },
+            {
+              "currency": "EUR",
+              "price": null,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "startingUnit": 1,
+                  "endingUnit": 1,
+                  "price": 225,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 2,
+                  "startingUnit": 2,
+                  "endingUnit": 2,
+                  "price": 285,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 3,
+                  "startingUnit": 3,
+                  "endingUnit": 3,
+                  "price": 320,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 4,
+                  "startingUnit": 4,
+                  "endingUnit": 4,
+                  "price": 360,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 5,
+                  "startingUnit": 5,
+                  "endingUnit": 5,
+                  "price": 385,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 6,
+                  "startingUnit": 6,
+                  "endingUnit": 6,
+                  "price": 410,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                },
+                {
+                  "tier": 7,
+                  "startingUnit": 7,
+                  "endingUnit": 7,
+                  "price": 430,
+                  "priceFormat": "FlatFee",
+                  "originalListPrice": null
+                }
+              ],
+              "includedUnits": null,
+              "overagePrice": null,
+              "discountPercentage": null,
+              "discountAmount": null
+            }
+          ],
+          "defaultQuantity": 1,
+          "applyDiscountTo": null,
+          "discountLevel": null,
+          "discountClass": null,
+          "applyToBillingPeriodPartially": false,
+          "productDiscountApplyDetails": [],
+          "endDateCondition": "Subscription_End",
+          "upToPeriods": null,
+          "upToPeriodsType": null,
+          "billingDay": "TermEndDay",
+          "listPriceBase": "Per_Billing_Period",
+          "specificListPriceBase": null,
+          "billingTiming": "IN_ADVANCE",
+          "ratingGroup": null,
+          "billingPeriod": "Annual",
+          "billingPeriodAlignment": "AlignToTermEnd",
+          "specificBillingPeriod": null,
+          "smoothingModel": null,
+          "numberOfPeriods": null,
+          "overageCalculationOption": null,
+          "overageUnusedUnitsCreditOption": null,
+          "unusedIncludedUnitPrice": null,
+          "usageRecordRatingOption": null,
+          "priceChangeOption": null,
+          "priceIncreasePercentage": null,
+          "useTenantDefaultForPriceChange": true,
+          "taxable": true,
+          "taxCode": "Italy",
+          "taxMode": "TaxExclusive",
+          "prorationOption": "DefaultFromTenantSetting",
+          "triggerEvent": "ServiceActivation",
+          "description": "",
+          "revRecCode": null,
+          "revRecTriggerCondition": null,
+          "revenueRecognitionRuleName": "Recognize daily over time",
+          "useDiscountSpecificAccountingCode": null,
+          "financeInformation": {
+            "deferredRevenueAccountingCode": "Canoni",
+            "deferredRevenueAccountingCodeType": "SalesRevenue",
+            "recognizedRevenueAccountingCode": "Canoni",
+            "recognizedRevenueAccountingCodeType": "SalesRevenue",
+            "accountsReceivableAccountingCode": "Accounts Receivable",
+            "accountsReceivableAccountingCodeType": "AccountsReceivable"
+          },
+          "deliverySchedule": null,
+          "reflectDiscountInNetAmount": false,
+          "isStackedDiscount": false,
+          "productRatePlanChargeNumber": null
+        }
+      ],
+      "productRatePlanNumber": null
+    }
+  ],
+  "productFeatures": []
+}

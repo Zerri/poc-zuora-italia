@@ -1,0 +1,109 @@
+{
+  "_id": {
+    "$oid": "68091d63d5566f254d05a5b8"
+  },
+  "id": "8ad0869c953bdb0701955bcbf7c106f4",
+  "sku": "SKU-00000092",
+  "name": "Fatturazione Posticipata /DSW3 PoC",
+  "description": "Costo One Shot per fatturazione posticipata. \nAttenzione: fare override in fase di ordine per tutte le charge impostando una fatturazione posticipata",
+  "category": "Base Products",
+  "effectiveStartDate": "2024-02-01",
+  "effectiveEndDate": "2030-02-01",
+  "productNumber": "PC-00000055",
+  "allowFeatureChanges": false,
+  "ProductCode__c": "FatturazionePosticipata",
+  "ProductType__c": "Commerciale",
+  "productRatePlans": [
+    {
+      "id": "9336bebf6c3953bdae955bccd8800106",
+      "status": "Active",
+      "name": "All",
+      "description": "",
+      "effectiveStartDate": "2024-02-01",
+      "effectiveEndDate": "2030-02-01",
+      "Infrastructure__c": "ALL",
+      "ProductRatePlanCode__c": null,
+      "ConfigurationType__c": "N/A",
+      "UdM__c": null,
+      "Duration__c": 0,
+      "DutationType__c": null,
+      "QuantityUdM__c": 0,
+      "ModalitaDiVendita__c": "ALL",
+      "externalIdSourceSystem": "",
+      "externallyManagedPlanIds": [],
+      "productRatePlanCharges": [
+        {
+          "id": "93360368cb0953bef9555bce5f5801fc",
+          "name": "One-Shot per fatturazione posticipata",
+          "type": "OneTime",
+          "model": "FlatFee",
+          "uom": null,
+          "pricingSummary": [
+            "EUR0"
+          ],
+          "pricing": [
+            {
+              "currency": "EUR",
+              "price": 0,
+              "tiers": null,
+              "includedUnits": null,
+              "overagePrice": null,
+              "discountPercentage": null,
+              "discountAmount": null
+            }
+          ],
+          "defaultQuantity": null,
+          "applyDiscountTo": null,
+          "discountLevel": null,
+          "discountClass": null,
+          "applyToBillingPeriodPartially": false,
+          "productDiscountApplyDetails": [],
+          "endDateCondition": "One_Time",
+          "upToPeriods": null,
+          "upToPeriodsType": null,
+          "billingDay": null,
+          "listPriceBase": null,
+          "specificListPriceBase": null,
+          "billingTiming": null,
+          "ratingGroup": null,
+          "billingPeriod": null,
+          "billingPeriodAlignment": null,
+          "specificBillingPeriod": null,
+          "smoothingModel": null,
+          "numberOfPeriods": null,
+          "overageCalculationOption": null,
+          "overageUnusedUnitsCreditOption": null,
+          "unusedIncludedUnitPrice": null,
+          "usageRecordRatingOption": null,
+          "priceChangeOption": null,
+          "priceIncreasePercentage": null,
+          "useTenantDefaultForPriceChange": null,
+          "taxable": true,
+          "taxCode": "Italy",
+          "taxMode": "TaxExclusive",
+          "prorationOption": null,
+          "triggerEvent": "ServiceActivation",
+          "description": "",
+          "revRecCode": null,
+          "revRecTriggerCondition": null,
+          "revenueRecognitionRuleName": "Recognize daily over time",
+          "useDiscountSpecificAccountingCode": null,
+          "financeInformation": {
+            "deferredRevenueAccountingCode": "Altri Servizi",
+            "deferredRevenueAccountingCodeType": "SalesRevenue",
+            "recognizedRevenueAccountingCode": "Altri Servizi",
+            "recognizedRevenueAccountingCodeType": "SalesRevenue",
+            "accountsReceivableAccountingCode": "Accounts Receivable",
+            "accountsReceivableAccountingCodeType": "AccountsReceivable"
+          },
+          "deliverySchedule": null,
+          "reflectDiscountInNetAmount": false,
+          "isStackedDiscount": false,
+          "productRatePlanChargeNumber": "PRPC-00000149"
+        }
+      ],
+      "productRatePlanNumber": "PRP-00000102"
+    }
+  ],
+  "productFeatures": []
+}

@@ -84,6 +84,13 @@ function AppShell({ children }) {
             }
           },
           {
+            label: "Catalogo Alt.",
+            icon: "fa-book",
+            onClickFunction: () => {
+              navigate('/catalog2');
+            }
+          },
+          {
             label: "Preventivi",
             icon: "fa-file-invoice",
             onClickFunction: () => {

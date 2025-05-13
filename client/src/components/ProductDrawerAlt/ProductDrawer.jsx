@@ -20,6 +20,7 @@ import ProductInfoSection from '../ProductInfoSection';
 import TechnologySelector from './TechnologySelector';
 import RatePlanList from './RatePlanList';
 import ChargeConfigurator from './ChargeConfigurator';
+import PriceSummary from './PriceSummary';
 
 /**
  * @component ProductDrawer
@@ -114,24 +115,37 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
   };
 
   const calculateChargeTotal = (charge) => {
-    const value = parseFloat(chargeValues[charge.id] || 0);
-
+    if (!charge) return 0;
+    
+    // Per charges di tipo Volume cerca la fascia corrispondente alla quantità
+    if (charge.model === 'Volume') {
+      const quantity = parseInt(chargeValues[charge.id] || '0', 10);
+      if (!quantity) return 0;
+      
+      // Cerca la fascia di prezzo corrispondente (pricing[1] è EUR)
+      const tier = charge.pricing?.[1]?.tiers?.find(t => 
+        quantity >= t.startingUnit && quantity <= t.endingUnit
+      );
+      
+      if (tier) {
+        return tier.price;
+      }
+      
+      return 0;
+    }
+    
+    // Per PerUnit moltiplica prezzo unitario per quantità
     if (charge.model === 'PerUnit') {
-      const unitPrice = charge.pricing?.[0]?.price || 0;
+      const value = parseFloat(chargeValues[charge.id] || 0);
+      const unitPrice = charge.pricing?.[1]?.price || 0; // [1] per EUR
       return value * unitPrice;
     }
-
-    if (charge.model === 'Volume') {
-      const tiers = charge.pricing?.[0]?.tiers || [];
-      if (tiers.length === 0 || value <= 0) return 0;
-      const tier = tiers.find(t => value >= t.startingUnit && value <= t.endingUnit);
-      return tier ? tier.price : 0;
-    }
-
+    
+    // Per FlatFee ritorna il prezzo fisso
     if (charge.model === 'FlatFee') {
-      return charge.pricing?.[0]?.price || 0;
+      return charge.pricing?.[1]?.price || 0; // [1] per EUR
     }
-
+    
     return 0;
   };
 
@@ -218,6 +232,15 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
             charges={selectedRatePlan.productRatePlanCharges}
             chargeValues={chargeValues}
             onChargeValueChange={handleChargeValueChange}
+            calculateChargeTotal={calculateChargeTotal}
+          />
+        )}
+
+        {/* Sezione riepilogo prezzi */}
+        {selectedRatePlan && (
+          <PriceSummary
+            selectedRatePlan={selectedRatePlan}
+            chargeValues={chargeValues}
             calculateChargeTotal={calculateChargeTotal}
           />
         )}

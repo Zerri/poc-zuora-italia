@@ -21,6 +21,7 @@ import TechnologySelector from './TechnologySelector';
 import RatePlanList from './RatePlanList';
 import ChargeConfigurator from './ChargeConfigurator';
 import PriceSummary from './PriceSummary';
+import PricingModelInfo from './PricingModelInfo';
 
 /**
  * @component ProductDrawer
@@ -225,6 +226,11 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
             onRatePlanSelect={setSelectedProductRatePlan}
           />
         </Box>
+
+        {/* Sezione informazioni sul modello di prezzo */}
+        {selectedRatePlan && (
+          <PricingModelInfo selectedRatePlan={selectedRatePlan} />
+        )}
 
         {/* Sezione configurazione charges */}
         {selectedRatePlan && (

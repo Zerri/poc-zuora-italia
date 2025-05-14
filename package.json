@@ -21,5 +21,8 @@
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "express-basic-auth": "^1.2.1"
   }
 }

@@ -1,4 +1,4 @@
-// File: client/src/components/ProductDrawer/RatePlanCard.jsx
+// File: client/src/components/ProductDrawerAlt/RatePlanCard.jsx
 import React from 'react';
 import {
   Typography,
@@ -14,6 +14,54 @@ import {
  * @description Card per visualizzare un singolo rate plan
  */
 function RatePlanCard({ ratePlan, isSelected, onClick }) {
+  // Determina il periodo di fatturazione dalle charges
+  const getBillingInfo = () => {
+    if (!ratePlan.productRatePlanCharges || ratePlan.productRatePlanCharges.length === 0) {
+      return { period: '', timing: '' };
+    }
+    
+    // Cerca la prima charge ricorrente per ottenere le informazioni di billing
+    const recurringCharge = ratePlan.productRatePlanCharges.find(c => c.type === 'Recurring');
+    if (!recurringCharge) {
+      return { period: '', timing: '' };
+    }
+    
+    return {
+      period: recurringCharge.billingPeriod || '',
+      timing: recurringCharge.billingTiming || '',
+      alignment: recurringCharge.billingPeriodAlignment || ''
+    };
+  };
+  
+  // Traduce i termini di billing in italiano
+  const translateBillingTerm = (term, type) => {
+    if (type === 'period') {
+      const periodMap = {
+        'Annual': 'Annuale',
+        'Monthly': 'Mensile',
+        'Quarterly': 'Trimestrale',
+        'Semiannual': 'Semestrale'
+      };
+      return periodMap[term] || term;
+    }
+    
+    if (type === 'timing') {
+      const timingMap = {
+        'IN_ADVANCE': 'Anticipata',
+        'IN_ARREARS': 'Posticipata'
+      };
+      return timingMap[term] || term;
+    }
+    
+    return term;
+  };
+  
+  const billingInfo = getBillingInfo();
+  
+  // Determina il tipo di charge
+  const hasRecurringCharges = ratePlan.productRatePlanCharges?.some(c => c.type === 'Recurring');
+  const hasOneTimeCharges = ratePlan.productRatePlanCharges?.some(c => c.type === 'OneTime');
+  
   return (
     <Card
       sx={{
@@ -95,11 +143,54 @@ function RatePlanCard({ ratePlan, isSelected, onClick }) {
                   sx={{ fontSize: '0.75rem' }}
                 />
               )}
+              
+              {/* NUOVA INFO: Billing period */}
+              {billingInfo.period && (
+                <Chip 
+                  label={translateBillingTerm(billingInfo.period, 'period')}
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                  sx={{ fontSize: '0.75rem' }}
+                />
+              )}
+              
+              {/* NUOVA INFO: Billing timing */}
+              {billingInfo.timing && (
+                <Chip 
+                  label={translateBillingTerm(billingInfo.timing, 'timing')}
+                  size="small"
+                  color="secondary"
+                  variant="outlined"
+                  sx={{ fontSize: '0.75rem' }}
+                />
+              )}
             </Box>
             
             {/* Informazioni sui charges */}
             <Box sx={{ mt: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-              {ratePlan.productRatePlanCharges?.slice(0, 3).map((charge, idx) => (
+              {/* Indicatori di tipo di charge */}
+              {hasRecurringCharges && (
+                <Chip 
+                  label="Ricorrente"
+                  size="small"
+                  color="success"
+                  variant="outlined"
+                  sx={{ fontSize: '0.75rem' }}
+                />
+              )}
+              
+              {hasOneTimeCharges && (
+                <Chip 
+                  label="Una Tantum"
+                  size="small"
+                  color="warning"
+                  variant="outlined"
+                  sx={{ fontSize: '0.75rem' }}
+                />
+              )}
+              
+              {ratePlan.productRatePlanCharges?.slice(0, 2).map((charge, idx) => (
                 <Chip 
                   key={idx}
                   label={charge.name}
@@ -108,9 +199,9 @@ function RatePlanCard({ ratePlan, isSelected, onClick }) {
                   sx={{ fontSize: '0.75rem' }}
                 />
               ))}
-              {ratePlan.productRatePlanCharges?.length > 3 && (
+              {ratePlan.productRatePlanCharges?.length > 2 && (
                 <Chip 
-                  label={`+${ratePlan.productRatePlanCharges.length - 3}`}
+                  label={`+${ratePlan.productRatePlanCharges.length - 2}`}
                   size="small"
                   variant="outlined"
                   sx={{ fontSize: '0.75rem' }}

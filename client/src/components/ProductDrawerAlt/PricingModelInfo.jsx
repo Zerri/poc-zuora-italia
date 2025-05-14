@@ -7,7 +7,8 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  Divider
 } from "@vapor/v3-components";
 import { faCircle } from "@fortawesome/pro-solid-svg-icons/faCircle";
 import { VaporIcon } from "@vapor/v3-components";
@@ -30,7 +31,12 @@ function PricingModelInfo({ selectedRatePlan }) {
       hasOneTimeCharges: false,
       hasVolumeCharges: false,
       tierStructure: [],
-      volumeModel: 'standard'
+      volumeModel: 'standard',
+      // Aggiungiamo proprietà per le informazioni di billing
+      billingPeriod: '',
+      billingTiming: '',
+      billingPeriodAlignment: '',
+      billingDay: ''
     };
     
     // Verifica il tipo di unità di misura (PDL o Fatture/Invoice)
@@ -83,6 +89,15 @@ function PricingModelInfo({ selectedRatePlan }) {
       }
       if (charge.type === 'Recurring') {
         result.hasRecurringCharges = true;
+        
+        // Estrai le informazioni di billing dalla prima charge ricorrente
+        // Assumiamo che tutte le charge ricorrenti abbiano lo stesso periodo di billing
+        if (!result.billingPeriod) {
+          result.billingPeriod = charge.billingPeriod || '';
+          result.billingTiming = charge.billingTiming || '';
+          result.billingPeriodAlignment = charge.billingPeriodAlignment || '';
+          result.billingDay = charge.billingDay || '';
+        }
       }
     });
     
@@ -96,6 +111,46 @@ function PricingModelInfo({ selectedRatePlan }) {
   };
   
   const pricingInfo = getPricingModelInfo();
+  
+  // Funzione per tradurre termini di billing in italiano
+  const translateBillingTerm = (term, type) => {
+    if (type === 'period') {
+      const periodMap = {
+        'Annual': 'Annuale',
+        'Monthly': 'Mensile',
+        'Quarterly': 'Trimestrale',
+        'Semiannual': 'Semestrale'
+      };
+      return periodMap[term] || term;
+    }
+    
+    if (type === 'timing') {
+      const timingMap = {
+        'IN_ADVANCE': 'Anticipata',
+        'IN_ARREARS': 'Posticipata'
+      };
+      return timingMap[term] || term;
+    }
+    
+    if (type === 'alignment') {
+      const alignmentMap = {
+        'AlignToTermStart': 'Allineato all\'inizio del contratto',
+        'AlignToTermEnd': 'Allineato alla fine del contratto'
+      };
+      return alignmentMap[term] || term;
+    }
+    
+    if (type === 'day') {
+      const dayMap = {
+        'TermStartDay': 'Giorno di inizio contratto',
+        'TermEndDay': 'Giorno di fine contratto',
+        'ChargeTriggerDay': 'Giorno di attivazione'
+      };
+      return dayMap[term] || term;
+    }
+    
+    return term;
+  };
   
   return (
     <Paper 
@@ -223,6 +278,78 @@ function PricingModelInfo({ selectedRatePlan }) {
             }
           />
         </ListItem>
+        
+        {/* NUOVA SEZIONE: Informazioni di fatturazione */}
+        {pricingInfo.billingPeriod && (
+          <>
+            <Divider sx={{ my: 2 }} />
+            <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1, color: 'primary.main' }}>
+              Informazioni di Fatturazione
+            </Typography>
+            
+            {/* Periodo di fatturazione */}
+            <ListItem sx={{ pb: 1 }}>
+              <ListItemIcon sx={{ minWidth: 28 }}>
+                <VaporIcon icon={faCircle} size="xs" />
+              </ListItemIcon>
+              <ListItemText
+                primary={
+                  <Typography variant="body2">
+                    <strong>Periodicità di fatturazione:</strong> {translateBillingTerm(pricingInfo.billingPeriod, 'period')}
+                  </Typography>
+                }
+              />
+            </ListItem>
+            
+            {/* Timing della fatturazione */}
+            {pricingInfo.billingTiming && (
+              <ListItem sx={{ pb: 1 }}>
+                <ListItemIcon sx={{ minWidth: 28 }}>
+                  <VaporIcon icon={faCircle} size="xs" />
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    <Typography variant="body2">
+                      <strong>Fatturazione:</strong> {translateBillingTerm(pricingInfo.billingTiming, 'timing')}
+                    </Typography>
+                  }
+                />
+              </ListItem>
+            )}
+            
+            {/* Allineamento del periodo di fatturazione */}
+            {pricingInfo.billingPeriodAlignment && (
+              <ListItem sx={{ pb: 1 }}>
+                <ListItemIcon sx={{ minWidth: 28 }}>
+                  <VaporIcon icon={faCircle} size="xs" />
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    <Typography variant="body2">
+                      <strong>Allineamento:</strong> {translateBillingTerm(pricingInfo.billingPeriodAlignment, 'alignment')}
+                    </Typography>
+                  }
+                />
+              </ListItem>
+            )}
+            
+            {/* Giorno di fatturazione */}
+            {pricingInfo.billingDay && (
+              <ListItem sx={{ pb: 1 }}>
+                <ListItemIcon sx={{ minWidth: 28 }}>
+                  <VaporIcon icon={faCircle} size="xs" />
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    <Typography variant="body2">
+                      <strong>Data fatturazione:</strong> {translateBillingTerm(pricingInfo.billingDay, 'day')}
+                    </Typography>
+                  }
+                />
+              </ListItem>
+            )}
+          </>
+        )}
       </List>
     </Paper>
   );

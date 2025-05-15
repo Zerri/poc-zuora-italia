@@ -59,15 +59,17 @@ function CatalogPage() {
   const navigate = useNavigate();
   const quoteId = searchParams.get('quoteId');
 
+  const userId = "touchpoint"; // admin | sales | touchpoint
+
   // Query per ottenere i prodotti
   const { 
     data: products = [], 
     isLoading, 
     error 
   } = useQuery({ 
-    queryKey: ['products'], 
+    queryKey: ['products', userId], 
     queryFn: async () => {
-      const response = await fetch(`${API_URL}/products1`);
+      const response = await fetch(`${API_URL}/products1?userId=${userId}`);
       if (!response.ok) {
         throw new Error(`HTTP error: ${response.status}`);
       }
@@ -429,7 +431,7 @@ function CatalogPage() {
             gutterBottom
             variant="bodyLargeHeavy"
           >
-            Catalogo Prodotti
+            Catalogo Prodotti ({filteredProducts.length} elementi)
           </Typography>
           
           {/* Visualizzazione dei prodotti */}

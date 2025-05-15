@@ -7,8 +7,6 @@ import AppShell from './components/AppShell';
 import Home from './pages/Home';
 import Customers from  './pages/Customers';
 import Catalog from  './pages/Catalog';
-import Catalog1 from  './pages/Catalog1';
-import Catalog2 from  './pages/Catalog2';
 import Quote from  './pages/Quote';
 import Quotes from './pages/Quotes';
 import { UserRoleProvider } from './context/UserRoleContext';
@@ -46,8 +44,6 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/customers" element={<Customers />} />
                 <Route path="/catalog" element={<Catalog />} />
-                <Route path="/catalog1" element={<Catalog1 />} />
-                <Route path="/catalog2" element={<Catalog2 />} />
                 <Route path="/quote" element={<Quote />} />
                 <Route path="/quote/:id" element={<Quote />} />
                 <Route path="/quotes" element={<Quotes />} />

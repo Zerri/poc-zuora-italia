@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+// client/src/pages/Catalog2.jsx - aggiornamento query key
+import React, { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
   VaporPage,
   Typography,
@@ -14,22 +16,28 @@ import {
   Divider, 
   Grid, 
   Box,
-  Drawer,
-  Title,
-  IconButton,
   VaporIcon,
+  Snackbar
 } from "@vapor/v3-components";
-import { faClose } from "@fortawesome/pro-regular-svg-icons/faClose";
+import { faCirclePlus } from "@fortawesome/pro-regular-svg-icons/faCirclePlus";
+import { faArrowLeft } from "@fortawesome/pro-regular-svg-icons/faArrowLeft";
+import { faInfoCircle } from "@fortawesome/pro-regular-svg-icons/faInfoCircle";
 import SearchBar from "@vapor/v3-components/SearchBar";
 import { Link } from 'react-router-dom';
+import ProductDrawer from '../components/ProductDrawerAlt';
+// Importa l'hook per utilizzare il context del ruolo utente
+import { useUserRole } from '../context/UserRoleContext';
 
 /**
  * @component CatalogPage
- * @description Pagina che mostra il catalogo prodotti TeamSystem
+ * @description Pagina che mostra il catalogo prodotti TeamSystem filtrato per permessi utente
  */
 function CatalogPage() {
-  // URL base del backend (configurato per ambiente di sviluppo)
+  // URL base del backend
   const API_URL = import.meta.env.VITE_API_URL || '/api';
+  
+  // Per la gestione delle query
+  const queryClient = useQueryClient();
   
   // State per filtri ricerca
   const [searchTerm, setSearchTerm] = useState('');
@@ -38,21 +46,51 @@ function CatalogPage() {
   // State per gestione drawer
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  
+  // State per gestire i messaggi
+  const [snackbar, setSnackbar] = useState({ 
+    open: false, 
+    message: '', 
+    severity: 'success' 
+  });
+  
+  // Per il recupero del quoteId
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const quoteId = searchParams.get('quoteId');
 
-  // Query per ottenere i prodotti
+  // Ottieni il ruolo utente dal context
+  const { userRole } = useUserRole();
+  
+  // Forza aggiornamento componente
+  const [refreshKey, setRefreshKey] = useState(0);
+  
+  // Effetto per riaggiornare la vista quando cambia il ruolo utente
+  useEffect(() => {
+    // Incrementa il refreshKey per forzare un re-render
+    setRefreshKey(prevKey => prevKey + 1);
+    
+    // Invalida manualmente la query dei prodotti
+    queryClient.invalidateQueries({ queryKey: ['products', userRole] });
+  }, [userRole, queryClient]);
+
+  // Query per ottenere i prodotti, utilizzando userRole dal context
   const { 
     data: products = [], 
     isLoading, 
-    error 
+    error,
   } = useQuery({ 
-    queryKey: ['products'], 
+    queryKey: ['products', userRole, refreshKey], // Aggiungi refreshKey alla query key
     queryFn: async () => {
-      const response = await fetch(`${API_URL}/products`);
+      console.log(`Fetching products for user role: ${userRole}`); // Log per debug
+      const response = await fetch(`${API_URL}/products1?userId=${userRole}`);
       if (!response.ok) {
         throw new Error(`HTTP error: ${response.status}`);
       }
       return response.json();
-    }
+    },
+    staleTime: 0, // Considera sempre i dati "stale" (vecchi)
+    cacheTime: 0  // Non memorizzare i risultati nella cache
   });
 
   // Query per ottenere le categorie
@@ -70,17 +108,76 @@ function CatalogPage() {
     }
   });
   
+  // Query per ottenere il preventivo attuale (se siamo in modalità preventivo)
+  const {
+    data: quoteData,
+    isLoading: isLoadingQuote,
+    error: quoteError
+  } = useQuery({
+    queryKey: ['quote', quoteId],
+    queryFn: async () => {
+      if (!quoteId) return null;
+      const response = await fetch(`${API_URL}/quotes/${quoteId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.json();
+    },
+    enabled: !!quoteId, // Esegui la query solo se c'è un quoteId
+  });
+  
+  // Mutation per aggiungere un prodotto al preventivo
+  const addToQuoteMutation = useMutation({
+    mutationFn: async (productData) => {
+      // Prepara i prodotti da inviare, considerando quelli esistenti
+      const existingProducts = quoteData?.products || [];
+      const updatedProducts = [...existingProducts, productData];
+      
+      const response = await fetch(`${API_URL}/quotes/${quoteId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          products: updatedProducts
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      // Invalida la query per forzare un refresh dei dati del preventivo
+      queryClient.invalidateQueries({ queryKey: ['quote', quoteId] });
+      queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      
+      // Mostra un messaggio di successo
+      setSnackbar({
+        open: true,
+        message: 'Prodotto aggiunto al preventivo con successo',
+        severity: 'success'
+      });
+      
+      // Reindirizza dopo un breve ritardo per permettere all'utente di vedere il messaggio
+      setTimeout(() => {
+        navigate(`/quote/${quoteId}`);
+      }, 1500);
+    },
+    onError: (error) => {
+      setSnackbar({
+        open: true,
+        message: `Errore: ${error.message}`,
+        severity: 'error'
+      });
+    }
+  });
+  
   // Funzione per cambiare il filtro della categoria
   const handleFilterChange = (newFilter) => {
     setFilterCategory(newFilter);
-  };
-  
-  // Funzione per formattare il prezzo
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('it-IT', {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(price);
   };
   
   // Funzione per filtrare i prodotti
@@ -92,8 +189,8 @@ function CatalogPage() {
       // Filtro per testo di ricerca
       const matchesSearch = 
         searchTerm === '' || 
-        product.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.descrizione.toLowerCase().includes(searchTerm.toLowerCase());
+        product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description?.toLowerCase().includes(searchTerm.toLowerCase());
       
       return matchesCategory && matchesSearch;
     });
@@ -126,6 +223,80 @@ function CatalogPage() {
     setDrawerOpen(false);
   };
 
+  // Gestisce l'aggiunta all'offerta/preventivo
+  const handleAddToOffer = (data) => {
+    if (quoteId) {
+      // Calcola il prezzo totale del prodotto configurato
+      const calculateChargeTotal = (charge) => {
+        const value = parseFloat(charge.value || 0);
+        
+        if (charge.model === 'PerUnit') {
+          const unitPrice = charge.pricing?.[0]?.price || 0;
+          return value * unitPrice;
+        }
+        
+        if (charge.model === 'Volume') {
+          const tiers = charge.pricing?.[0]?.tiers || [];
+          if (tiers.length === 0 || value <= 0) return 0;
+          const tier = tiers.find(t => value >= t.startingUnit && value <= t.endingUnit);
+          return tier ? tier.price : 0;
+        }
+        
+        if (charge.model === 'FlatFee') {
+          return charge.pricing?.[0]?.price || 0;
+        }
+        
+        return 0;
+      };
+      
+      // Calcola il totale del prodotto
+      const totalPrice = data.selectedRatePlan.productRatePlanCharges.reduce(
+        (total, charge) => total + calculateChargeTotal(charge), 0
+      );
+      
+      // Prepara il prodotto da aggiungere al preventivo con tutti i dettagli
+      const productToAdd = {
+        id: data.product.id,
+        name: data.product.name,
+        price: totalPrice,
+        quantity: 1,
+        category: data.product.categoria,
+        description: data.product.description,
+        // Informazioni sul rate plan selezionato
+        ratePlan: {
+          id: data.selectedRatePlan.id,
+          name: data.selectedRatePlan.name,
+          description: data.selectedRatePlan.description || ''
+        },
+        // Informazioni sulle charges configurate dall'utente
+        charges: data.selectedRatePlan.productRatePlanCharges.map(charge => ({
+          id: charge.id,
+          name: charge.name,
+          type: charge.type,
+          model: charge.model,
+          value: parseFloat(charge.value || 0),
+          calculatedPrice: calculateChargeTotal(charge)
+        }))
+      };
+      
+      // Utilizza la mutation per aggiungere il prodotto
+      addToQuoteMutation.mutate(productToAdd);
+    } else {
+      // Comportamento esistente quando non c'è un quoteId
+      console.log('Prodotto aggiunto all\'offerta:', data);
+      
+      // Chiudi il drawer
+      handleCloseDrawer();
+    }
+  };
+
+  // Funzione per tornare al preventivo senza aggiungere nulla
+  const handleReturnToQuote = () => {
+    if (quoteId) {
+      navigate(`/quote/${quoteId}`);
+    }
+  };
+
   // Funzione per tradurre nome categoria
   const translateCategory = (category) => {
     const translations = {
@@ -134,11 +305,28 @@ function CatalogPage() {
       'hr': 'HR',
       'cross': 'Cross'
     };
-    return translations[category] || category;
+    return translations[category] || category || 'N/A';
   };
-
-  // Componente per X icon (potrebbe essere necessario importare un'icona reale da Vapor)
-  const CloseIcon = () => <span>✕</span>;
+  
+  // Gestione errori per il preventivo
+  if (quoteError && quoteId) {
+    return (
+      <VaporPage>
+        <VaporPage.Section>
+          <Alert severity="error" sx={{ mb: 3 }}>
+            Errore nel caricamento del preventivo: {quoteError.message}
+          </Alert>
+          <Button 
+            variant="contained"
+            onClick={() => navigate('/quotes')}
+            startIcon={<VaporIcon icon={faArrowLeft} />}
+          >
+            Torna alla lista preventivi
+          </Button>
+        </VaporPage.Section>
+      </VaporPage>
+    );
+  }
 
   return (
       <VaporPage
@@ -148,18 +336,53 @@ function CatalogPage() {
             variant="surface"
             size="large"
             contentLeft={[
-              <Button 
-                variant="contained" 
-                component={Link} 
-                to="/"
-              >
-                Torna alla Home
-              </Button>
+              // Modifica questa parte per mostrare il bottone corretto in base al contesto
+              quoteId ? (
+                <Button 
+                  variant="contained" 
+                  onClick={handleReturnToQuote}
+                  startIcon={<VaporIcon icon={faArrowLeft} />}
+                >
+                  Torna al Preventivo
+                </Button>
+              ) : (
+                <Button 
+                  variant="contained" 
+                  component={Link} 
+                  to="/"
+                >
+                  Torna alla Home
+                </Button>
+              )
             ]}
           />
         }
       >
         <VaporPage.Section divider>
+          
+          {/* Banner informativo se siamo in modalità "aggiungi a preventivo" */}
+          {quoteId && (
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>            
+              {/* Informazioni sul filtraggio per ruolo */}
+              <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 1,
+                backgroundColor: 'background.paper',
+                p: 1,
+                borderRadius: 1,
+                border: '1px solid',
+                borderColor: 'divider',
+                width: '100%',
+              }}>
+                <VaporIcon icon={faInfoCircle} color="primary" size="lg" />
+                <Typography variant="body2" color="text.secondary">
+                  {isLoadingQuote ? <span>Caricamento informazioni preventivo...</span> : <span>Stai aggiungendo prodotti al preventivo:</span>} <strong>{quoteData?.number || quoteId}</strong> | Ruolo: <strong>{userRole}</strong> | Prodotti disponibili: <strong>{products.length}</strong> | Prodotti visibili: <strong>{filteredProducts.length}</strong>
+                </Typography>
+              </Box>
+            </Box>
+          )}
+          
           <Box sx={{ textAlign: 'center', mb: 2 }}>
             <Typography
               component="div"
@@ -173,7 +396,9 @@ function CatalogPage() {
               gutterBottom
               variant="bodyLargeRegular"
             >
-              Scegli un prodotto dal catalogo TeamSystem da aggiungere all'offerta
+              {quoteId 
+                ? 'Scegli un prodotto dal catalogo TeamSystem da aggiungere al preventivo' 
+                : 'Scegli un prodotto dal catalogo TeamSystem da aggiungere all\'offerta'}
             </Typography>
           </Box>
           
@@ -215,15 +440,7 @@ function CatalogPage() {
           </Box>
         </VaporPage.Section>
 
-        <VaporPage.Section>
-          <Typography
-            component="div"
-            gutterBottom
-            variant="bodyLargeHeavy"
-          >
-            Catalogo Prodotti
-          </Typography>
-          
+        <VaporPage.Section>          
           {/* Visualizzazione dei prodotti */}
           {isLoading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
@@ -235,7 +452,7 @@ function CatalogPage() {
             </Alert>
           ) : filteredProducts.length === 0 ? (
             <Alert severity="info">
-              Nessun prodotto corrisponde ai criteri di ricerca.
+              Nessun prodotto corrisponde ai criteri di ricerca o ai permessi del tuo ruolo.
             </Alert>
           ) : (
             <Grid container spacing={3}>
@@ -252,10 +469,15 @@ function CatalogPage() {
                       boxShadow: 4
                     }
                   }}>
-                    <CardContent>
+                    <CardContent sx={{ 
+                      flex: 1, 
+                      display: 'flex', 
+                      flexDirection: 'column',
+                      p: 2,
+                    }}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
                         <Typography variant="h6" component="h2" fontWeight="bold" sx={{ flex: 1 }}>
-                          {product.nome}
+                          {product.name}
                         </Typography>
                         <Tag 
                           label={translateCategory(product.categoria)} 
@@ -266,22 +488,22 @@ function CatalogPage() {
                       </Box>
                       
                       <Typography variant="body2" color="text.secondary" gutterBottom sx={{ minHeight: '40px' }}>
-                        {product.descrizione}
+                        {product.description || 'Nessuna descrizione disponibile.'}
                       </Typography>
                       
                       <Divider sx={{ my: 2 }} />
                       
                       <Box sx={{ flex: 1 }}>
                         <Typography variant="body2" color="text.secondary" gutterBottom>
-                          Caratteristiche principali:
+                          Rate plans:
                         </Typography>
                         <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                          {product.caratteristiche && product.caratteristiche.slice(0, 3).map((feature, index) => (
+                          {product.productRatePlans && product.productRatePlans.slice(0, 3).map((ratePlan, index) => (
                             <Typography component="li" variant="body2" key={index}>
-                              {feature}
+                              {ratePlan.name}
                             </Typography>
                           ))}
-                          {product.caratteristiche && product.caratteristiche.length > 3 && (
+                          {product.productRatePlans && product.productRatePlans.length > 3 && (
                             <Typography component="li" variant="body2" fontStyle="italic">
                               e altro...
                             </Typography>
@@ -291,32 +513,21 @@ function CatalogPage() {
                       
                       <Divider sx={{ my: 2 }} />
                       
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                        <Typography variant="body2" color="text.secondary">
-                          Prezzo base
-                        </Typography>
-                        <Typography variant="body1" fontWeight="bold">
-                          {formatPrice(product.prezzo)}
-                        </Typography>
-                      </Box>
-                      
-                      <Box sx={{ display: 'flex', gap: 2, mt: 2, justifyContent: 'flex-end' }}>
-                        <Button 
-                          variant="outlined" 
-                          color="primary"
-                          size="small"
-                          onClick={() => handleOpenDrawer(product)}
-                        >
-                          Dettagli
-                        </Button>
-                        
+                      <Box sx={{ 
+                        display: 'flex', 
+                        gap: 2, 
+                        justifyContent: 'flex-end',
+                        mt: 'auto',
+                        pt: 2
+                      }}>                        
                         <Button 
                           variant="contained" 
                           color="primary"
                           size="small"
-                          startIcon={<span>+</span>}
+                          onClick={() => handleOpenDrawer(product)}
+                          startIcon={<VaporIcon icon={faCirclePlus} />}
                         >
-                          Aggiungi
+                          {quoteId ? 'Aggiungi al preventivo' : 'Aggiungi'}
                         </Button>
                       </Box>
                     </CardContent>
@@ -327,98 +538,30 @@ function CatalogPage() {
           )}
         </VaporPage.Section>
 
-      {/* Drawer con dettagli prodotto */}
-      
-      <Drawer
-        anchor="right"
-        open={drawerOpen}
-        onClose={handleCloseDrawer}
-        width="30vw"
-        hideBackdrop={false}
-        sx={{ "& .MuiDrawer-paperAnchorRight": { marginTop: "48px" } }}
-      >
-        {selectedProduct && (
-          <>
-            <Title
-              title={selectedProduct.nome}
-              description={translateCategory(selectedProduct.categoria)}
-              divider
-              rightItems={[
-                <IconButton size="small" variant='outlined' onClick={handleCloseDrawer}>
-                  <VaporIcon icon={faClose} size="xl" />
-                </IconButton>
-              ]}
-            />
-            
-            <Box sx={{ p: 4, flex: 1, overflowY: 'auto' }}>
-              <Typography variant="body1" paragraph>
-                {selectedProduct.descrizione}
-              </Typography>
-              
-              <Divider sx={{ my: 3 }} />
-              
-              <Typography variant="h6" gutterBottom>
-                Caratteristiche del prodotto
-              </Typography>
-              
-              <ul style={{ paddingLeft: '20px' }}>
-                {selectedProduct.caratteristiche && selectedProduct.caratteristiche.map((feature, index) => (
-                  <Typography component="li" variant="body1" key={index} gutterBottom>
-                    {feature}
-                  </Typography>
-                ))}
-              </ul>
-              
-              <Divider sx={{ my: 3 }} />
-              
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h6">
-                  Prezzo base
-                </Typography>
-                <Typography variant="h6" fontWeight="bold">
-                  {formatPrice(selectedProduct.prezzo)}
-                </Typography>
-              </Box>
-              
-              <Typography variant="body1" paragraph>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod, nisi vel consectetur euismod, 
-                nisi nisl consectetur nisi, euismod nisi nisl consectetur nisi.
-              </Typography>
-              
-              <Typography variant="body1" paragraph>
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              </Typography>
-            </Box>
-            
-            <VaporToolbar
-              contentRight={[
-                <Button 
-                  variant="outlined" 
-                  color="secondary"
-                  onClick={handleCloseDrawer}
-                >
-                  Chiudi
-                </Button>,
-                <Button 
-                  variant="contained" 
-                  color="primary"
-                  startIcon={<span>+</span>}
-                >
-                  Aggiungi all'offerta
-                </Button>
-              ]}
-              size="medium"
-              variant="regular"
-              withoutAppBar
-            />
-          </>
-        )}
-      </Drawer>
+        {/* Drawer component esterno */}
+        <ProductDrawer 
+          open={drawerOpen}
+          onClose={handleCloseDrawer}
+          product={selectedProduct}
+          translateCategory={translateCategory}
+          onAddToOffer={handleAddToOffer}
+          isAddingToQuote={!!quoteId}  // Passa questa prop al drawer
+        />
+        
+        {/* Componente Snackbar */}
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={6000}
+          onClose={() => setSnackbar({...snackbar, open: false})}
+        >
+          <Alert
+            severity={snackbar.severity}
+            onClose={() => setSnackbar({...snackbar, open: false})}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </VaporPage>
-      
-
-
   );
 }
 

@@ -144,14 +144,7 @@ function AppShell({ children }) {
             label: "Catalogo",
             icon: "fa-book",
             onClickFunction: () => {
-              navigate('/catalog1');
-            }
-          },
-          {
-            label: "Catalogo Permessi",
-            icon: "fa-book",
-            onClickFunction: () => {
-              navigate('/catalog2');
+              navigate('/catalog');
             }
           },
           {

@@ -264,7 +264,7 @@ function Quote() {
               size="small" 
               variant="contained" 
               startIcon={<VaporIcon icon={faPlus} />}
-              onClick={() => navigate(`/catalog1?quoteId=${id}`)}
+              onClick={() => navigate(`/catalog?quoteId=${id}`)}
             >
               Aggiungi articolo
             </Button>,
@@ -585,7 +585,7 @@ function Quote() {
                       size="small" 
                       variant="contained" 
                       startIcon={<VaporIcon icon={faPlus} />}
-                      onClick={() => navigate(`/catalog1?quoteId=${id}`)}
+                      onClick={() => navigate(`/catalog?quoteId=${id}`)}
                     >
                       Aggiungi articolo
                     </Button>

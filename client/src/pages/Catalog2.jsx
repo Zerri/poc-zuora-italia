@@ -440,26 +440,7 @@ function Catalog2Page() {
           </Box>
         </VaporPage.Section>
 
-        <VaporPage.Section>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>            
-            {/* Informazioni sul filtraggio per ruolo */}
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: 1,
-              backgroundColor: 'background.paper',
-              p: 1,
-              borderRadius: 1,
-              border: '1px solid',
-              borderColor: 'divider'
-            }}>
-              <VaporIcon icon={faInfoCircle} color="primary" size="lg" />
-              <Typography variant="body2" color="text.secondary">
-                Ruolo: <strong>{userRole}</strong> | Prodotti disponibili: <strong>{products.length}</strong> | Prodotti visibili: <strong>{filteredProducts.length}</strong>
-              </Typography>
-            </Box>
-          </Box>
-          
+        <VaporPage.Section>          
           {/* Visualizzazione dei prodotti */}
           {isLoading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>

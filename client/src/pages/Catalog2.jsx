@@ -1,8 +1,6 @@
-// File modificato: client/src/pages/Catalog1.jsx
-
-import React, { useState } from 'react';
+// client/src/pages/Catalog2.jsx - aggiornamento query key
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-// Aggiungi queste importazioni
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
   VaporPage,
@@ -19,21 +17,23 @@ import {
   Grid, 
   Box,
   VaporIcon,
-  // Aggiungi questo import
   Snackbar
 } from "@vapor/v3-components";
 import { faCirclePlus } from "@fortawesome/pro-regular-svg-icons/faCirclePlus";
-import { faArrowLeft } from "@fortawesome/pro-regular-svg-icons/faArrowLeft"; // Aggiungi questa icona
+import { faArrowLeft } from "@fortawesome/pro-regular-svg-icons/faArrowLeft";
+import { faInfoCircle } from "@fortawesome/pro-regular-svg-icons/faInfoCircle";
 import SearchBar from "@vapor/v3-components/SearchBar";
 import { Link } from 'react-router-dom';
 import ProductDrawer from '../components/ProductDrawerAlt';
+// Importa l'hook per utilizzare il context del ruolo utente
+import { useUserRole } from '../context/UserRoleContext';
 
 /**
- * @component CatalogPage
- * @description Pagina che mostra il catalogo prodotti TeamSystem
+ * @component Catalog2Page
+ * @description Pagina che mostra il catalogo prodotti TeamSystem filtrato per permessi utente
  */
-function CatalogPage() {
-  // URL base del backend (configurato per ambiente di sviluppo)
+function Catalog2Page() {
+  // URL base del backend
   const API_URL = import.meta.env.VITE_API_URL || '/api';
   
   // Per la gestione delle query
@@ -47,34 +47,50 @@ function CatalogPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   
-  // Aggiungi questa parte per gestire i messaggi
+  // State per gestire i messaggi
   const [snackbar, setSnackbar] = useState({ 
     open: false, 
     message: '', 
     severity: 'success' 
   });
   
-  // Aggiungi queste righe per il recupero del quoteId
+  // Per il recupero del quoteId
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const quoteId = searchParams.get('quoteId');
 
-  const userId = "touchpoint"; // admin | sales | touchpoint
+  // Ottieni il ruolo utente dal context
+  const { userRole } = useUserRole();
+  
+  // Forza aggiornamento componente
+  const [refreshKey, setRefreshKey] = useState(0);
+  
+  // Effetto per riaggiornare la vista quando cambia il ruolo utente
+  useEffect(() => {
+    // Incrementa il refreshKey per forzare un re-render
+    setRefreshKey(prevKey => prevKey + 1);
+    
+    // Invalida manualmente la query dei prodotti
+    queryClient.invalidateQueries({ queryKey: ['products', userRole] });
+  }, [userRole, queryClient]);
 
-  // Query per ottenere i prodotti
+  // Query per ottenere i prodotti, utilizzando userRole dal context
   const { 
     data: products = [], 
     isLoading, 
-    error 
+    error,
   } = useQuery({ 
-    queryKey: ['products', userId], 
+    queryKey: ['products', userRole, refreshKey], // Aggiungi refreshKey alla query key
     queryFn: async () => {
-      const response = await fetch(`${API_URL}/products1?userId=${userId}`);
+      console.log(`Fetching products for user role: ${userRole}`); // Log per debug
+      const response = await fetch(`${API_URL}/products1?userId=${userRole}`);
       if (!response.ok) {
         throw new Error(`HTTP error: ${response.status}`);
       }
       return response.json();
-    }
+    },
+    staleTime: 0, // Considera sempre i dati "stale" (vecchi)
+    cacheTime: 0  // Non memorizzare i risultati nella cache
   });
 
   // Query per ottenere le categorie
@@ -164,14 +180,6 @@ function CatalogPage() {
     setFilterCategory(newFilter);
   };
   
-  // Funzione per formattare il prezzo
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('it-IT', {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(price);
-  };
-  
   // Funzione per filtrare i prodotti
   const filteredProducts = React.useMemo(() => {
     return products.filter(product => {
@@ -181,8 +189,8 @@ function CatalogPage() {
       // Filtro per testo di ricerca
       const matchesSearch = 
         searchTerm === '' || 
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchTerm.toLowerCase());
+        product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description?.toLowerCase().includes(searchTerm.toLowerCase());
       
       return matchesCategory && matchesSearch;
     });
@@ -215,7 +223,7 @@ function CatalogPage() {
     setDrawerOpen(false);
   };
 
-  // Modifica questa funzione per gestire l'aggiunta all'offerta/preventivo
+  // Gestisce l'aggiunta all'offerta/preventivo
   const handleAddToOffer = (data) => {
     if (quoteId) {
       // Calcola il prezzo totale del prodotto configurato
@@ -351,21 +359,28 @@ function CatalogPage() {
         }
       >
         <VaporPage.Section divider>
-          {/* Aggiungi un banner informativo se siamo in modalità "aggiungi a preventivo" */}
+          
+          {/* Banner informativo se siamo in modalità "aggiungi a preventivo" */}
           {quoteId && (
-            <Alert severity="info" sx={{ mb: 3 }}>
-              {isLoadingQuote ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <CircularProgress size="small" />
-                  <span>Caricamento informazioni preventivo...</span>
-                </Box>
-              ) : (
-                <>
-                  Stai aggiungendo prodotti al preventivo: 
-                  <strong>{quoteData?.number || quoteId}</strong>
-                </>
-              )}
-            </Alert>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>            
+              {/* Informazioni sul filtraggio per ruolo */}
+              <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 1,
+                backgroundColor: 'background.paper',
+                p: 1,
+                borderRadius: 1,
+                border: '1px solid',
+                borderColor: 'divider',
+                width: '100%',
+              }}>
+                <VaporIcon icon={faInfoCircle} color="primary" size="lg" />
+                <Typography variant="body2" color="text.secondary">
+                  {isLoadingQuote ? <span>Caricamento informazioni preventivo...</span> : <span>Stai aggiungendo prodotti al preventivo:</span>} <strong>{quoteData?.number || quoteId}</strong> | Ruolo: <strong>{userRole}</strong> | Prodotti disponibili: <strong>{products.length}</strong> | Prodotti visibili: <strong>{filteredProducts.length}</strong>
+                </Typography>
+              </Box>
+            </Box>
           )}
           
           <Box sx={{ textAlign: 'center', mb: 2 }}>
@@ -426,13 +441,24 @@ function CatalogPage() {
         </VaporPage.Section>
 
         <VaporPage.Section>
-          <Typography
-            component="div"
-            gutterBottom
-            variant="bodyLargeHeavy"
-          >
-            Catalogo Prodotti ({filteredProducts.length} elementi)
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>            
+            {/* Informazioni sul filtraggio per ruolo */}
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 1,
+              backgroundColor: 'background.paper',
+              p: 1,
+              borderRadius: 1,
+              border: '1px solid',
+              borderColor: 'divider'
+            }}>
+              <VaporIcon icon={faInfoCircle} color="primary" size="lg" />
+              <Typography variant="body2" color="text.secondary">
+                Ruolo: <strong>{userRole}</strong> | Prodotti disponibili: <strong>{products.length}</strong> | Prodotti visibili: <strong>{filteredProducts.length}</strong>
+              </Typography>
+            </Box>
+          </Box>
           
           {/* Visualizzazione dei prodotti */}
           {isLoading ? (
@@ -445,7 +471,7 @@ function CatalogPage() {
             </Alert>
           ) : filteredProducts.length === 0 ? (
             <Alert severity="info">
-              Nessun prodotto corrisponde ai criteri di ricerca.
+              Nessun prodotto corrisponde ai criteri di ricerca o ai permessi del tuo ruolo.
             </Alert>
           ) : (
             <Grid container spacing={3}>
@@ -541,7 +567,7 @@ function CatalogPage() {
           isAddingToQuote={!!quoteId}  // Passa questa prop al drawer
         />
         
-        {/* Aggiungi il componente Snackbar */}
+        {/* Componente Snackbar */}
         <Snackbar
           open={snackbar.open}
           autoHideDuration={6000}
@@ -558,4 +584,4 @@ function CatalogPage() {
   );
 }
 
-export default CatalogPage;
+export default Catalog2Page;

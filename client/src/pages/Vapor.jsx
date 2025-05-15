@@ -51,7 +51,7 @@ function Vapor() {
           rightContent={
             <>
               {/* Pulsante icona nella barra delle applicazioni */}
-              <IconButton size="small" color="secondary" icon="fa-magnifying-glass">
+              <IconButton size="small" color="secondary">
                 <VaporIcon icon={faGrid} color="white" size="xxl" />
               </IconButton>
             </>

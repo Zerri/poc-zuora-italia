@@ -1,15 +1,24 @@
-// AppShell.jsx
+// client/src/components/AppShell.jsx
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   VaporUIShellNav, 
   VaporAppBar, 
   IconButton, 
   VaporIcon, 
   useMediaQuery, 
-  useTheme 
+  useTheme,
+  Box,
+  FormControl,
+  Select,
+  MenuItem,
+  Typography,
+  Chip
 } from "@vapor/v3-components";
 import { faGrid } from "@fortawesome/pro-regular-svg-icons/faGrid";
+import { faUserTag } from "@fortawesome/pro-regular-svg-icons/faUserTag";
+// Importa il context
+import { useUserRole } from '../context/UserRoleContext';
 
 /**
  * @component AppShell
@@ -24,6 +33,10 @@ function AppShell({ children }) {
   const isLarge = useMediaQuery(theme["breakpoints"].up("lg"));
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Usa il context per accedere e modificare il ruolo utente
+  const { userRole, setUserRole } = useUserRole();
 
   // Gestione automatica del drawer in base alle dimensioni dello schermo
   React.useEffect(() => {
@@ -33,11 +46,23 @@ function AppShell({ children }) {
     if (!isLarge && drawerOpen) {
       setDrawerOpen(false);
     }
-  }, [isLarge]);
+  }, [isLarge, drawerOpen]);
 
   // Funzione per alternare manualmente lo stato del drawer
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
+  };
+  
+  // Gestisce il cambio di ruolo utente
+  const handleRoleChange = (event) => {
+    setUserRole(event.target.value);
+  };
+
+  // Mappa delle etichette dei ruoli per la visualizzazione
+  const roleLabels = {
+    'admin': 'Admin',
+    'sales': 'Sales',
+    'touchpoint': 'Touchpoint'
   };
 
   return (
@@ -50,6 +75,48 @@ function AppShell({ children }) {
           toggleDrawer={toggleDrawer}
           rightContent={
             <>
+              <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
+                <FormControl 
+                  size="small"
+                  variant="outlined"
+                  sx={{ 
+                    minWidth: 120,
+                    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                    borderRadius: 1,
+                    '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                    '& .MuiSelect-select': { 
+                      
+                      display: 'flex',
+                      alignItems: 'center',
+                      py: 1,
+                      pl: 1
+                    }
+                  }}
+                >
+                  <Select
+                    value={userRole}
+                    onChange={handleRoleChange}
+                    displayEmpty
+                    renderValue={(selected) => (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <VaporIcon icon={faUserTag} size="lg" />
+                        <Typography variant="body2">
+                          {roleLabels[selected]}
+                        </Typography>
+                      </Box>
+                    )}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: { mt: 1 }
+                      }
+                    }}
+                  >
+                    <MenuItem value="admin">Admin</MenuItem>
+                    <MenuItem value="sales">Sales</MenuItem>
+                    <MenuItem value="touchpoint">Touchpoint</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
               <IconButton size="small" color="secondary" icon="fa-magnifying-glass">
                 <VaporIcon icon={faGrid} color="white" size="xxl" />
               </IconButton>
@@ -64,10 +131,7 @@ function AppShell({ children }) {
             icon: "fa-gauge",
             onClickFunction: () => {
               navigate('/');
-            },
-            // badgeProps: {
-            //   variant: "dot"
-            // }
+            }
           },
           {
             label: "Configuratore",
@@ -84,7 +148,7 @@ function AppShell({ children }) {
             }
           },
           {
-            label: "Catalogo Alt.",
+            label: "Catalogo Permessi",
             icon: "fa-book",
             onClickFunction: () => {
               navigate('/catalog2');
@@ -177,7 +241,7 @@ function AppShell({ children }) {
           }
         ]
       }}
-    >
+    >      
       {children}
     </VaporUIShellNav>
   );

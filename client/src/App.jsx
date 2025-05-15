@@ -11,6 +11,7 @@ import Catalog1 from  './pages/Catalog1';
 import Catalog2 from  './pages/Catalog2';
 import Quote from  './pages/Quote';
 import Quotes from './pages/Quotes';
+import { UserRoleProvider } from './context/UserRoleContext';
 
 // Creazione di un'istanza di QueryClient
 const queryClient = new QueryClient();
@@ -36,23 +37,25 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <VaporThemeProvider>
-        <Router>
-          <Routes>
-            {/* Route principale con layout */}
-            <Route element={<LayoutWithShell />}>
-              {/* Route annidate che condividono lo stesso layout */}
-              <Route path="/" element={<Home />} />
-              <Route path="/customers" element={<Customers />} />
-              <Route path="/catalog" element={<Catalog />} />
-              <Route path="/catalog1" element={<Catalog1 />} />
-              <Route path="/catalog2" element={<Catalog2 />} />
-              <Route path="/quote" element={<Quote />} />
-              <Route path="/quote/:id" element={<Quote />} />
-              <Route path="/quotes" element={<Quotes />} />
-              {/* Aggiungi altre route qui, tutte utilizzeranno automaticamente AppShell */}
-            </Route>
-          </Routes>
-        </Router>
+        <UserRoleProvider>
+          <Router>
+            <Routes>
+              {/* Route principale con layout */}
+              <Route element={<LayoutWithShell />}>
+                {/* Route annidate che condividono lo stesso layout */}
+                <Route path="/" element={<Home />} />
+                <Route path="/customers" element={<Customers />} />
+                <Route path="/catalog" element={<Catalog />} />
+                <Route path="/catalog1" element={<Catalog1 />} />
+                <Route path="/catalog2" element={<Catalog2 />} />
+                <Route path="/quote" element={<Quote />} />
+                <Route path="/quote/:id" element={<Quote />} />
+                <Route path="/quotes" element={<Quotes />} />
+                {/* Aggiungi altre route qui, tutte utilizzeranno automaticamente AppShell */}
+              </Route>
+            </Routes>
+          </Router>
+        </UserRoleProvider>
       </VaporThemeProvider>
     </QueryClientProvider>
   );

@@ -15,7 +15,7 @@ const PRODUCTS = [
   { id: '8ad093f795aa41380195ad7591026f51', users: ['sales', 'touchpoint'] },
   { id: '8ad0869c95aa28a50195ad7279d0774f', users: ['sales', 'touchpoint'] },
   { id: '8ad093f795aa41380195ad70db0b6eab', users: ['sales', 'touchpoint'] },
-  { id: '8ad0869c95aa28a50195ad6e24c67658', users: ['sales'] },
+  { id: '8ad0869c95aa28a50195ad6e24c67658', users: ['sales', 'touchpoint'] },
   { id: '8ad0869c95a3ed8a0195a4b0c0d623c4', users: ['sales'] },
   { id: '8ad0869c95a3ed8a0195a4b04fd623b3', users: ['sales'] },
   { id: '8ad086fa95a3ed780195a4a2a4ea1cdd', users: ['sales'] },

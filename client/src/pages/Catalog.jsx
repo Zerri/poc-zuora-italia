@@ -225,70 +225,74 @@ function CatalogPage() {
 
   // Gestisce l'aggiunta all'offerta/preventivo
   const handleAddToOffer = (data) => {
-    if (quoteId) {
-      // Calcola il prezzo totale del prodotto configurato
-      const calculateChargeTotal = (charge) => {
-        const value = parseFloat(charge.value || 0);
-        
-        if (charge.model === 'PerUnit') {
-          const unitPrice = charge.pricing?.[0]?.price || 0;
-          return value * unitPrice;
-        }
-        
-        if (charge.model === 'Volume') {
-          const tiers = charge.pricing?.[0]?.tiers || [];
-          if (tiers.length === 0 || value <= 0) return 0;
-          const tier = tiers.find(t => value >= t.startingUnit && value <= t.endingUnit);
-          return tier ? tier.price : 0;
-        }
-        
-        if (charge.model === 'FlatFee') {
-          return charge.pricing?.[0]?.price || 0;
-        }
-        
-        return 0;
-      };
+  if (quoteId) {
+    // Calcola il prezzo totale del prodotto configurato
+    const calculateChargeTotal = (charge) => {
+      const value = parseFloat(charge.value || 0);
       
-      // Calcola il totale del prodotto
-      const totalPrice = data.selectedRatePlan.productRatePlanCharges.reduce(
-        (total, charge) => total + calculateChargeTotal(charge), 0
-      );
+      if (charge.model === 'PerUnit') {
+        const unitPrice = charge.pricing?.[0]?.price || 0;
+        return value * unitPrice;
+      }
       
-      // Prepara il prodotto da aggiungere al preventivo con tutti i dettagli
-      const productToAdd = {
-        id: data.product.id,
-        name: data.product.name,
-        price: totalPrice,
-        quantity: 1,
-        category: data.product.categoria,
-        description: data.product.description,
-        // Informazioni sul rate plan selezionato
-        ratePlan: {
-          id: data.selectedRatePlan.id,
-          name: data.selectedRatePlan.name,
-          description: data.selectedRatePlan.description || ''
-        },
-        // Informazioni sulle charges configurate dall'utente
-        charges: data.selectedRatePlan.productRatePlanCharges.map(charge => ({
-          id: charge.id,
-          name: charge.name,
-          type: charge.type,
-          model: charge.model,
-          value: parseFloat(charge.value || 0),
-          calculatedPrice: calculateChargeTotal(charge)
-        }))
-      };
+      if (charge.model === 'Volume') {
+        const tiers = charge.pricing?.[0]?.tiers || [];
+        if (tiers.length === 0 || value <= 0) return 0;
+        const tier = tiers.find(t => value >= t.startingUnit && value <= t.endingUnit);
+        return tier ? tier.price : 0;
+      }
       
-      // Utilizza la mutation per aggiungere il prodotto
-      addToQuoteMutation.mutate(productToAdd);
-    } else {
-      // Comportamento esistente quando non c'è un quoteId
-      console.log('Prodotto aggiunto all\'offerta:', data);
+      if (charge.model === 'FlatFee') {
+        return charge.pricing?.[0]?.price || 0;
+      }
       
-      // Chiudi il drawer
-      handleCloseDrawer();
-    }
-  };
+      return 0;
+    };
+    
+    // Calcola il totale del prodotto (prezzo di listino)
+    const totalPrice = data.selectedRatePlan.productRatePlanCharges.reduce(
+      (total, charge) => total + calculateChargeTotal(charge), 0
+    );
+    
+    // Ottieni il prezzo cliente personalizzato o usa il prezzo di listino come default
+    const customerPrice = data.customerPrice || totalPrice;
+    
+    // Prepara il prodotto da aggiungere al preventivo con tutti i dettagli
+    const productToAdd = {
+      id: data.product.id,
+      name: data.product.name,
+      price: totalPrice, // Prezzo di listino
+      customerPrice: customerPrice, // NUOVO: Prezzo cliente personalizzato
+      quantity: 1,
+      category: data.product.categoria,
+      description: data.product.description,
+      // Informazioni sul rate plan selezionato
+      ratePlan: {
+        id: data.selectedRatePlan.id,
+        name: data.selectedRatePlan.name,
+        description: data.selectedRatePlan.description || ''
+      },
+      // Informazioni sulle charges configurate dall'utente
+      charges: data.selectedRatePlan.productRatePlanCharges.map(charge => ({
+        id: charge.id,
+        name: charge.name,
+        type: charge.type,
+        model: charge.model,
+        value: parseFloat(charge.value || 0),
+        calculatedPrice: calculateChargeTotal(charge)
+      }))
+    };
+    
+    // Utilizza la mutation per aggiungere il prodotto
+    addToQuoteMutation.mutate(productToAdd);
+  } else {
+    // Comportamento esistente quando non c'è un quoteId
+    console.log('Prodotto aggiunto all\'offerta:', data);
+    
+    // Chiudi il drawer
+    handleCloseDrawer();
+  }
+};
 
   // Funzione per tornare al preventivo senza aggiungere nulla
   const handleReturnToQuote = () => {

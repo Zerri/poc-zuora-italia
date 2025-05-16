@@ -1,19 +1,57 @@
 // client/src/components/ProductDrawerAlt/PriceSummary.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Typography,
   Box,
   Paper,
   Divider,
-  Chip
+  Chip,
+  TextField,
+  InputAdornment
 } from "@vapor/v3-components";
 
 function PriceSummary({ 
   selectedRatePlan, 
   chargeValues, 
-  calculateChargeTotal 
+  calculateChargeTotal,
+  onCustomerPriceChange // Nuova prop per gestire il cambio di prezzo cliente
 }) {
-  if (!selectedRatePlan) return null;
+  // State locale per il prezzo cliente - deve essere definito prima di qualsiasi condizionale
+  const [customerPrice, setCustomerPrice] = useState('');
+  
+  // Effetto per aggiornare il prezzo cliente quando cambia il rate plan
+  useEffect(() => {
+    if (selectedRatePlan) {
+      const calculatedTotal = calculateTotalPrice();
+      setCustomerPrice(calculatedTotal.toFixed(2));
+      
+      // Notifica il componente genitore
+      if (onCustomerPriceChange) {
+        onCustomerPriceChange(calculatedTotal);
+      }
+    }
+  }, [selectedRatePlan, chargeValues]);
+  
+  // Se non abbiamo un rate plan selezionato, mostriamo un messaggio vuoto
+  if (!selectedRatePlan) {
+    return (
+      <Paper 
+        elevation={0} 
+        sx={{ 
+          p: 3, 
+          my: 3, 
+          borderRadius: 2,
+          bgcolor: '#f8f9fa',
+          border: '1px solid #e0e0e0',
+          textAlign: 'center'
+        }}
+      >
+        <Typography variant="body1" color="text.secondary">
+          Seleziona un piano per visualizzare i dettagli di prezzo.
+        </Typography>
+      </Paper>
+    );
+  }
   
   // Determina se il rate plan selezionato ha una struttura "Licenza + canone"
   const hasLicense = selectedRatePlan.ModalitaDiVendita__c === 'Licenza + canone';
@@ -39,6 +77,19 @@ function PriceSummary({
     unitLabel = 'fatture';
   }
   
+  // Funzione per calcolare i totali
+  const calculateTotalPrice = () => {
+    const annualTotal = recurringCharges.reduce((acc, charge) => {
+      return acc + calculateChargeTotal(charge);
+    }, 0);
+    
+    const licenseTotal = onetimeCharges.reduce((acc, charge) => {
+      return acc + calculateChargeTotal(charge);
+    }, 0);
+    
+    return annualTotal + licenseTotal;
+  };
+  
   // Calcolo dei totali
   const annualTotal = recurringCharges.reduce((acc, charge) => {
     return acc + calculateChargeTotal(charge);
@@ -49,6 +100,22 @@ function PriceSummary({
   }, 0);
   
   const firstYearTotal = annualTotal + licenseTotal;
+  
+  // Calcolo dello sconto
+  const calculateDiscount = () => {
+    const customerPriceValue = parseFloat(customerPrice) || 0;
+    if (!customerPriceValue || !firstYearTotal || customerPriceValue >= firstYearTotal) return 0;
+    return ((firstYearTotal - customerPriceValue) / firstYearTotal * 100).toFixed(2);
+  };
+  
+  // Gestione del cambio di prezzo cliente
+  const handleCustomerPriceChange = (e) => {
+    const value = e.target.value;
+    setCustomerPrice(value);
+    if (onCustomerPriceChange) {
+      onCustomerPriceChange(parseFloat(value) || firstYearTotal);
+    }
+  };
   
   // Calcolo costi per unità
   const costPerUnit = unitCount ? (annualTotal / unitCount) : 0;
@@ -88,6 +155,9 @@ function PriceSummary({
     return timingMap[timing] || timing;
   };
 
+  // Calcolo sconto attuale
+  const discountPercentage = calculateDiscount();
+
   return (
     <Paper 
       elevation={0} 
@@ -104,7 +174,7 @@ function PriceSummary({
           Riepilogo Prezzi
         </Typography>
         
-        {/* Aggiunta: Mostra il periodo di fatturazione come chip */}
+        {/* Mostra il periodo di fatturazione come chip */}
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Chip 
             label={`${translateBillingPeriod(billingPeriod)}`}
@@ -163,11 +233,43 @@ function PriceSummary({
           borderBottom: '1px solid #e0e0e0'
         }}>
           <Typography variant="body1" fontWeight="bold">
-            Totale primo anno
+            Prezzo di listino
           </Typography>
           <Typography variant="body1" fontWeight="bold">
             {formatCurrency(firstYearTotal)}
           </Typography>
+        </Box>
+
+        {/* NUOVA SEZIONE: Input per prezzo cliente personalizzato */}
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          py: 2,
+          borderBottom: '1px solid #e0e0e0'
+        }}>
+          <Typography variant="body1" fontWeight="bold">
+            Prezzo cliente
+            {discountPercentage > 0 && (
+              <Chip 
+                label={`-${discountPercentage}%`}
+                color="success"
+                size="small"
+                sx={{ ml: 1 }}
+              />
+            )}
+          </Typography>
+          <TextField
+            value={customerPrice}
+            onChange={handleCustomerPriceChange}
+            type="number"
+            size="small"
+            sx={{ width: '120px' }}
+            InputProps={{
+              startAdornment: <InputAdornment position="start">€</InputAdornment>,
+              inputProps: { min: 0, step: 0.01 }
+            }}
+          />
         </Box>
         
         {hasLicense && licenseTotal > 0 && (

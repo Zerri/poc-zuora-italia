@@ -28,7 +28,9 @@ import {
   Title,
   VaporIcon,
   Snackbar,
-  Alert
+  Alert,
+  Paper,
+  Chip
 } from "@vapor/v3-components";
 import { faArrowLeft } from "@fortawesome/pro-regular-svg-icons/faArrowLeft";
 import { faEllipsisVertical } from "@fortawesome/pro-regular-svg-icons/faEllipsisVertical";
@@ -166,6 +168,28 @@ function Quote() {
     }));
   };
 
+  // Funzione per calcolare il totale di listino
+  const calculateListTotal = () => {
+    return formState.selectedProducts.reduce((total, product) => {
+      return total + (product.price * (product.quantity || 1));
+    }, 0);
+  };
+
+  // Funzione per calcolare il totale cliente
+  const calculateTotal = () => {
+    return formState.selectedProducts.reduce((total, product) => {
+      // Utilizza prezzo cliente se disponibile, altrimenti usa prezzo di listino
+      const effectivePrice = product.customerPrice || product.price;
+      return total + (effectivePrice * (product.quantity || 1));
+    }, 0);
+  };
+
+  // Calcolo dello sconto totale
+  const listTotal = calculateListTotal();
+  const customerTotal = calculateTotal();
+  const totalDiscount = listTotal > 0 ? ((listTotal - customerTotal) / listTotal * 100).toFixed(2) : 0;
+  const hasDiscount = listTotal > customerTotal && totalDiscount > 0;
+
   // Gestione invio del form
   const handleSaveQuote = () => {
     // Trasforma i dati nel formato atteso dall'API
@@ -180,7 +204,7 @@ function Quote() {
       istat: formState.istat,
       priceBlocked: formState.priceBlocked,
       customer: formState.customer,
-      value: calculateTotal(), // Calcolo del valore totale
+      value: calculateTotal(), // Calcolo del valore totale (basato sul prezzo cliente)
       products: formState.selectedProducts
     };
     
@@ -215,13 +239,6 @@ function Quote() {
       'Hardware': 'tone9'
     };
     return categoryMap[category] || 'tone1';
-  };
-
-  // Funzione per calcolare il totale del preventivo
-  const calculateTotal = () => {
-    return formState.selectedProducts.reduce((total, product) => {
-      return total + (product.price * (product.quantity || 1));
-    }, 0);
   };
 
   // Funzione per tornare alla pagina precedente
@@ -289,9 +306,10 @@ function Quote() {
             <IconButton key="options" size="small">
               <VaporIcon icon={faEllipsisVertical} size="xl" />
             </IconButton>
-          ]}
+          ].filter(Boolean)} // Filtriamo gli elementi null
           size="small"
-          title={isEditMode ? `Modifica Preventivo ${quoteData?.number || ''}` : 'Nuovo Preventivo'}
+          title={isEditMode ? `Preventivo ${quoteData?.number || ''}` : 'Nuovo Preventivo'}
+          description={formState.customer?.name ? `Cliente: ${formState.customer.name}` : undefined}
         />
         <VaporPage.Section>
           <ExtendedTabs value={activeTab} onChange={handleTabChange} size="small" variant="standard">
@@ -484,90 +502,166 @@ function Quote() {
                   <Typography variant="h6" component="h2" fontWeight="bold">
                     Articoli selezionati
                   </Typography>
-                  <Typography variant="h6" fontWeight="bold">
-                    Totale: {formatPrice(calculateTotal())}
-                  </Typography>
+                  
+                  {formState.selectedProducts.length > 0 && (
+                    <Box sx={{ 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      alignItems: 'flex-end',
+                      p: 2,
+                      borderRadius: 1,
+                      bgcolor: 'background.paper',
+                      boxShadow: 1
+                    }}>
+                      <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          Totale di listino:
+                        </Typography>
+                        <Typography variant="body2" fontWeight="medium">
+                          {formatPrice(listTotal)}
+                        </Typography>
+                      </Box>
+                      
+                      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                        <Typography variant="body1" fontWeight="bold">
+                          Totale cliente:
+                        </Typography>
+                        {hasDiscount && (
+                          <Chip 
+                            label={`-${totalDiscount}%`}
+                            color="success"
+                            size="small"
+                            sx={{ mx: 1 }}
+                          />
+                        )}
+                        <Typography variant="h6" fontWeight="bold" color="primary">
+                          {formatPrice(customerTotal)}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  )}
                 </Box>
                 
                 {formState.selectedProducts && formState.selectedProducts.length > 0 ? (
                   <Grid container spacing={3}>
-                    {formState.selectedProducts.map((product) => (
-                      <Grid item xs={12} md={6} lg={3} key={product.id}>
-                        <Card sx={{ 
-                          height: '100%', 
-                          display: 'flex', 
-                          flexDirection: 'column',
-                          boxShadow: 2,
-                          transition: 'transform 0.2s, box-shadow 0.2s',
-                          '&:hover': {
-                            transform: 'translateY(-4px)',
-                            boxShadow: 4
-                          }
-                        }}>
-                          <CardContent>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                              <Typography variant="subtitle1" component="h3" fontWeight="bold" sx={{ flex: 1 }}>
-                                {product.name}
-                              </Typography>
-                              {product.category && (
-                                <Tag 
-                                  label={translateCategory(product.category)} 
-                                  type={getCategoryTagType(product.category)}
-                                  size="small"
-                                  variant='duotone'
-                                />
-                              )}
-                            </Box>
-                            
-                            <Typography variant="body2" color="text.secondary" gutterBottom sx={{ minHeight: '40px' }}>
-                              {product.description || 'Nessuna descrizione disponibile'}
-                            </Typography>
-                            
-                            <Divider sx={{ my: 1 }} />
-                            
-                            {/* Informazioni sul Rate Plan */}
-                            {product.ratePlan && (
-                              <Box sx={{ my: 1 }}>
-                                <Typography variant="body2" color="text.primary" fontWeight="bold">
-                                  Piano: {product.ratePlan.name}
+                    {formState.selectedProducts.map((product) => {
+                      // Calcola lo sconto se c'è un prezzo cliente personalizzato
+                      const hasCustomPrice = product.customerPrice && product.customerPrice !== product.price;
+                      const discount = hasCustomPrice ? 
+                        ((product.price - product.customerPrice) / product.price * 100).toFixed(2) : 0;
+                      
+                      // Prezzo da usare per i calcoli (prezzo cliente se disponibile, altrimenti prezzo di listino)
+                      const effectivePrice = product.customerPrice || product.price;
+                      
+                      return (
+                        <Grid item xs={12} md={6} lg={3} key={product.id}>
+                          <Card sx={{ 
+                            height: '100%', 
+                            display: 'flex', 
+                            flexDirection: 'column',
+                            boxShadow: 2,
+                            transition: 'transform 0.2s, box-shadow 0.2s',
+                            '&:hover': {
+                              transform: 'translateY(-4px)',
+                              boxShadow: 4
+                            }
+                          }}>
+                            <CardContent>
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                                <Typography variant="subtitle1" component="h3" fontWeight="bold" sx={{ flex: 1 }}>
+                                  {product.name}
                                 </Typography>
-                                {product.charges && product.charges.length > 0 && (
-                                  <Box sx={{ mt: 1 }}>
-                                    {product.charges.slice(0, 2).map((charge, idx) => (
-                                      <Typography key={idx} variant="body2" color="text.secondary">
-                                        {charge.name}: {charge.value} ({formatPrice(charge.calculatedPrice)})
-                                      </Typography>
-                                    ))}
-                                    {product.charges.length > 2 && (
-                                      <Typography variant="body2" color="text.secondary" fontStyle="italic">
-                                        ...e altri componenti
-                                      </Typography>
-                                    )}
-                                  </Box>
+                                {product.category && (
+                                  <Tag 
+                                    label={translateCategory(product.category)} 
+                                    type={getCategoryTagType(product.category)}
+                                    size="small"
+                                    variant='duotone'
+                                  />
                                 )}
                               </Box>
-                            )}
-                            
-                            <Divider sx={{ my: 1 }} />
-                            
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
-                              <Typography variant="body1" fontWeight="bold">
-                                {formatPrice(product.price * (product.quantity || 1))}
+                              
+                              <Typography variant="body2" color="text.secondary" gutterBottom sx={{ minHeight: '40px' }}>
+                                {product.description || 'Nessuna descrizione disponibile'}
                               </Typography>
                               
-                              <Button 
-                                variant="contained" 
-                                color="error"
-                                size="small"
-                                onClick={() => handleRemoveProduct(product.id)}
-                              >
-                                Rimuovi
-                              </Button>
-                            </Box>
-                          </CardContent>
-                        </Card>
-                      </Grid>
-                    ))}
+                              <Divider sx={{ my: 1 }} />
+                              
+                              {/* Informazioni sul Rate Plan */}
+                              {product.ratePlan && (
+                                <Box sx={{ my: 1 }}>
+                                  <Typography variant="body2" color="text.primary" fontWeight="bold">
+                                    Piano: {product.ratePlan.name}
+                                  </Typography>
+                                  {product.charges && product.charges.length > 0 && (
+                                    <Box sx={{ mt: 1 }}>
+                                      {product.charges.slice(0, 2).map((charge, idx) => (
+                                        <Typography key={idx} variant="body2" color="text.secondary">
+                                          {charge.name}: {charge.value} ({formatPrice(charge.calculatedPrice)})
+                                        </Typography>
+                                      ))}
+                                      {product.charges.length > 2 && (
+                                        <Typography variant="body2" color="text.secondary" fontStyle="italic">
+                                          ...e altri componenti
+                                        </Typography>
+                                      )}
+                                    </Box>
+                                  )}
+                                </Box>
+                              )}
+                              
+                              <Divider sx={{ my: 1 }} />
+                              
+                              {/* NUOVA SEZIONE: Prezzi di listino e cliente */}
+                              <Box sx={{ my: 2 }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                                  <Typography variant="body2" color="text.secondary">
+                                    Prezzo di listino:
+                                  </Typography>
+                                  <Typography variant="body2">
+                                    {formatPrice(product.price * (product.quantity || 1))}
+                                  </Typography>
+                                </Box>
+                                
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <Typography variant="body2" fontWeight="bold">
+                                    Prezzo cliente:
+                                    {discount > 0 && (
+                                      <Chip 
+                                        label={`-${discount}%`}
+                                        color="success"
+                                        size="small"
+                                        sx={{ ml: 1 }}
+                                      />
+                                    )}
+                                  </Typography>
+                                  <Typography variant="body1" fontWeight="bold">
+                                    {formatPrice(effectivePrice * (product.quantity || 1))}
+                                  </Typography>
+                                </Box>
+                              </Box>
+                              
+                              <Divider sx={{ my: 1 }} />
+                              
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+                                <Typography variant="body1" fontWeight="bold">
+                                  Totale: {formatPrice(effectivePrice * (product.quantity || 1))}
+                                </Typography>
+                                
+                                <Button 
+                                  variant="contained" 
+                                  color="error"
+                                  size="small"
+                                  onClick={() => handleRemoveProduct(product.id)}
+                                >
+                                  Rimuovi
+                                </Button>
+                              </Box>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                      );
+                    })}
                   </Grid>
                 ) : (
                   <Box sx={{ 
@@ -586,6 +680,7 @@ function Quote() {
                       variant="contained" 
                       startIcon={<VaporIcon icon={faPlus} />}
                       onClick={() => navigate(`/catalog?quoteId=${id}`)}
+                      sx={{ mt: 2 }}
                     >
                       Aggiungi articolo
                     </Button>

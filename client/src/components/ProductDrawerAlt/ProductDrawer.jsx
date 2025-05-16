@@ -1,4 +1,4 @@
-// File: client/src/components/ProductDrawer/ProductDrawer.jsx
+// File: client/src/components/ProductDrawerAlt/ProductDrawer.jsx
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   Typography,
@@ -27,12 +27,14 @@ import PricingModelInfo from './PricingModelInfo';
  * @component ProductDrawer
  * @description Drawer per configurare un prodotto nell'offerta (versione refactored)
  */
-function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer }) {
+function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer, isAddingToQuote = false }) {
   // State
   const [selectedProductRatePlan, setSelectedProductRatePlan] = useState('');
   const [chargeValues, setChargeValues] = useState({});
   const [showExpiredPlans, setShowExpiredPlans] = useState(false);
   const [selectedTech, setSelectedTech] = useState('');
+  // NUOVO: State per il prezzo cliente personalizzato
+  const [customerPrice, setCustomerPrice] = useState(0);
 
   // Raggruppamento rate plan per tecnologia
   const ratePlanGroups = useMemo(() => {
@@ -89,18 +91,28 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
     }));
   };
 
+  // MODIFICATO: Gestiamo anche il prezzo cliente personalizzato
   const handleAddToOffer = () => {
     if (onAddToOffer && selectedRatePlan) {
       const chargesWithValues = selectedRatePlan.productRatePlanCharges.map(charge => ({
         ...charge,
         value: chargeValues[charge.id]
       }));
+      
+      // Calcola il prezzo totale di listino
+      const listPrice = calculateTotal();
+      
+      // Se il prezzo cliente non è stato impostato o è zero, usa il prezzo di listino
+      const finalCustomerPrice = (customerPrice && customerPrice > 0) ? customerPrice : listPrice;
+      
       onAddToOffer({
         product,
         selectedRatePlan: {
           ...selectedRatePlan,
           productRatePlanCharges: chargesWithValues
-        }
+        },
+        // NUOVO: Aggiungiamo il prezzo cliente personalizzato
+        customerPrice: finalCustomerPrice
       });
     }
     onClose();
@@ -113,6 +125,11 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
     if (firstPlan) {
       setSelectedProductRatePlan(firstPlan.id);
     }
+  };
+  
+  // NUOVO: Funzione per gestire il cambio del prezzo cliente
+  const handleCustomerPriceChange = (price) => {
+    setCustomerPrice(price);
   };
 
   const calculateChargeTotal = (charge) => {
@@ -242,12 +259,13 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
           />
         )}
 
-        {/* Sezione riepilogo prezzi */}
+        {/* Sezione riepilogo prezzi - MODIFICATA per supportare prezzo cliente */}
         {selectedRatePlan && (
           <PriceSummary
             selectedRatePlan={selectedRatePlan}
             chargeValues={chargeValues}
             calculateChargeTotal={calculateChargeTotal}
+            onCustomerPriceChange={handleCustomerPriceChange}
           />
         )}
       </Box>
@@ -265,7 +283,7 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
             Chiudi
           </Button>,
           <Button variant="contained" color="primary" startIcon={<span>+</span>} onClick={handleAddToOffer}>
-            Aggiungi all'offerta
+            {isAddingToQuote ? 'Aggiungi al preventivo' : 'Aggiungi all\'offerta'}
           </Button>
         ]}
         size="medium"

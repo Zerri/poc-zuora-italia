@@ -57,6 +57,7 @@ const QuoteSchema = new mongoose.Schema({
     id: { type: String },
     name: { type: String },
     price: { type: Number },
+    customerPrice: { type: Number },
     quantity: { type: Number, default: 1 },
     category: { type: String },
     description: { type: String },

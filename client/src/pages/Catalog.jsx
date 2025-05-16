@@ -349,7 +349,8 @@ function CatalogPage() {
             fontWeight="medium"
             sx={{ 
               whiteSpace: 'normal',
-              lineHeight: 1.3
+              lineHeight: 1.3,
+              textAlign: 'left'
             }}
           >
             {params.value}
@@ -368,7 +369,8 @@ function CatalogPage() {
             color="text.secondary"
             sx={{ 
               whiteSpace: 'normal',
-              lineHeight: 1.3
+              lineHeight: 1.3,
+              textAlign: 'left'
             }}
           >
             {params.value || 'Nessuna descrizione disponibile.'}
@@ -402,7 +404,8 @@ function CatalogPage() {
               variant="body2"
               sx={{ 
                 whiteSpace: 'normal',
-                lineHeight: 1.3
+                lineHeight: 1.3,
+                textAlign: 'left'
               }}
             >
               {params.value.slice(0, 3).map(plan => plan.name).join(', ')}
@@ -590,7 +593,7 @@ function CatalogPage() {
               </Tooltip>
             </ButtonGroup>
           </Box>  
-          
+
           {/* Visualizzazione dei prodotti */}
           {isLoading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>

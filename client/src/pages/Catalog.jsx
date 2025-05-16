@@ -1,4 +1,3 @@
-// client/src/pages/Catalog2.jsx - aggiornamento query key
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams, useNavigate } from 'react-router-dom';
@@ -17,11 +16,17 @@ import {
   Grid, 
   Box,
   VaporIcon,
-  Snackbar
+  Snackbar,
+  DataGrid,
+  ButtonGroup,
+  IconButton,
+  Tooltip
 } from "@vapor/v3-components";
 import { faCirclePlus } from "@fortawesome/pro-regular-svg-icons/faCirclePlus";
 import { faArrowLeft } from "@fortawesome/pro-regular-svg-icons/faArrowLeft";
 import { faInfoCircle } from "@fortawesome/pro-regular-svg-icons/faInfoCircle";
+import { faTableCells } from "@fortawesome/pro-regular-svg-icons/faTableCells";
+import { faTableCellsLarge } from "@fortawesome/pro-regular-svg-icons/faTableCellsLarge";
 import SearchBar from "@vapor/v3-components/SearchBar";
 import { Link } from 'react-router-dom';
 import ProductDrawer from '../components/ProductDrawerAlt';
@@ -42,6 +47,9 @@ function CatalogPage() {
   // State per filtri ricerca
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('tutti');
+  
+  // State per la vista (cards o griglia)
+  const [viewMode, setViewMode] = useState('cards');
   
   // State per gestione drawer
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -225,74 +233,70 @@ function CatalogPage() {
 
   // Gestisce l'aggiunta all'offerta/preventivo
   const handleAddToOffer = (data) => {
-  if (quoteId) {
-    // Calcola il prezzo totale del prodotto configurato
-    const calculateChargeTotal = (charge) => {
-      const value = parseFloat(charge.value || 0);
+    if (quoteId) {
+      // Calcola il prezzo totale del prodotto configurato
+      const calculateChargeTotal = (charge) => {
+        const value = parseFloat(charge.value || 0);
+        
+        if (charge.model === 'PerUnit') {
+          const unitPrice = charge.pricing?.[0]?.price || 0;
+          return value * unitPrice;
+        }
+        
+        if (charge.model === 'Volume') {
+          const tiers = charge.pricing?.[0]?.tiers || [];
+          if (tiers.length === 0 || value <= 0) return 0;
+          const tier = tiers.find(t => value >= t.startingUnit && value <= t.endingUnit);
+          return tier ? tier.price : 0;
+        }
+        
+        if (charge.model === 'FlatFee') {
+          return charge.pricing?.[0]?.price || 0;
+        }
+        
+        return 0;
+      };
       
-      if (charge.model === 'PerUnit') {
-        const unitPrice = charge.pricing?.[0]?.price || 0;
-        return value * unitPrice;
-      }
+      // Calcola il totale del prodotto
+      const totalPrice = data.selectedRatePlan.productRatePlanCharges.reduce(
+        (total, charge) => total + calculateChargeTotal(charge), 0
+      );
       
-      if (charge.model === 'Volume') {
-        const tiers = charge.pricing?.[0]?.tiers || [];
-        if (tiers.length === 0 || value <= 0) return 0;
-        const tier = tiers.find(t => value >= t.startingUnit && value <= t.endingUnit);
-        return tier ? tier.price : 0;
-      }
+      // Prepara il prodotto da aggiungere al preventivo con tutti i dettagli
+      const productToAdd = {
+        id: data.product.id,
+        name: data.product.name,
+        price: totalPrice,
+        quantity: 1,
+        category: data.product.categoria,
+        description: data.product.description,
+        // Informazioni sul rate plan selezionato
+        ratePlan: {
+          id: data.selectedRatePlan.id,
+          name: data.selectedRatePlan.name,
+          description: data.selectedRatePlan.description || ''
+        },
+        // Informazioni sulle charges configurate dall'utente
+        charges: data.selectedRatePlan.productRatePlanCharges.map(charge => ({
+          id: charge.id,
+          name: charge.name,
+          type: charge.type,
+          model: charge.model,
+          value: parseFloat(charge.value || 0),
+          calculatedPrice: calculateChargeTotal(charge)
+        }))
+      };
       
-      if (charge.model === 'FlatFee') {
-        return charge.pricing?.[0]?.price || 0;
-      }
+      // Utilizza la mutation per aggiungere il prodotto
+      addToQuoteMutation.mutate(productToAdd);
+    } else {
+      // Comportamento esistente quando non c'è un quoteId
+      console.log('Prodotto aggiunto all\'offerta:', data);
       
-      return 0;
-    };
-    
-    // Calcola il totale del prodotto (prezzo di listino)
-    const totalPrice = data.selectedRatePlan.productRatePlanCharges.reduce(
-      (total, charge) => total + calculateChargeTotal(charge), 0
-    );
-    
-    // Ottieni il prezzo cliente personalizzato o usa il prezzo di listino come default
-    const customerPrice = data.customerPrice || totalPrice;
-    
-    // Prepara il prodotto da aggiungere al preventivo con tutti i dettagli
-    const productToAdd = {
-      id: data.product.id,
-      name: data.product.name,
-      price: totalPrice, // Prezzo di listino
-      customerPrice: customerPrice, // NUOVO: Prezzo cliente personalizzato
-      quantity: 1,
-      category: data.product.categoria,
-      description: data.product.description,
-      // Informazioni sul rate plan selezionato
-      ratePlan: {
-        id: data.selectedRatePlan.id,
-        name: data.selectedRatePlan.name,
-        description: data.selectedRatePlan.description || ''
-      },
-      // Informazioni sulle charges configurate dall'utente
-      charges: data.selectedRatePlan.productRatePlanCharges.map(charge => ({
-        id: charge.id,
-        name: charge.name,
-        type: charge.type,
-        model: charge.model,
-        value: parseFloat(charge.value || 0),
-        calculatedPrice: calculateChargeTotal(charge)
-      }))
-    };
-    
-    // Utilizza la mutation per aggiungere il prodotto
-    addToQuoteMutation.mutate(productToAdd);
-  } else {
-    // Comportamento esistente quando non c'è un quoteId
-    console.log('Prodotto aggiunto all\'offerta:', data);
-    
-    // Chiudi il drawer
-    handleCloseDrawer();
-  }
-};
+      // Chiudi il drawer
+      handleCloseDrawer();
+    }
+  };
 
   // Funzione per tornare al preventivo senza aggiungere nulla
   const handleReturnToQuote = () => {
@@ -332,15 +336,159 @@ function CatalogPage() {
     );
   }
 
+  // Configurazione delle colonne per DataGrid
+  const columns = [
+    { 
+      field: 'name', 
+      headerName: 'Nome', 
+      flex: 1.5,
+      renderCell: (params) => (
+        <Box sx={{ py: 1 }}>
+          <Typography 
+            variant="body2" 
+            fontWeight="medium"
+            sx={{ 
+              whiteSpace: 'normal',
+              lineHeight: 1.3,
+              textAlign: 'left'
+            }}
+          >
+            {params.value}
+          </Typography>
+        </Box>
+      )
+    },
+    { 
+      field: 'description', 
+      headerName: 'Descrizione', 
+      flex: 2,
+      renderCell: (params) => (
+        <Box sx={{ py: 1 }}>
+          <Typography 
+            variant="body2" 
+            color="text.secondary"
+            sx={{ 
+              whiteSpace: 'normal',
+              lineHeight: 1.3,
+              textAlign: 'left'
+            }}
+          >
+            {params.value || 'Nessuna descrizione disponibile.'}
+          </Typography>
+        </Box>
+      )
+    },
+    { 
+      field: 'categoria', 
+      headerName: 'Categoria', 
+      flex: 0.8,
+      renderCell: (params) => (
+        <Box sx={{ py: 1 }}>
+          <Tag 
+            label={translateCategory(params.value)} 
+            type={getCategoryTagType(params.value)}
+            size="small"
+            variant='duotone'
+          />
+        </Box>
+      )
+    },
+    { 
+      field: 'productRatePlans', 
+      headerName: 'Rate Plans', 
+      flex: 1.5,
+      renderCell: (params) => (
+        <Box sx={{ py: 1 }}>
+          {params.value && params.value.length > 0 ? (
+            <Typography 
+              variant="body2"
+              sx={{ 
+                whiteSpace: 'normal',
+                lineHeight: 1.3,
+                textAlign: 'left'
+              }}
+            >
+              {params.value.slice(0, 3).map(plan => plan.name).join(', ')}
+              {params.value.length > 3 && ` e altri ${params.value.length - 3}...`}
+            </Typography>
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              Nessun piano disponibile
+            </Typography>
+          )}
+        </Box>
+      )
+    },
+    {
+      field: 'actions',
+      headerName: 'Azioni',
+      flex: 0.8,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => (
+        <Box sx={{ py: 1 }}>
+          <Button 
+            variant="contained" 
+            color="primary"
+            size="small"
+            onClick={() => handleOpenDrawer(params.row)}
+            startIcon={<VaporIcon icon={faCirclePlus} />}
+          >
+            Aggiungi
+          </Button>
+        </Box>
+      )
+    }
+  ];
+
+  // Configurazione delle opzioni per DataGrid
+  const gridOptions = {
+    pageSize: 10,
+    rowsPerPageOptions: [5, 10, 25, 50],
+    pagination: true,
+    autoHeight: true,
+    hideFooterSelectedRowCount: true,
+    disableColumnMenu: true,
+    disableSelectionOnClick: true,
+    getRowHeight: () => 'auto',
+    sx: {
+      '& .MuiDataGrid-cell': {
+        maxHeight: 'none !important',
+        whiteSpace: 'normal'
+      }
+    }
+  };
+
   return (
       <VaporPage
         title="Catalogo Prodotti"
+        headerRight={[
+          // Toggle per cambiare vista
+          <ButtonGroup variant="outlined" size="small">
+            <Tooltip title="Vista a schede">
+              <IconButton 
+                color={viewMode === 'cards' ? 'primary' : 'default'}
+                onClick={() => setViewMode('cards')}
+              >
+                <VaporIcon icon={faTableCellsLarge} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Vista a tabella">
+              <IconButton
+                color={viewMode === 'grid' ? 'primary' : 'default'}
+                onClick={() => setViewMode('grid')}
+              >
+                <VaporIcon icon={faTableCells} />
+              </IconButton>
+            </Tooltip>
+          </ButtonGroup>
+        ]}
         contentToolbar={
           <VaporToolbar
             variant="surface"
             size="large"
             contentLeft={[
-              // Modifica questa parte per mostrare il bottone corretto in base al contesto
+              // Bottono per tornare indietro
               quoteId ? (
                 <Button 
                   variant="contained" 
@@ -381,7 +529,7 @@ function CatalogPage() {
               }}>
                 <VaporIcon icon={faInfoCircle} color="primary" size="lg" />
                 <Typography variant="body2" color="text.secondary">
-                  {isLoadingQuote ? <span>Caricamento informazioni preventivo...</span> : <span>Stai aggiungendo prodotti al preventivo:</span>} <strong>{quoteData?.number || quoteId}</strong> | Cliente: <strong>{quoteData?.customer?.name || 'N/A'}</strong> | Ruolo: <strong>{userRole}</strong> | Prodotti disponibili: <strong>{products.length}</strong> | Prodotti visibili: <strong>{filteredProducts.length}</strong>
+                  {isLoadingQuote ? <span>Caricamento informazioni preventivo...</span> : <span>Stai aggiungendo prodotti al preventivo:</span>} <strong>{quoteData?.number || quoteId}</strong> | Ruolo: <strong>{userRole}</strong> | Prodotti disponibili: <strong>{products.length}</strong> | Prodotti visibili: <strong>{filteredProducts.length}</strong>
                 </Typography>
               </Box>
             </Box>
@@ -459,86 +607,114 @@ function CatalogPage() {
               Nessun prodotto corrisponde ai criteri di ricerca o ai permessi del tuo ruolo.
             </Alert>
           ) : (
-            <Grid container spacing={3}>
-              {filteredProducts.map((product) => (
-                <Grid item xs={12} md={6} lg={4} xl={3} key={product.id}>
-                  <Card sx={{ 
-                    height: '100%', 
-                    display: 'flex', 
-                    flexDirection: 'column',
-                    boxShadow: 2,
-                    transition: 'transform 0.2s, box-shadow 0.2s',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: 4
-                    }
-                  }}>
-                    <CardContent sx={{ 
-                      flex: 1, 
-                      display: 'flex', 
-                      flexDirection: 'column',
-                      p: 2,
-                    }}>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                        <Typography variant="h6" component="h2" fontWeight="bold" sx={{ flex: 1 }}>
-                          {product.name}
-                        </Typography>
-                        <Tag 
-                          label={translateCategory(product.categoria)} 
-                          type={getCategoryTagType(product.categoria)}
-                          size="medium"
-                          variant='duotone'
-                        />
-                      </Box>
-                      
-                      <Typography variant="body2" color="text.secondary" gutterBottom sx={{ minHeight: '40px' }}>
-                        {product.description || 'Nessuna descrizione disponibile.'}
-                      </Typography>
-                      
-                      <Divider sx={{ my: 2 }} />
-                      
-                      <Box sx={{ flex: 1 }}>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
-                          Rate plans:
-                        </Typography>
-                        <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                          {product.productRatePlans && product.productRatePlans.slice(0, 3).map((ratePlan, index) => (
-                            <Typography component="li" variant="body2" key={index}>
-                              {ratePlan.name}
-                            </Typography>
-                          ))}
-                          {product.productRatePlans && product.productRatePlans.length > 3 && (
-                            <Typography component="li" variant="body2" fontStyle="italic">
-                              e altro...
-                            </Typography>
-                          )}
-                        </ul>
-                      </Box>
-                      
-                      <Divider sx={{ my: 2 }} />
-                      
-                      <Box sx={{ 
+            <>
+              {/* VISTA A SCHEDE (CARDS) */}
+              {viewMode === 'cards' && (
+                <Grid container spacing={3}>
+                  {filteredProducts.map((product) => (
+                    <Grid item xs={12} md={6} lg={4} xl={3} key={product.id}>
+                      <Card sx={{ 
+                        height: '100%', 
                         display: 'flex', 
-                        gap: 2, 
-                        justifyContent: 'flex-end',
-                        mt: 'auto',
-                        pt: 2
-                      }}>                        
-                        <Button 
-                          variant="contained" 
-                          color="primary"
-                          size="small"
-                          onClick={() => handleOpenDrawer(product)}
-                          startIcon={<VaporIcon icon={faCirclePlus} />}
-                        >
-                          {quoteId ? 'Aggiungi al preventivo' : 'Aggiungi'}
-                        </Button>
-                      </Box>
-                    </CardContent>
-                  </Card>
+                        flexDirection: 'column',
+                        boxShadow: 2,
+                        transition: 'transform 0.2s, box-shadow 0.2s',
+                        '&:hover': {
+                          transform: 'translateY(-4px)',
+                          boxShadow: 4
+                        }
+                      }}>
+                        <CardContent sx={{ 
+                          flex: 1, 
+                          display: 'flex', 
+                          flexDirection: 'column',
+                          p: 2,
+                        }}>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                            <Typography variant="h6" component="h2" fontWeight="bold" sx={{ flex: 1 }}>
+                              {product.name}
+                            </Typography>
+                            <Tag 
+                              label={translateCategory(product.categoria)} 
+                              type={getCategoryTagType(product.categoria)}
+                              size="medium"
+                              variant='duotone'
+                            />
+                          </Box>
+                          
+                          <Typography variant="body2" color="text.secondary" gutterBottom sx={{ minHeight: '40px' }}>
+                            {product.description || 'Nessuna descrizione disponibile.'}
+                          </Typography>
+                          
+                          <Divider sx={{ my: 2 }} />
+                          
+                          <Box sx={{ flex: 1 }}>
+                            <Typography variant="body2" color="text.secondary" gutterBottom>
+                              Rate plans:
+                            </Typography>
+                            <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                              {product.productRatePlans && product.productRatePlans.slice(0, 3).map((ratePlan, index) => (
+                                <Typography component="li" variant="body2" key={index}>
+                                  {ratePlan.name}
+                                </Typography>
+                              ))}
+                              {product.productRatePlans && product.productRatePlans.length > 3 && (
+                                <Typography component="li" variant="body2" fontStyle="italic">
+                                  e altro...
+                                </Typography>
+                              )}
+                            </ul>
+                          </Box>
+                          
+                          <Divider sx={{ my: 2 }} />
+                          
+                          <Box sx={{ 
+                            display: 'flex', 
+                            gap: 2, 
+                            justifyContent: 'flex-end',
+                            mt: 'auto',
+                            pt: 2
+                          }}>                        
+                            <Button 
+                              variant="contained" 
+                              color="primary"
+                              size="small"
+                              onClick={() => handleOpenDrawer(product)}
+                              startIcon={<VaporIcon icon={faCirclePlus} />}
+                            >
+                              {quoteId ? 'Aggiungi al preventivo' : 'Aggiungi'}
+                            </Button>
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
                 </Grid>
-              ))}
-            </Grid>
+              )}
+
+              {/* VISTA A GRIGLIA (DATAGRID) */}
+              {viewMode === 'grid' && (
+                <Box sx={{ width: '100%', bgcolor: 'background.paper', boxShadow: 1, borderRadius: 1 }}>
+                  <DataGrid 
+                    rows={filteredProducts} 
+                    columns={columns} 
+                    getRowId={(row) => row.id}
+                    {...gridOptions}
+                    sx={{
+                      '.MuiDataGrid-cell': {
+                        borderBottom: '1px solid rgba(224, 224, 224, 0.5)',
+                        maxHeight: 'none !important',
+                        whiteSpace: 'normal',
+                        padding: '16px 8px'
+                      },
+                      '.MuiDataGrid-row': {
+                        maxHeight: 'none !important'
+                      }
+                    }}
+                  />
+                </Box>
+              )}
+            </>
           )}
         </VaporPage.Section>
 

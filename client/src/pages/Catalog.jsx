@@ -349,8 +349,7 @@ function CatalogPage() {
             fontWeight="medium"
             sx={{ 
               whiteSpace: 'normal',
-              lineHeight: 1.3,
-              textAlign: 'left'
+              lineHeight: 1.3
             }}
           >
             {params.value}
@@ -369,8 +368,7 @@ function CatalogPage() {
             color="text.secondary"
             sx={{ 
               whiteSpace: 'normal',
-              lineHeight: 1.3,
-              textAlign: 'left'
+              lineHeight: 1.3
             }}
           >
             {params.value || 'Nessuna descrizione disponibile.'}
@@ -404,8 +402,7 @@ function CatalogPage() {
               variant="body2"
               sx={{ 
                 whiteSpace: 'normal',
-                lineHeight: 1.3,
-                textAlign: 'left'
+                lineHeight: 1.3
               }}
             >
               {params.value.slice(0, 3).map(plan => plan.name).join(', ')}
@@ -462,27 +459,6 @@ function CatalogPage() {
   return (
       <VaporPage
         title="Catalogo Prodotti"
-        headerRight={[
-          // Toggle per cambiare vista
-          <ButtonGroup variant="outlined" size="small">
-            <Tooltip title="Vista a schede">
-              <IconButton 
-                color={viewMode === 'cards' ? 'primary' : 'default'}
-                onClick={() => setViewMode('cards')}
-              >
-                <VaporIcon icon={faTableCellsLarge} />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Vista a tabella">
-              <IconButton
-                color={viewMode === 'grid' ? 'primary' : 'default'}
-                onClick={() => setViewMode('grid')}
-              >
-                <VaporIcon icon={faTableCells} />
-              </IconButton>
-            </Tooltip>
-          </ButtonGroup>
-        ]}
         contentToolbar={
           <VaporToolbar
             variant="surface"
@@ -592,7 +568,29 @@ function CatalogPage() {
           </Box>
         </VaporPage.Section>
 
-        <VaporPage.Section>          
+        <VaporPage.Section>
+          {/* Toggle per cambiare vista */}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+            <ButtonGroup variant="outlined" size="small">
+              <Tooltip title="Vista a schede">
+                <IconButton 
+                  color={viewMode === 'cards' ? 'primary' : 'default'}
+                  onClick={() => setViewMode('cards')}
+                >
+                  <VaporIcon icon={faTableCellsLarge} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Vista a tabella">
+                <IconButton
+                  color={viewMode === 'grid' ? 'primary' : 'default'}
+                  onClick={() => setViewMode('grid')}
+                >
+                  <VaporIcon icon={faTableCells} />
+                </IconButton>
+              </Tooltip>
+            </ButtonGroup>
+          </Box>  
+          
           {/* Visualizzazione dei prodotti */}
           {isLoading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>

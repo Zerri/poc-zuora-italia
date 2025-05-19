@@ -9,6 +9,7 @@ import Customers from  './pages/Customers';
 import Catalog from  './pages/Catalog';
 import Quote from  './pages/Quote';
 import Quotes from './pages/Quotes';
+import Migration from './pages/Migration';
 import { UserRoleProvider } from './context/UserRoleContext';
 
 // Creazione di un'istanza di QueryClient
@@ -47,6 +48,7 @@ function App() {
                 <Route path="/quote" element={<Quote />} />
                 <Route path="/quote/:id" element={<Quote />} />
                 <Route path="/quotes" element={<Quotes />} />
+                <Route path="/migration/:subscriptionId" element={<Migration />} />
                 {/* Aggiungi altre route qui, tutte utilizzeranno automaticamente AppShell */}
               </Route>
             </Routes>

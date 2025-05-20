@@ -111,18 +111,7 @@ function CustomersPage() {
   
   // Funzione per avviare una migrazione
   const handleMigration = (customer) => {
-    createQuoteMutation.mutate({
-      customer: {
-        name: customer.nome,
-        sector: customer.settore,
-        id: customer._id
-      },
-      status: 'Draft',
-      type: 'Migration',
-      value: 0,
-      products: [],
-      notes: `Preventivo di migrazione creato per ${customer.nome}`
-    });
+    navigate(`/migration/${customer._id}`);
   };
   
   // Funzione per filtrare i clienti

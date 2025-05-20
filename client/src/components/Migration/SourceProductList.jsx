@@ -208,11 +208,11 @@ function SourceProductList({
                             <VaporIcon 
                               icon={migratable ? faInfoCircle : faExclamationTriangle} 
                               size="sm" 
-                              color={migratable ? "success" : "error"} 
+                              color="white"
                             />
                             <Typography 
                               variant="caption" 
-                              color={migratable ? "success.dark" : "error.dark"}
+                              color="contentLight"
                               sx={{ ml: 0.5 }}
                             >
                               {migratable ? "Migrabile" : "Non migrabile"}

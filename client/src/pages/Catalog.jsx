@@ -29,7 +29,7 @@ import { faTableCells } from "@fortawesome/pro-regular-svg-icons/faTableCells";
 import { faTableCellsLarge } from "@fortawesome/pro-regular-svg-icons/faTableCellsLarge";
 import SearchBar from "@vapor/v3-components/SearchBar";
 import { Link } from 'react-router-dom';
-import ProductDrawer from '../components/ProductDrawerAlt';
+import ProductDrawerAlt from '../components/ProductDrawerAlt';
 // Importa l'hook per utilizzare il context del ruolo utente
 import { useUserRole } from '../context/UserRoleContext';
 
@@ -699,7 +699,7 @@ function CatalogPage() {
         </VaporPage.Section>
 
         {/* Drawer component esterno */}
-        <ProductDrawer 
+        <ProductDrawerAlt 
           open={drawerOpen}
           onClose={handleCloseDrawer}
           product={selectedProduct}

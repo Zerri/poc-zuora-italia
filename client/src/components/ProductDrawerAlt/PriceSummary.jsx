@@ -1,4 +1,3 @@
-// client/src/components/ProductDrawerAlt/PriceSummary.jsx
 import React, { useState, useEffect } from 'react';
 import {
   Typography,
@@ -14,23 +13,31 @@ function PriceSummary({
   selectedRatePlan, 
   chargeValues, 
   calculateChargeTotal,
-  onCustomerPriceChange // Nuova prop per gestire il cambio di prezzo cliente
+  customerPrice: propCustomerPrice, // Rinominato per evitare confusione
+  onCustomerPriceChange // Prop per gestire il cambio di prezzo cliente
 }) {
-  // State locale per il prezzo cliente - deve essere definito prima di qualsiasi condizionale
+  // State locale per il prezzo cliente
   const [customerPrice, setCustomerPrice] = useState('');
   
-  // Effetto per aggiornare il prezzo cliente quando cambia il rate plan
+  // Effetto per aggiornare il prezzo cliente quando cambiano i dati esterni
   useEffect(() => {
     if (selectedRatePlan) {
       const calculatedTotal = calculateTotalPrice();
-      setCustomerPrice(calculatedTotal.toFixed(2));
       
-      // Notifica il componente genitore
-      if (onCustomerPriceChange) {
-        onCustomerPriceChange(calculatedTotal);
+      // FIX: Se il prezzo cliente è già impostato dall'esterno, usalo
+      if (propCustomerPrice !== undefined && propCustomerPrice > 0) {
+        setCustomerPrice(propCustomerPrice.toFixed(2));
+      } else {
+        // Altrimenti usa il prezzo calcolato
+        setCustomerPrice(calculatedTotal.toFixed(2));
+        
+        // Notifica il componente genitore del prezzo iniziale
+        if (onCustomerPriceChange) {
+          onCustomerPriceChange(calculatedTotal);
+        }
       }
     }
-  }, [selectedRatePlan, chargeValues]);
+  }, [selectedRatePlan, chargeValues, propCustomerPrice]);
   
   // Se non abbiamo un rate plan selezionato, mostriamo un messaggio vuoto
   if (!selectedRatePlan) {
@@ -112,8 +119,14 @@ function PriceSummary({
   const handleCustomerPriceChange = (e) => {
     const value = e.target.value;
     setCustomerPrice(value);
+    
+    // FIX: Notifica il componente genitore con il nuovo valore
     if (onCustomerPriceChange) {
-      onCustomerPriceChange(parseFloat(value) || firstYearTotal);
+      const numericValue = parseFloat(value) || 0;
+      onCustomerPriceChange(numericValue);
+      
+      // Aggiungi log per debug
+      console.log('Customer price changed to:', numericValue);
     }
   };
   
@@ -131,7 +144,7 @@ function PriceSummary({
     return new Intl.NumberFormat('it-IT', { 
       style: 'currency', 
       currency: 'EUR',
-      maximumFractionDigits: 3
+      maximumFractionDigits: 2
     }).format(value);
   };
   
@@ -201,7 +214,7 @@ function PriceSummary({
           py: 1 
         }}>
           <Typography variant="body1">
-            Canone {translateBillingPeriod(billingPeriod).toLowerCase()} ({unitCount} {unitLabel})
+            Canone {translateBillingPeriod(billingPeriod).toLowerCase()} {unitCount > 0 && `(${unitCount} ${unitLabel})`}
           </Typography>
           <Typography variant="body1" fontWeight="medium">
             {formatCurrency(annualTotal)}
@@ -217,7 +230,7 @@ function PriceSummary({
             borderBottom: '1px solid #e0e0e0'
           }}>
             <Typography variant="body1">
-              Licenza una tantum ({unitCount} {unitLabel})
+              Licenza una tantum {unitCount > 0 && `(${unitCount} ${unitLabel})`}
             </Typography>
             <Typography variant="body1" fontWeight="medium">
               {formatCurrency(licenseTotal)}
@@ -240,7 +253,7 @@ function PriceSummary({
           </Typography>
         </Box>
 
-        {/* NUOVA SEZIONE: Input per prezzo cliente personalizzato */}
+        {/* Input per prezzo cliente personalizzato */}
         <Box sx={{ 
           display: 'flex', 
           justifyContent: 'space-between', 

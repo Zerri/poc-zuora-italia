@@ -234,39 +234,15 @@ function CatalogPage() {
   // Gestisce l'aggiunta all'offerta/preventivo
   const handleAddToOffer = (data) => {
     if (quoteId) {
-      // Calcola il prezzo totale del prodotto configurato
-      const calculateChargeTotal = (charge) => {
-        const value = parseFloat(charge.value || 0);
-        
-        if (charge.model === 'PerUnit') {
-          const unitPrice = charge.pricing?.[0]?.price || 0;
-          return value * unitPrice;
-        }
-        
-        if (charge.model === 'Volume') {
-          const tiers = charge.pricing?.[0]?.tiers || [];
-          if (tiers.length === 0 || value <= 0) return 0;
-          const tier = tiers.find(t => value >= t.startingUnit && value <= t.endingUnit);
-          return tier ? tier.price : 0;
-        }
-        
-        if (charge.model === 'FlatFee') {
-          return charge.pricing?.[0]?.price || 0;
-        }
-        
-        return 0;
-      };
-      
-      // Calcola il totale del prodotto
-      const totalPrice = data.selectedRatePlan.productRatePlanCharges.reduce(
-        (total, charge) => total + calculateChargeTotal(charge), 0
-      );
+      // FIX: Accedi ai dati correttamente in base ai cambiamenti nel ProductDrawer.jsx
+      console.log('Dati ricevuti per l\'aggiunta al preventivo:', data);
       
       // Prepara il prodotto da aggiungere al preventivo con tutti i dettagli
       const productToAdd = {
         id: data.product.id,
         name: data.product.name,
-        price: totalPrice,
+        price: data.totalPrice || 0, // Prezzo di listino totale
+        customerPrice: data.customerPrice || data.totalPrice || 0, // Prezzo cliente personalizzato
         quantity: 1,
         category: data.product.categoria,
         description: data.product.description,
@@ -282,10 +258,13 @@ function CatalogPage() {
           name: charge.name,
           type: charge.type,
           model: charge.model,
-          value: parseFloat(charge.value || 0),
-          calculatedPrice: calculateChargeTotal(charge)
+          value: charge.value !== undefined ? parseFloat(charge.value) || 0 : 0,
+          calculatedPrice: charge.calculatedPrice !== undefined ? charge.calculatedPrice : 0
         }))
       };
+      
+      // Debug log
+      console.log('Prodotto preparato per l\'aggiunta al preventivo:', productToAdd);
       
       // Utilizza la mutation per aggiungere il prodotto
       addToQuoteMutation.mutate(productToAdd);

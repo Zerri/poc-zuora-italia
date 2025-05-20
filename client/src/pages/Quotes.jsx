@@ -1,4 +1,3 @@
-// client/src/pages/Quotes.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -20,12 +19,18 @@ import {
   Title,
   IconButton,
   VaporIcon,
-  SearchBar
+  SearchBar,
+  DataGrid,
+  ButtonGroup,
+  Tooltip
 } from "@vapor/v3-components";
 import { faClose } from "@fortawesome/pro-regular-svg-icons/faClose";
 import { faPen } from "@fortawesome/pro-regular-svg-icons/faPen";
 import { faEllipsisVertical } from "@fortawesome/pro-regular-svg-icons/faEllipsisVertical";
+import { faArrowLeft } from "@fortawesome/pro-regular-svg-icons/faArrowLeft";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons/faPlus";
+import { faTableCells } from "@fortawesome/pro-regular-svg-icons/faTableCells";
+import { faTableCellsLarge } from "@fortawesome/pro-regular-svg-icons/faTableCellsLarge";
 
 /**
  * @component QuotesPage
@@ -38,6 +43,9 @@ function QuotesPage() {
   // State per filtri ricerca
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
+  
+  // State per la vista (cards o griglia)
+  const [viewMode, setViewMode] = useState('cards');
   
   // Mappa per tradurre gli stati in italiano per l'interfaccia
   const statusTranslations = {
@@ -172,11 +180,175 @@ function QuotesPage() {
     setDrawerOpen(false);
   };
 
+  // Configurazione delle colonne per DataGrid
+  const columns = [
+    { 
+      field: 'number', 
+      headerName: 'Numero', 
+      flex: 1,
+      renderCell: (params) => (
+        <Box sx={{ py: 1 }}>
+          <Typography 
+            variant="body2" 
+            fontWeight="medium"
+            sx={{ 
+              whiteSpace: 'normal',
+              lineHeight: 1.3,
+              textAlign: 'left'
+            }}
+          >
+            {params.value}
+          </Typography>
+        </Box>
+      )
+    },
+    { 
+      field: 'customer', 
+      headerName: 'Cliente', 
+      flex: 1.5,
+      renderCell: (params) => (
+        <Box sx={{ py: 1 }}>
+          <Typography 
+            variant="body2" 
+            fontWeight="medium"
+            sx={{ 
+              whiteSpace: 'normal',
+              lineHeight: 1.3,
+              textAlign: 'left',
+              display: 'block',
+            }}
+          >
+            {params.value.name}
+          </Typography>
+          <Typography 
+            variant="caption" 
+            color="text.secondary"
+            sx={{ 
+              whiteSpace: 'normal',
+              lineHeight: 1.3,
+              textAlign: 'left',
+              display: 'block',
+            }}
+          >
+            {params.value.sector}
+          </Typography>
+        </Box>
+      )
+    },
+    { 
+      field: 'status', 
+      headerName: 'Stato', 
+      flex: 0.8,
+      renderCell: (params) => (
+        <Box sx={{ py: 1 }}>
+          <Tag 
+            label={statusTranslations[params.value]} 
+            type={getStatusTagType(params.value)}
+            size="small"
+            variant={getStatusTagVariant(params.value)}
+          />
+        </Box>
+      )
+    },
+    { 
+      field: 'type', 
+      headerName: 'Tipo', 
+      flex: 0.8,
+      renderCell: (params) => (
+        <Box sx={{ py: 1 }}>
+          <Tag 
+            label={typeTranslations[params.value]} 
+            type="warning"
+            size="small"
+            variant={getTypeTagVariant(params.value)}
+          />
+        </Box>
+      )
+    },
+    { 
+      field: 'createdAt', 
+      headerName: 'Data creazione', 
+      flex: 1,
+      renderCell: (params) => (
+        <Box sx={{ py: 1 }}>
+          <Typography variant="body2">
+            {formatDate(params.value)}
+          </Typography>
+        </Box>
+      )
+    },
+    { 
+      field: 'value', 
+      headerName: 'Valore', 
+      flex: 1,
+      renderCell: (params) => {
+        const calculatedValue = params.row.products && params.row.products.length > 0 
+          ? calculateQuoteValue(params.row.products) 
+          : params.value;
+        
+        return (
+          <Box sx={{ py: 1 }}>
+            <Typography variant="body2" fontWeight="bold">
+              {formatCurrency(calculatedValue)}
+            </Typography>
+          </Box>
+        );
+      }
+    },
+    {
+      field: 'actions',
+      headerName: 'Azioni',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => (
+        <Box sx={{ py: 1, display: 'flex', gap: 1 }}>
+          <Button 
+            variant="contained" 
+            color="primary"
+            size="small"
+            component={Link}
+            to={`/quote/${params.row._id}`}
+            startIcon={<VaporIcon icon={faPen} />}
+          >
+            Modifica
+          </Button>
+          <IconButton 
+            variant="outlined" 
+            color="primary"
+            size="small"
+            onClick={() => handleOpenDrawer(params.row)}
+          >
+            <VaporIcon icon={faEllipsisVertical} size="lg" />
+          </IconButton>
+        </Box>
+      )
+    }
+  ];
+
+  // Configurazione delle opzioni per DataGrid
+  const gridOptions = {
+    pageSize: 10,
+    rowsPerPageOptions: [5, 10, 25, 50],
+    pagination: true,
+    autoHeight: true,
+    hideFooterSelectedRowCount: true,
+    disableColumnMenu: true,
+    disableSelectionOnClick: true,
+    getRowHeight: () => 'auto',
+    sx: {
+      '& .MuiDataGrid-cell': {
+        maxHeight: 'none !important',
+        whiteSpace: 'normal'
+      }
+    }
+  };
+
   return (
     <VaporPage>
       <Title
         rightItems={[
-          <Button key="1" size="small" variant="contained" startIcon={<VaporIcon icon={faPlus} />}>Nuovo preventivo</Button>,
+          <Button key="1" size="small" variant="contained" component={Link} to="/quote" startIcon={<VaporIcon icon={faPlus} />}>Nuovo preventivo</Button>,
           <IconButton key="2" size="small">
             <VaporIcon icon={faEllipsisVertical} size="xl" />
           </IconButton>
@@ -237,13 +409,35 @@ function QuotesPage() {
       </VaporPage.Section>
 
       <VaporPage.Section>
-        <Typography
-          component="div"
-          gutterBottom
-          variant="bodyLargeHeavy"
-        >
-          Preventivi Recenti
-        </Typography>
+        {/* Intestazione con il toggle per cambiare vista */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography
+            component="div"
+            variant="bodyLargeHeavy"
+          >
+            Preventivi Recenti
+          </Typography>
+          
+          {/* Toggle per cambiare vista */}
+          <ButtonGroup variant="outlined" size="small">
+            <Tooltip title="Vista a schede">
+              <IconButton 
+                color={viewMode === 'cards' ? 'primary' : 'default'}
+                onClick={() => setViewMode('cards')}
+              >
+                <VaporIcon icon={faTableCellsLarge} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Vista a tabella">
+              <IconButton
+                color={viewMode === 'grid' ? 'primary' : 'default'}
+                onClick={() => setViewMode('grid')}
+              >
+                <VaporIcon icon={faTableCells} />
+              </IconButton>
+            </Tooltip>
+          </ButtonGroup>
+        </Box>
         
         {/* Visualizzazione delle quotes */}
         {isLoading ? (
@@ -259,98 +453,124 @@ function QuotesPage() {
             Nessun preventivo corrisponde ai criteri di ricerca.
           </Alert>
         ) : (
-          <Grid container spacing={3}>
-            {quotes.map((quote) => (
-              <Grid item xs={12} md={6} lg={4} xl={3} key={quote._id}>
-                <Card sx={{ 
-                  height: '100%', 
-                  display: 'flex', 
-                  flexDirection: 'column',
-                  boxShadow: 2,
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: 4
-                  }
-                }}>
-                  <CardContent>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                      <Typography variant="h6" component="h2" fontWeight="bold" sx={{ flex: 1 }}>
-                        {quote.customer.name}
-                      </Typography>
-                      <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Tag 
-                          label={typeTranslations[quote.type]} 
-                          type="warning"
-                          size="medium"
-                          variant={getTypeTagVariant(quote.type)}
-                        />
-                        <Tag 
-                          label={statusTranslations[quote.status]} 
-                          type={getStatusTagType(quote.status)}
-                          size="medium"
-                          variant={getStatusTagVariant(quote.status)}
-                        />
-                      </Box>
-                    </Box>
-                    
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      {quote.customer.sector}
-                    </Typography>
-                    
-                    <Typography variant="subtitle1" fontWeight="medium" sx={{ mt: 2 }}>
-                      Preventivo #{quote.number}
-                    </Typography>
-                    
-                    <Divider sx={{ my: 2 }} />
-                    
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                      <Box>
-                        <Typography variant="body2" color="text.secondary">
-                          Creato il
+          <>
+            {/* VISTA A SCHEDE (CARDS) */}
+            {viewMode === 'cards' && (
+              <Grid container spacing={3}>
+                {quotes.map((quote) => (
+                  <Grid item xs={12} md={6} lg={4} xl={3} key={quote._id}>
+                    <Card sx={{ 
+                      height: '100%', 
+                      display: 'flex', 
+                      flexDirection: 'column',
+                      boxShadow: 2,
+                      transition: 'transform 0.2s, box-shadow 0.2s',
+                      '&:hover': {
+                        transform: 'translateY(-4px)',
+                        boxShadow: 4
+                      }
+                    }}>
+                      <CardContent>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                          <Typography variant="h6" component="h2" fontWeight="bold" sx={{ flex: 1 }}>
+                            {quote.customer.name}
+                          </Typography>
+                          <Box sx={{ display: 'flex', gap: 1 }}>
+                            <Tag 
+                              label={typeTranslations[quote.type]} 
+                              type="warning"
+                              size="medium"
+                              variant={getTypeTagVariant(quote.type)}
+                            />
+                            <Tag 
+                              label={statusTranslations[quote.status]} 
+                              type={getStatusTagType(quote.status)}
+                              size="medium"
+                              variant={getStatusTagVariant(quote.status)}
+                            />
+                          </Box>
+                        </Box>
+                        
+                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                          {quote.customer.sector}
                         </Typography>
-                        <Typography variant="body1">
-                          {formatDate(quote.createdAt)}
+                        
+                        <Typography variant="subtitle1" fontWeight="medium" sx={{ mt: 2 }}>
+                          Preventivo #{quote.number}
                         </Typography>
-                      </Box>
-                      
-                      <Box sx={{ textAlign: 'right' }}>
-                        <Typography variant="body2" color="text.secondary">
-                          Valore
-                        </Typography>
-                        <Typography variant="body1" fontWeight="bold">
-                          {formatCurrency(quote.products && quote.products.length > 0 ? calculateQuoteValue(quote.products) : quote.value)}/anno
-                        </Typography>
-                      </Box>
-                    </Box>
-                    
-                    <Box sx={{ display: 'flex', gap: 2, mt: 2, justifyContent: 'flex-end' }}>
-                      <Button 
-                        variant="contained" 
-                        color="primary"
-                        size="small"
-                        component={Link}
-                        to={`/quote/${quote._id}`}
-                        startIcon={<VaporIcon icon={faPen} />}
-                      >
-                        Modifica
-                      </Button>
-                      <IconButton 
-                        variant="outlined" 
-                        color="primary"
-                        size="small"
-                        onClick={() => handleOpenDrawer(quote)}
-                      >
-                        <VaporIcon icon={faEllipsisVertical} size="xl" />
-                      </IconButton>
-                      
-
-                    </Box>
-                  </CardContent>
-                </Card>
+                        
+                        <Divider sx={{ my: 2 }} />
+                        
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                          <Box>
+                            <Typography variant="body2" color="text.secondary">
+                              Creato il
+                            </Typography>
+                            <Typography variant="body1">
+                              {formatDate(quote.createdAt)}
+                            </Typography>
+                          </Box>
+                          
+                          <Box sx={{ textAlign: 'right' }}>
+                            <Typography variant="body2" color="text.secondary">
+                              Valore
+                            </Typography>
+                            <Typography variant="body1" fontWeight="bold">
+                              {formatCurrency(quote.products && quote.products.length > 0 ? calculateQuoteValue(quote.products) : quote.value)}/anno
+                            </Typography>
+                          </Box>
+                        </Box>
+                        
+                        <Box sx={{ display: 'flex', gap: 2, mt: 2, justifyContent: 'flex-end' }}>
+                          <Button 
+                            variant="contained" 
+                            color="primary"
+                            size="small"
+                            component={Link}
+                            to={`/quote/${quote._id}`}
+                            startIcon={<VaporIcon icon={faPen} />}
+                          >
+                            Modifica
+                          </Button>
+                          <IconButton 
+                            variant="outlined" 
+                            color="primary"
+                            size="small"
+                            onClick={() => handleOpenDrawer(quote)}
+                          >
+                            <VaporIcon icon={faEllipsisVertical} size="xl" />
+                          </IconButton>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
+            )}
+            
+            {/* VISTA A GRIGLIA (DATAGRID) */}
+            {viewMode === 'grid' && (
+              <Box sx={{ width: '100%', bgcolor: 'background.paper', boxShadow: 1, borderRadius: 1 }}>
+                <DataGrid 
+                  rows={quotes} 
+                  columns={columns} 
+                  getRowId={(row) => row._id}
+                  {...gridOptions}
+                  sx={{
+                    '.MuiDataGrid-cell': {
+                      borderBottom: '1px solid rgba(224, 224, 224, 0.5)',
+                      maxHeight: 'none !important',
+                      whiteSpace: 'normal',
+                      padding: '16px 8px'
+                    },
+                    '.MuiDataGrid-row': {
+                      maxHeight: 'none !important'
+                    }
+                  }}
+                />
+              </Box>
+            )}
+          </>
         )}
       </VaporPage.Section>
 
@@ -410,7 +630,9 @@ function QuotesPage() {
                 </Grid>
                 <Grid item xs={6}>
                   <Typography variant="body2" color="text.secondary">Valore totale</Typography>
-                  {formatCurrency(selectedQuote.products && selectedQuote.products.length > 0 ? calculateQuoteValue(selectedQuote.products) : selectedQuote.value)}/anno
+                  <Typography variant="body1" fontWeight="medium">
+                    {formatCurrency(selectedQuote.products && selectedQuote.products.length > 0 ? calculateQuoteValue(selectedQuote.products) : selectedQuote.value)}/anno
+                  </Typography>
                 </Grid>
               </Grid>
               

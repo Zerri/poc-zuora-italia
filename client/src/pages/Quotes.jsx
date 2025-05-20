@@ -60,6 +60,18 @@ function QuotesPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedQuote, setSelectedQuote] = useState(null);
 
+  // Funzione per calcolare il valore totale del preventivo dai prodotti
+  const calculateQuoteValue = (products) => {
+    if (!products || products.length === 0) return 0;
+    
+    return products.reduce((total, product) => {
+      // Usa il prezzo cliente se disponibile, altrimenti usa il prezzo standard
+      const effectivePrice = product.customerPrice || product.price || 0;
+      const quantity = product.quantity || 1;
+      return total + (effectivePrice * quantity);
+    }, 0);
+  };
+
   // Query per ottenere le quotes
   const { 
     data: quotes = [], 
@@ -308,7 +320,7 @@ function QuotesPage() {
                           Valore
                         </Typography>
                         <Typography variant="body1" fontWeight="bold">
-                          {formatCurrency(quote.value)}/anno
+                          {formatCurrency(quote.products && quote.products.length > 0 ? calculateQuoteValue(quote.products) : quote.value)}/anno
                         </Typography>
                       </Box>
                     </Box>
@@ -399,7 +411,7 @@ function QuotesPage() {
                 </Grid>
                 <Grid item xs={6}>
                   <Typography variant="body2" color="text.secondary">Valore totale</Typography>
-                  <Typography variant="body1" fontWeight="bold">{formatCurrency(selectedQuote.value)}/anno</Typography>
+                  {formatCurrency(selectedQuote.products && selectedQuote.products.length > 0 ? calculateQuoteValue(selectedQuote.products) : selectedQuote.value)}/anno
                 </Grid>
               </Grid>
               

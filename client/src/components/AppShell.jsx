@@ -45,7 +45,8 @@ function AppShell({ children }) {
     if (!isLarge && drawerOpen) {
       setDrawerOpen(false);
     }
-  }, [isLarge, drawerOpen]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLarge]);
 
   // Funzione per alternare manualmente lo stato del drawer
   const toggleDrawer = () => {

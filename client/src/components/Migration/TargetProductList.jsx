@@ -99,91 +99,89 @@ function TargetProductList({
           </Button>
         </Box>
       ) : (
-        <Box sx={{ maxHeight: '600px', overflow: 'auto' }}>
-          <Grid container spacing={2}>
-            {products.map((product) => (
-              <Grid item xs={12} key={product.id}>
-                <Card sx={{ 
-                  boxShadow: 1,
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: 2
-                  }
-                }}>
-                  <CardContent>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <Typography variant="subtitle1" component="h3" fontWeight="bold">
-                        {product.name}
-                      </Typography>
-                      {product.category && (
-                        <Tag 
-                          label={translateCategory(product.category)} 
-                          type={getCategoryTagType(product.category)}
-                          size="small"
-                          variant="duotone"
-                        />
-                      )}
-                    </Box>
-                    
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 }}>
-                      {product.description || 'Nessuna descrizione disponibile'}
+        <Grid container spacing={2}>
+          {products.map((product) => (
+            <Grid item xs={12} key={product.id}>
+              <Card sx={{ 
+                boxShadow: 1,
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: 2
+                }
+              }}>
+                <CardContent>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <Typography variant="subtitle1" component="h3" fontWeight="bold">
+                      {product.name}
                     </Typography>
-                    
-                    <Divider sx={{ my: 1 }} />
-                    
-                    {/* Informazioni sul Rate Plan */}
-                    {product.ratePlan && (
-                      <Box sx={{ my: 1 }}>
-                        <Typography variant="body2" fontWeight="medium">
-                          Piano: {product.ratePlan.name}
-                        </Typography>
-                      </Box>
+                    {product.category && (
+                      <Tag 
+                        label={translateCategory(product.category)} 
+                        type={getCategoryTagType(product.category)}
+                        size="small"
+                        variant="duotone"
+                      />
                     )}
-                    
-                    {product.replacesProductId && (
-                      <Box sx={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: 1,
-                        backgroundColor: 'action.hover',
-                        p: 1,
-                        borderRadius: 1,
-                        mt: 1
-                      }}>
-                        <VaporIcon icon={faArrowRight} size="sm" color="primary" />
-                        <Typography variant="body2" color="text.secondary">
-                          Sostituisce un prodotto precedente
-                        </Typography>
-                      </Box>
-                    )}
-                    
+                  </Box>
+                  
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 }}>
+                    {product.description || 'Nessuna descrizione disponibile'}
+                  </Typography>
+                  
+                  <Divider sx={{ my: 1 }} />
+                  
+                  {/* Informazioni sul Rate Plan */}
+                  {product.ratePlan && (
+                    <Box sx={{ my: 1 }}>
+                      <Typography variant="body2" fontWeight="medium">
+                        Piano: {product.ratePlan.name}
+                      </Typography>
+                    </Box>
+                  )}
+                  
+                  {product.replacesProductId && (
                     <Box sx={{ 
                       display: 'flex', 
-                      justifyContent: 'space-between', 
-                      alignItems: 'center',
-                      mt: 2
+                      alignItems: 'center', 
+                      gap: 1,
+                      backgroundColor: 'action.hover',
+                      p: 1,
+                      borderRadius: 1,
+                      mt: 1
                     }}>
-                      <Typography variant="body1" fontWeight="bold">
-                        {formatPrice(product.price * (product.quantity || 1))}/anno
+                      <VaporIcon icon={faArrowRight} size="sm" color="primary" />
+                      <Typography variant="body2" color="text.secondary">
+                        Sostituisce un prodotto precedente
                       </Typography>
-                      
-                      <Tooltip title="Rimuovi prodotto">
-                        <IconButton
-                          color="error"
-                          size="small"
-                          onClick={() => onRemoveProduct(product.id)}
-                        >
-                          <VaporIcon icon={faTrash} size="lg" />
-                        </IconButton>
-                      </Tooltip>
                     </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
+                  )}
+                  
+                  <Box sx={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    mt: 2
+                  }}>
+                    <Typography variant="body1" fontWeight="bold">
+                      {formatPrice(product.price * (product.quantity || 1))}/anno
+                    </Typography>
+                    
+                    <Tooltip title="Rimuovi prodotto">
+                      <IconButton
+                        color="error"
+                        size="small"
+                        onClick={() => onRemoveProduct(product.id)}
+                      >
+                        <VaporIcon icon={faTrash} size="lg" />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       )}
     </Box>
   );

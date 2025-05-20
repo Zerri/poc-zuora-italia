@@ -33,7 +33,6 @@ function AppShell({ children }) {
   const isLarge = useMediaQuery(theme["breakpoints"].up("lg"));
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   
   // Usa il context per accedere e modificare il ruolo utente
   const { userRole, setUserRole } = useUserRole();

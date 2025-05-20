@@ -25,7 +25,6 @@ import {
 import { faClose } from "@fortawesome/pro-regular-svg-icons/faClose";
 import { faPen } from "@fortawesome/pro-regular-svg-icons/faPen";
 import { faEllipsisVertical } from "@fortawesome/pro-regular-svg-icons/faEllipsisVertical";
-import { faArrowLeft } from "@fortawesome/pro-regular-svg-icons/faArrowLeft";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons/faPlus";
 
 /**

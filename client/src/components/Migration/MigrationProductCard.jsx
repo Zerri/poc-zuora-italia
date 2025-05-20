@@ -59,42 +59,6 @@ function MigrationProductCard({
       },
       position: 'relative'
     }}>
-      {/* Badge per prodotti con sostituto (solo per prodotti source migrabili con sostituto) */}
-      {isMigrationSource && isMigratable && hasReplacement && (
-        <Box sx={{
-          position: 'absolute',
-          top: -8,
-          right: 8,
-          zIndex: 10
-        }}>
-          <Tooltip title="Questo prodotto verrà sostituito con una versione più recente">
-            <Chip
-              label="Con sostituto"
-              color="primary"
-              size="small"
-            />
-          </Tooltip>
-        </Box>
-      )}
-      
-      {/* Badge per prodotti che sostituiscono altri (solo per prodotti target) */}
-      {!isMigrationSource && replacesProductId && (
-        <Box sx={{
-          position: 'absolute',
-          top: -8,
-          right: 8,
-          zIndex: 10
-        }}>
-          <Tooltip title="Questo prodotto sostituisce un prodotto precedente">
-            <Chip
-              label="Sostitutivo"
-              color="primary"
-              size="small"
-            />
-          </Tooltip>
-        </Box>
-      )}
-      
       <CardContent sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
           <Typography variant="subtitle1" component="h3" fontWeight="bold" sx={{ flex: 1 }}>
@@ -224,32 +188,59 @@ function MigrationProductCard({
           )}
         </Box>
         
-        {/* Azioni */}
+        {/* Azioni e Badge - MODIFICATO: Spostati i chip che erano in position absolute */}
         <Box sx={{ 
           display: 'flex', 
           justifyContent: 'space-between', 
           alignItems: 'center',
           mt: 'auto'
         }}>
-          {hasCustomPrice && (
-            <Chip 
-              label={`-${discount}%`}
-              color="success"
-              size="small"
-            />
-          )}
-          
-          {!isMigrationSource && onRemove && (
-            <Tooltip title="Rimuovi prodotto">
-              <IconButton
-                color="error"
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {hasCustomPrice && (
+              <Chip 
+                label={`-${discount}%`}
+                color="success"
                 size="small"
-                onClick={() => onRemove(product.id)}
-              >
-                <VaporIcon icon={faTrash} size="lg" />
-              </IconButton>
-            </Tooltip>
-          )}
+              />
+            )}
+          </Box>
+          
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {/* Badge per prodotti con sostituto (solo per prodotti source migrabili con sostituto) */}
+            {isMigrationSource && isMigratable && hasReplacement && (
+              <Tooltip title="Questo prodotto verrà sostituito con una versione più recente">
+                <Chip
+                  label="Con sostituto"
+                  color="primary"
+                  size="small"
+                />
+              </Tooltip>
+            )}
+            
+            {/* Badge per prodotti che sostituiscono altri (solo per prodotti target) */}
+            {!isMigrationSource && replacesProductId && (
+              <Tooltip title="Questo prodotto sostituisce un prodotto precedente">
+                <Chip
+                  label="Sostitutivo"
+                  color="primary"
+                  size="small"
+                />
+              </Tooltip>
+            )}
+            
+            {/* Pulsante rimuovi */}
+            {!isMigrationSource && onRemove && (
+              <Tooltip title="Rimuovi prodotto">
+                <IconButton
+                  color="error"
+                  size="small"
+                  onClick={() => onRemove(product.id)}
+                >
+                  <VaporIcon icon={faTrash} size="lg" />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Box>
         </Box>
       </CardContent>
     </Card>

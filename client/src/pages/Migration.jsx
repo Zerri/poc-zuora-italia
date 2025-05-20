@@ -1,4 +1,4 @@
-// client/src/pages/Migration.jsx - Versione completa con percorsi di migrazione
+// Versione aggiornata di Migration.jsx che utilizza MigrationProductList
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -29,322 +29,13 @@ import { faPaperPlane } from "@fortawesome/pro-regular-svg-icons/faPaperPlane";
 import { faCloudArrowUp } from "@fortawesome/pro-regular-svg-icons/faCloudArrowUp";
 import { faServer } from "@fortawesome/pro-regular-svg-icons/faServer";
 
-// Importiamo i componenti per le liste di prodotti
-import SourceProductList from '../components/Migration/SourceProductList';
-import TargetProductList from '../components/Migration/TargetProductList';
-// Importiamo il nuovo componente di selezione percorso
+// Importiamo i nuovi componenti
+import MigrationProductList from '../components/Migration/MigrationProductList';
 import MigrationPathSelector from '../components/Migration/MigrationPathSelector';
 
-// DATI SIMULATI aggiornati con due percorsi di migrazione
-const MOCK_DATA = {
-  subscriptionId: "mock-subscription-123",
-  customer: {
-    name: "Acme Corporation",
-    sector: "Manifatturiero",
-    email: "info@acme.com",
-    id: "customer-123"
-  },
-  sourceProducts: [
-    {
-      id: "prod-001",
-      name: "TeamSystem Enterprise",
-      description: "Soluzione ERP completa per aziende di medie e grandi dimensioni",
-      category: "enterprise",
-      price: 5000,
-      quantity: 1,
-      ratePlan: {
-        id: "rp-001",
-        name: "Enterprise Standard",
-        Infrastructure__c: "On Premise"
-      },
-      charges: [
-        {
-          id: "charge-001",
-          name: "Licenza Base",
-          type: "Recurring",
-          model: "FlatFee",
-          value: 1,
-          calculatedPrice: 5000
-        }
-      ]
-    },
-    {
-      id: "prod-002",
-      name: "TeamSystem CRM",
-      description: "Gestione delle relazioni con i clienti integrata",
-      category: "professional",
-      price: 2500,
-      quantity: 1,
-      ratePlan: {
-        id: "rp-002",
-        name: "CRM Professional",
-        Infrastructure__c: "On Premise"
-      },
-      charges: [
-        {
-          id: "charge-002",
-          name: "Licenza CRM",
-          type: "Recurring",
-          model: "FlatFee",
-          value: 1,
-          calculatedPrice: 2500
-        }
-      ]
-    },
-    {
-      id: "prod-003",
-      name: "TeamSystem HR",
-      description: "Gestione delle risorse umane",
-      category: "hr",
-      price: 3000,
-      quantity: 1,
-      ratePlan: {
-        id: "rp-003",
-        name: "HR Complete",
-        Infrastructure__c: "On Premise"
-      },
-      charges: [
-        {
-          id: "charge-003",
-          name: "Licenza HR",
-          type: "Recurring",
-          model: "FlatFee",
-          value: 1,
-          calculatedPrice: 3000
-        }
-      ]
-    },
-    {
-      id: "prod-004",
-      name: "TeamSystem Legacy Module",
-      description: "Modulo legacy non più supportato",
-      category: "cross",
-      price: 1500,
-      quantity: 1,
-      ratePlan: {
-        id: "rp-004",
-        name: "Legacy Module",
-        Infrastructure__c: "On Premise"
-      },
-      charges: [
-        {
-          id: "charge-004",
-          name: "Licenza Legacy",
-          type: "Recurring",
-          model: "FlatFee",
-          value: 1,
-          calculatedPrice: 1500
-        }
-      ]
-    }
-  ],
-  migrationPaths: {
-    saas: {
-      id: "saas",
-      title: "Cloud SaaS",
-      description: "Migrazione verso servizi cloud completamente gestiti",
-      benefits: [
-        "Nessuna gestione dell'infrastruttura",
-        "Aggiornamenti automatici",
-        "Scalabilità on-demand"
-      ],
-      totalValue: 11700,
-      percentChange: "-2,5%", // Calcolato rispetto al totale corrente (12000)
-      products: [
-        {
-          id: "prod-101",
-          name: "TeamSystem Enterprise Cloud",
-          description: "Nuova versione cloud della soluzione ERP completa",
-          category: "enterprise",
-          price: 5500,
-          quantity: 1,
-          ratePlan: {
-            id: "rp-101",
-            name: "Enterprise Cloud Premium",
-            Infrastructure__c: "SAAS"
-          },
-          charges: [
-            {
-              id: "charge-101",
-              name: "Licenza Base Cloud",
-              type: "Recurring",
-              model: "FlatFee",
-              value: 1,
-              calculatedPrice: 5500
-            }
-          ],
-          replacesProductId: "prod-001" 
-        },
-        {
-          id: "prod-102",
-          name: "TeamSystem CRM+",
-          description: "Versione migliorata del CRM con nuove funzionalità",
-          category: "professional",
-          price: 3000,
-          quantity: 1,
-          ratePlan: {
-            id: "rp-102",
-            name: "CRM+ Premium",
-            Infrastructure__c: "SAAS"
-          },
-          charges: [
-            {
-              id: "charge-102",
-              name: "Licenza CRM+",
-              type: "Recurring",
-              model: "FlatFee",
-              value: 1,
-              calculatedPrice: 3000
-            }
-          ],
-          replacesProductId: "prod-002"
-        },
-        {
-          id: "prod-103",
-          name: "TeamSystem HR Cloud",
-          description: "Gestione delle risorse umane basata su cloud",
-          category: "hr",
-          price: 3200,
-          quantity: 1,
-          ratePlan: {
-            id: "rp-103",
-            name: "HR Cloud Complete",
-            Infrastructure__c: "SAAS"
-          },
-          charges: [
-            {
-              id: "charge-103",
-              name: "Licenza HR Cloud",
-              type: "Recurring",
-              model: "FlatFee",
-              value: 1,
-              calculatedPrice: 3200
-            }
-          ],
-          replacesProductId: "prod-003"
-        }
-      ]
-    },
-    iaas: {
-      id: "iaas",
-      title: "Cloud IaaS",
-      description: "Migrazione verso infrastruttura cloud self-managed",
-      benefits: [
-        "Maggiore controllo",
-        "Personalizzazione avanzata",
-        "Utilizzo dell'infrastruttura esistente"
-      ],
-      totalValue: 10800,
-      percentChange: "-10%", // Calcolato rispetto al totale corrente (12000)
-      products: [
-        {
-          id: "prod-201",
-          name: "TeamSystem Enterprise IaaS",
-          description: "Versione ERP ottimizzata per infrastruttura cloud",
-          category: "enterprise",
-          price: 4800,
-          quantity: 1,
-          ratePlan: {
-            id: "rp-201",
-            name: "Enterprise IaaS Standard",
-            Infrastructure__c: "IAAS"
-          },
-          charges: [
-            {
-              id: "charge-201",
-              name: "Licenza Base IaaS",
-              type: "Recurring",
-              model: "FlatFee",
-              value: 1,
-              calculatedPrice: 4800
-            }
-          ],
-          replacesProductId: "prod-001"
-        },
-        {
-          id: "prod-202",
-          name: "TeamSystem CRM IaaS",
-          description: "CRM con deployment su infrastruttura cloud",
-          category: "professional",
-          price: 2200,
-          quantity: 1,
-          ratePlan: {
-            id: "rp-202",
-            name: "CRM IaaS",
-            Infrastructure__c: "IAAS"
-          },
-          charges: [
-            {
-              id: "charge-202",
-              name: "Licenza CRM IaaS",
-              type: "Recurring",
-              model: "FlatFee",
-              value: 1,
-              calculatedPrice: 2200
-            }
-          ],
-          replacesProductId: "prod-002"
-        },
-        {
-          id: "prod-203",
-          name: "TeamSystem HR IaaS",
-          description: "Soluzione HR con deployment IaaS",
-          category: "hr",
-          price: 2600,
-          quantity: 1,
-          ratePlan: {
-            id: "rp-203",
-            name: "HR IaaS",
-            Infrastructure__c: "IAAS"
-          },
-          charges: [
-            {
-              id: "charge-203",
-              name: "Licenza HR IaaS",
-              type: "Recurring",
-              model: "FlatFee",
-              value: 1,
-              calculatedPrice: 2600
-            }
-          ],
-          replacesProductId: "prod-003"
-        },
-        {
-          id: "prod-204",
-          name: "TeamSystem Migration Tool",
-          description: "Strumento di migrazione dati per infrastruttura cloud",
-          category: "cross",
-          price: 1200,
-          quantity: 1,
-          ratePlan: {
-            id: "rp-204",
-            name: "Migration Tool",
-            Infrastructure__c: "IAAS"
-          },
-          charges: [
-            {
-              id: "charge-204",
-              name: "Licenza Migration Tool",
-              type: "OneTime",
-              model: "FlatFee",
-              value: 1,
-              calculatedPrice: 1200
-            }
-          ]
-        }
-      ]
-    }
-  },
-  nonMigrableProductIds: ["prod-004"],
-  nonMigrableReasons: {
-    "prod-004": "Modulo legacy non supportato nelle nuove versioni"
-  },
-  summary: {
-    currentValue: 12000, // 5000 + 2500 + 3000 + 1500
-    saasValue: 11700,    // 5500 + 3000 + 3200
-    iaasValue: 10800     // 4800 + 2200 + 2600 + 1200
-  }
-};
+// Importiamo i dati di test da un file esterno
+// import MOCK_DATA from '../data/migrationMockData';
+import MOCK_DATA from '../data/migrationMockDataFromQuote';
 
 /**
 * @component Migration
@@ -428,17 +119,33 @@ function Migration() {
     return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(price);
   };
 
-  // Funzione per calcolare il totale corrente (in base ai prodotti sorgente)
+  // Funzione per calcolare il totale di listino dei prodotti sorgente
   const calculateCurrentTotal = () => {
     return migrationData.sourceProducts.reduce((total, product) => {
       return total + (product.price * (product.quantity || 1));
     }, 0);
   };
 
-  // Funzione per calcolare il nuovo totale (in base ai prodotti target attuali)
+  // Funzione per calcolare il totale cliente dei prodotti sorgente (con sconti)
+  const calculateCurrentCustomerTotal = () => {
+    return migrationData.sourceProducts.reduce((total, product) => {
+      const effectivePrice = product.customerPrice || product.price;
+      return total + (effectivePrice * (product.quantity || 1));
+    }, 0);
+  };
+
+  // Funzione per calcolare il totale di listino dei prodotti target
   const calculateNewTotal = () => {
     return targetProducts.reduce((total, product) => {
       return total + (product.price * (product.quantity || 1));
+    }, 0);
+  };
+
+  // Funzione per calcolare il totale cliente dei prodotti target (con sconti)
+  const calculateNewCustomerTotal = () => {
+    return targetProducts.reduce((total, product) => {
+      const effectivePrice = product.customerPrice || product.price;
+      return total + (effectivePrice * (product.quantity || 1));
     }, 0);
   };
 
@@ -455,6 +162,43 @@ function Migration() {
   // Funzione per tornare alla pagina precedente
   const handleGoBack = () => {
     navigate('/customers');
+  };
+
+  // Funzione per tradurre le categorie
+  const translateCategory = (category) => {
+    const categories = {
+      'enterprise': 'Enterprise',
+      'professional': 'Professional',
+      'hr': 'HR',
+      'cross': 'Cross'
+    };
+    return categories[category] || category || 'N/A';
+  };
+  
+  // Funzione per determinare il tipo di tag in base alla categoria
+  const getCategoryTagType = (category) => {
+    const categoryMap = {
+      'enterprise': 'tone1',
+      'professional': 'tone3',
+      'hr': 'tone5',
+      'cross': 'tone7'
+    };
+    return categoryMap[category] || 'tone1';
+  };
+
+  // Creiamo una mappa per identificare quali prodotti sostituiscono quali
+  const createReplacementMap = () => {
+    const replacementMap = {};
+    
+    if (selectedPath && migrationData.migrationPaths[selectedPath]) {
+      migrationData.migrationPaths[selectedPath].products.forEach(product => {
+        if (product.replacesProductId) {
+          replacementMap[product.replacesProductId] = product.id;
+        }
+      });
+    }
+    
+    return replacementMap;
   };
 
   // Simulazione dello stato di caricamento (1 secondo)
@@ -477,6 +221,9 @@ function Migration() {
       </VaporPage>
     );
   }
+
+  // Otteniamo la mappa dei prodotti sostitutivi
+  const replacementMap = createReplacementMap();
 
   return (
     <VaporPage>
@@ -538,10 +285,16 @@ function Migration() {
                   borderRadius: 1,
                   boxShadow: 1
                 }}>
-                  <SourceProductList 
+                  {/* Utilizziamo il nuovo componente MigrationProductList */}
+                  <MigrationProductList 
                     products={migrationData.sourceProducts}
+                    isMigrationSource={true}
                     nonMigrableProductIds={migrationData.nonMigrableProductIds}
                     nonMigrableReasons={migrationData.nonMigrableReasons}
+                    replacementMap={replacementMap}
+                    translateCategory={translateCategory}
+                    getCategoryTagType={getCategoryTagType}
+                    title="Prodotti Attuali"
                   />
                 </Box>
               </Grid>
@@ -618,11 +371,14 @@ function Migration() {
                         </Box>
                       </Box>
                       
-                      {/* Mostra i prodotti target per il percorso selezionato */}
-                      <TargetProductList 
+                      {/* Utilizziamo il nuovo componente MigrationProductList per i prodotti target */}
+                      <MigrationProductList 
                         products={targetProducts}
                         onRemoveProduct={handleRemoveProduct}
-                        onNavigateToCatalog={() => navigate(`/catalog?migrationId=${subscriptionId || 'mock'}`)}
+                        onAddProduct={() => navigate(`/catalog?migrationId=${subscriptionId || 'mock'}`)}
+                        translateCategory={translateCategory}
+                        getCategoryTagType={getCategoryTagType}
+                        title="Nuovi Prodotti"
                       />
                     </>
                   )}
@@ -646,34 +402,44 @@ function Migration() {
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={4}>
                     <Typography variant="body2" color="text.secondary">
-                      Valore attuale:
+                      Valore di listino attuale:
                     </Typography>
                     <Typography variant="body1" fontWeight="bold">
                       {formatPrice(calculateCurrentTotal())} / anno
                     </Typography>
+                    {calculateCurrentCustomerTotal() < calculateCurrentTotal() && (
+                      <Typography variant="body2" color="success.main">
+                        {formatPrice(calculateCurrentCustomerTotal())} con sconti
+                      </Typography>
+                    )}
                   </Grid>
                   
                   <Grid item xs={12} sm={4}>
                     <Typography variant="body2" color="text.secondary">
-                      Nuovo valore:
+                      Nuovo valore di listino:
                     </Typography>
                     <Typography variant="body1" fontWeight="bold">
                       {formatPrice(calculateNewTotal())} / anno
                     </Typography>
+                    {calculateNewCustomerTotal() < calculateNewTotal() && (
+                      <Typography variant="body2" color="success.main">
+                        {formatPrice(calculateNewCustomerTotal())} con sconti
+                      </Typography>
+                    )}
                   </Grid>
                   
                   <Grid item xs={12} sm={4}>
                     <Typography variant="body2" color="text.secondary">
-                      Differenza:
+                      Differenza (con sconti):
                     </Typography>
                     <Typography 
                       variant="body1" 
                       fontWeight="bold" 
-                      color={(calculateNewTotal() - calculateCurrentTotal()) >= 0 ? 'error.main' : 'success.main'}
+                      color={(calculateNewCustomerTotal() - calculateCurrentCustomerTotal()) >= 0 ? 'error.main' : 'success.main'}
                     >
-                      {formatPrice(calculateNewTotal() - calculateCurrentTotal())} / anno
+                      {formatPrice(calculateNewCustomerTotal() - calculateCurrentCustomerTotal())} / anno
                       {' '}
-                      ({((calculateNewTotal() - calculateCurrentTotal()) / calculateCurrentTotal() * 100).toFixed(1)}%)
+                      ({((calculateNewCustomerTotal() - calculateCurrentCustomerTotal()) / calculateCurrentCustomerTotal() * 100).toFixed(1)}%)
                     </Typography>
                   </Grid>
                 </Grid>

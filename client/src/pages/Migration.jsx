@@ -271,10 +271,68 @@ function Migration() {
 
         {activeTab === 0 && (
           <Box sx={{ mt: 3 }}>
-            <Typography variant="h6" component="h2" fontWeight="bold" sx={{ mb: 3 }}>
-              Gestione Migrazione
-            </Typography>
-            
+            {/* Riepilogo migrazione (mostrato solo se un percorso è selezionato) */}
+            <Box sx={{ 
+              mb: 2,
+              p: 2,
+              bgcolor: 'background.paper',
+              borderRadius: 1,
+              boxShadow: 1
+            }}>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                Riepilogo Migrazione
+              </Typography>
+              
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={4}>
+                  <Typography variant="body2" color="text.secondary">
+                    Valore di listino attuale:
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold">
+                    {formatPrice(calculateCurrentTotal())} / anno
+                  </Typography>
+                  {calculateCurrentCustomerTotal() < calculateCurrentTotal() && (
+                    <Typography variant="body2" color="success.main">
+                      {formatPrice(calculateCurrentCustomerTotal())} con sconti
+                    </Typography>
+                  )}
+                </Grid>
+                
+                {selectedPath && (
+                  <Grid item xs={12} sm={4}>
+                    <Typography variant="body2" color="text.secondary">
+                      Nuovo valore di listino:
+                    </Typography>
+                    <Typography variant="body1" fontWeight="bold">
+                      {formatPrice(calculateNewTotal())} / anno
+                    </Typography>
+                    {calculateNewCustomerTotal() < calculateNewTotal() && (
+                      <Typography variant="body2" color="success.main">
+                        {formatPrice(calculateNewCustomerTotal())} con sconti
+                      </Typography>
+                    )}
+                  </Grid>
+                )}
+                
+                {selectedPath && (
+                  <Grid item xs={12} sm={4}>
+                    <Typography variant="body2" color="text.secondary">
+                      Differenza (con sconti):
+                    </Typography>
+                    <Typography 
+                      variant="body1" 
+                      fontWeight="bold" 
+                      color={(calculateNewCustomerTotal() - calculateCurrentCustomerTotal()) >= 0 ? 'error.main' : 'success.main'}
+                    >
+                      {formatPrice(calculateNewCustomerTotal() - calculateCurrentCustomerTotal())} / anno
+                      {' '}
+                      ({((calculateNewCustomerTotal() - calculateCurrentCustomerTotal()) / calculateCurrentCustomerTotal() * 100).toFixed(1)}%)
+                    </Typography>
+                  </Grid>
+                )}
+              </Grid>
+            </Box>
+
             {/* Struttura a due colonne per i prodotti */}
             <Grid container spacing={3}>
               {/* Colonna sinistra: prodotti originali */}
@@ -385,66 +443,6 @@ function Migration() {
                 </Box>
               </Grid>
             </Grid>
-            
-            {/* Riepilogo migrazione (mostrato solo se un percorso è selezionato) */}
-            {selectedPath && (
-              <Box sx={{ 
-                mt: 4,
-                p: 3,
-                bgcolor: 'background.paper',
-                borderRadius: 1,
-                boxShadow: 1
-              }}>
-                <Typography variant="h6" fontWeight="bold" gutterBottom>
-                  Riepilogo Migrazione
-                </Typography>
-                
-                <Grid container spacing={3}>
-                  <Grid item xs={12} sm={4}>
-                    <Typography variant="body2" color="text.secondary">
-                      Valore di listino attuale:
-                    </Typography>
-                    <Typography variant="body1" fontWeight="bold">
-                      {formatPrice(calculateCurrentTotal())} / anno
-                    </Typography>
-                    {calculateCurrentCustomerTotal() < calculateCurrentTotal() && (
-                      <Typography variant="body2" color="success.main">
-                        {formatPrice(calculateCurrentCustomerTotal())} con sconti
-                      </Typography>
-                    )}
-                  </Grid>
-                  
-                  <Grid item xs={12} sm={4}>
-                    <Typography variant="body2" color="text.secondary">
-                      Nuovo valore di listino:
-                    </Typography>
-                    <Typography variant="body1" fontWeight="bold">
-                      {formatPrice(calculateNewTotal())} / anno
-                    </Typography>
-                    {calculateNewCustomerTotal() < calculateNewTotal() && (
-                      <Typography variant="body2" color="success.main">
-                        {formatPrice(calculateNewCustomerTotal())} con sconti
-                      </Typography>
-                    )}
-                  </Grid>
-                  
-                  <Grid item xs={12} sm={4}>
-                    <Typography variant="body2" color="text.secondary">
-                      Differenza (con sconti):
-                    </Typography>
-                    <Typography 
-                      variant="body1" 
-                      fontWeight="bold" 
-                      color={(calculateNewCustomerTotal() - calculateCurrentCustomerTotal()) >= 0 ? 'error.main' : 'success.main'}
-                    >
-                      {formatPrice(calculateNewCustomerTotal() - calculateCurrentCustomerTotal())} / anno
-                      {' '}
-                      ({((calculateNewCustomerTotal() - calculateCurrentCustomerTotal()) / calculateCurrentCustomerTotal() * 100).toFixed(1)}%)
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Box>
-            )}
           </Box>
         )}
 

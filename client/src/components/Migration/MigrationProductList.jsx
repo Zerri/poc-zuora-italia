@@ -87,9 +87,14 @@ function MigrationProductList({
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        <Typography variant="h6" component="h2" fontWeight="bold">
-          Prodotti Attuali ({products.length})
-        </Typography>
+        <Box>
+          <Typography variant="h6" component="h2" fontWeight="bold">
+            Prodotti Attuali ({products.length})
+          </Typography>
+          <Typography variant="bodySmallRegular" color="text.secondary">
+            Procedura Lynfa Azienda
+          </Typography>
+        </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Chip
             label={`Non Migrabili (${nonMigrableCount})`}

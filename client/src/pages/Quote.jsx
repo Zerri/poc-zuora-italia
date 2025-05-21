@@ -383,7 +383,7 @@ function Quote() {
                 
                 <Grid item xs={12} sm={6} md={2.4}>
                   <FormControl fullWidth>
-                    <Typography variant="body2" gutterBottom>Data inizio garanzia</Typography>
+                    <Typography variant="body2" gutterBottom>Data inizio assistenza software</Typography>
                     <DatePicker 
                       value={formState.warrantyStartDate} 
                       onChange={(newValue) => handleInputChange('warrantyStartDate', newValue)} 

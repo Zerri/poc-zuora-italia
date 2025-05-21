@@ -109,7 +109,7 @@ const MOCK_DATA = {
   migrationPaths: {
     saas: {
       id: "saas",
-      title: "Cloud SaaS",
+      title: "TS Studio SaaS",
       description: "Migrazione verso servizi cloud completamente gestiti",
       benefits: [
         "Nessuna gestione dell'infrastruttura",

@@ -372,21 +372,21 @@ const MOCK_DATA = {
   migrationPaths: {
     saas: {
       id: "saas",
-      title: "TS Studio SaaS",
+      title: "Cloud SaaS",
       description: "Migrazione verso servizi cloud completamente gestiti",
       benefits: [
         "Nessuna gestione dell'infrastruttura",
         "Aggiornamenti automatici",
         "Scalabilità on-demand"
       ],
-      totalValue: 16642.28,
-      percentChange: "+5.6%", // Calcolato rispetto al totale corrente
+      totalValue: 17710, // Valore totale senza sconti
+      percentChange: "+12.4%", // Calcolato rispetto al totale corrente
       products: [
         {
           id: "8ad09124958d56ab01958eb3dccd2179",
           name: "Tax Advanced LS-85164 PoC",
           price: 15590,
-          customerPrice: 14193.28,
+          customerPrice: 15590, // Rimosso lo sconto
           quantity: 1,
           description: "Soluzione avanzata per gestione fiscale in cloud",
           category: "enterprise",
@@ -412,7 +412,7 @@ const MOCK_DATA = {
           id: "8ad086fa958d2d3001958fe48e6d50b1",
           name: "100 Dichiarazioni Telematiche Addizionali LS-85175 PoC",
           price: 400,
-          customerPrice: 364.16,
+          customerPrice: 400, // Rimosso lo sconto
           quantity: 1,
           description: "Pacchetto aggiuntivo di dichiarazioni telematiche",
           category: "professional",
@@ -426,7 +426,7 @@ const MOCK_DATA = {
             {
               id: "9336383e229958d2d0f58fe48fdc007f",
               name: "Canone Flat Fee",
-              type: "Recurring", 
+              type: "Recurring",
               model: "FlatFee",
               value: 0,
               calculatedPrice: 400
@@ -463,7 +463,7 @@ const MOCK_DATA = {
           id: "8ad0869c958d2d3b01958fee165c5075",
           name: "Kit Corrispettivi LS-85535 PoC",
           price: 465,
-          customerPrice: 423.34,
+          customerPrice: 465, // Rimosso lo sconto
           quantity: 1,
           description: "Soluzione per gestione corrispettivi elettronici",
           category: "professional",
@@ -489,7 +489,7 @@ const MOCK_DATA = {
           id: "8ad086fa958d2d30019590018879564c",
           name: "Contabilità Entry Online LS-85009 PoC",
           price: 605,
-          customerPrice: 550.8,
+          customerPrice: 605, // Rimosso lo sconto
           quantity: 1,
           description: "Soluzione cloud per contabilità base",
           category: "professional",
@@ -515,7 +515,7 @@ const MOCK_DATA = {
           id: "8ad093f7958d56b4019590064ba0572d",
           name: "Gestione Studio Light LS-85029 PoC",
           price: 650,
-          customerPrice: 1110.7,
+          customerPrice: 650, // Rimosso lo sconto
           quantity: 1,
           description: "Soluzione base per la gestione dello studio professionale",
           category: "professional",

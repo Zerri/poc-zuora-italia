@@ -180,7 +180,7 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
       const listPrice = calculateTotal();
       
       // Se il prezzo cliente non è stato impostato o è zero, usa il prezzo di listino
-      const finalCustomerPrice = (customerPrice && customerPrice > 0) ? customerPrice : listPrice;
+      const finalCustomerPrice = (customerPrice && customerPrice !== 0) ? customerPrice : listPrice;
       
       // Prepara l'oggetto da passare al componente genitore
       const productData = {
@@ -227,6 +227,10 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
   const selectedRatePlan = product.productRatePlans.find(
     ratePlan => ratePlan.id === selectedProductRatePlan
   );
+
+  const isDiscountProduct = () => {
+    return product && product.name === 'Discount Poc';
+  }
 
   return (
     <Drawer
@@ -315,6 +319,7 @@ function ProductDrawer({ open, onClose, product, translateCategory, onAddToOffer
             calculateChargeTotal={calculateChargeTotal}
             customerPrice={customerPrice}
             onCustomerPriceChange={handleCustomerPriceChange}
+            isDiscountProduct={isDiscountProduct()}
           />
         )}
       </Box>

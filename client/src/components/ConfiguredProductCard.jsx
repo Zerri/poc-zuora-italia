@@ -30,7 +30,7 @@ function ConfiguredProductCard({
 }) {
   // Calcola lo sconto se c'è un prezzo cliente personalizzato
   const hasCustomPrice = product.customerPrice && product.customerPrice !== product.price;
-  const discount = hasCustomPrice ? 
+  const discount = hasCustomPrice && product.customerPrice > 0 ? 
     ((product.price - product.customerPrice) / product.price * 100).toFixed(2) : 0;
   
   // Prezzo da usare per i calcoli (prezzo cliente se disponibile, altrimenti prezzo di listino)

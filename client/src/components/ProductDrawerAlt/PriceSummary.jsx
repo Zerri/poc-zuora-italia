@@ -14,7 +14,8 @@ function PriceSummary({
   chargeValues, 
   calculateChargeTotal,
   customerPrice: propCustomerPrice, // Rinominato per evitare confusione
-  onCustomerPriceChange // Prop per gestire il cambio di prezzo cliente
+  onCustomerPriceChange, // Prop per gestire il cambio di prezzo cliente
+  isDiscountProduct
 }) {
   // State locale per il prezzo cliente
   const [customerPrice, setCustomerPrice] = useState('');
@@ -24,12 +25,19 @@ function PriceSummary({
     if (selectedRatePlan) {
       const calculatedTotal = calculateTotalPrice();
       
-      // FIX: Se il prezzo cliente è già impostato dall'esterno, usalo
-      if (propCustomerPrice !== undefined && propCustomerPrice > 0) {
-        setCustomerPrice(propCustomerPrice.toFixed(2));
+      if (propCustomerPrice !== undefined) {
+        // Verifica se il valore è numerico e non NaN
+        if (!isNaN(propCustomerPrice)) {
+          // Se non è zero o una stringa vuota, imposta il valore
+          setCustomerPrice(propCustomerPrice);
+        } else {
+          // Se non è un numero valido ma è definito (potrebbe essere "-" o una stringa non valida)
+          // lascia il valore come stringa per consentirne la modifica
+          setCustomerPrice(propCustomerPrice.toString());
+        }
       } else {
         // Altrimenti usa il prezzo calcolato
-        setCustomerPrice(calculatedTotal.toFixed(2));
+        setCustomerPrice(calculatedTotal);
         
         // Notifica il componente genitore del prezzo iniziale
         if (onCustomerPriceChange) {
@@ -118,18 +126,41 @@ function PriceSummary({
   // Gestione del cambio di prezzo cliente
   const handleCustomerPriceChange = (e) => {
     const value = e.target.value;
-    setCustomerPrice(value);
     
-    // FIX: Notifica il componente genitore con il nuovo valore
-    if (onCustomerPriceChange) {
-      const numericValue = parseFloat(value) || 0;
-      onCustomerPriceChange(numericValue);
-      
-      // Aggiungi log per debug
-      console.log('Customer price changed to:', numericValue);
+    // Se è un prodotto di sconto, consenti valori negativi
+    if (isDiscountProduct) {
+      // Per il prodotto "Discount Poc", consenti valori negativi
+      if (value === '' || value === '-') {
+        // Mantieni il valore come digitato per consentire l'inserimento di '-'
+        setCustomerPrice(value);
+      } else {
+        const numericValue = parseFloat(value);
+        if (!isNaN(numericValue)) {
+          setCustomerPrice(numericValue);
+          
+          if (onCustomerPriceChange) {
+            onCustomerPriceChange(numericValue);
+          }
+        }
+      }
+    } else {
+      // Per tutti gli altri prodotti, consenti solo valori positivi
+      if (value === '') {
+        setCustomerPrice(value);
+      } else {
+        const numericValue = parseFloat(value);
+        // Controlla che sia un numero valido E positivo
+        if (!isNaN(numericValue) && numericValue >= 0) {
+          setCustomerPrice(numericValue);
+          
+          if (onCustomerPriceChange) {
+            onCustomerPriceChange(numericValue);
+          }
+        }
+      }
     }
   };
-  
+    
   // Calcolo costi per unità
   const costPerUnit = unitCount ? (annualTotal / unitCount) : 0;
   const onetimePerUnit = unitCount && hasLicense ? (licenseTotal / unitCount) : 0;
@@ -278,9 +309,9 @@ function PriceSummary({
             type="number"
             size="small"
             sx={{ width: '120px' }}
-            InputProps={{
-              startAdornment: <InputAdornment position="start">€</InputAdornment>,
-              inputProps: { min: 0, step: 0.01 }
+            slotProps={{
+              input: { startAdornment: <InputAdornment position="start">€</InputAdornment>, },
+               min: isDiscountProduct ? undefined : 0
             }}
           />
         </Box>

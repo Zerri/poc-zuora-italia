@@ -60,7 +60,8 @@ function QuotesPage() {
   // Mappa per tradurre i tipi di preventivo in italiano
   const typeTranslations = {
     'New': 'Nuovo',
-    'Migration': 'Migrazione'
+    'Migration': 'Migrazione',
+    'Upgrade': 'Upgrade'
   };
   
   // State per gestione drawer

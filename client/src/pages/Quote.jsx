@@ -59,7 +59,7 @@ function Quote() {
   const [formState, setFormState] = useState({
     status: '',
     creationDate: null,
-    lastModifiedDate: null,
+    type: '',
     notes: '',
     validityDate: null,
     warrantyStartDate: null,
@@ -140,7 +140,7 @@ function Quote() {
       setFormState({
         status: quoteData.status || '',
         creationDate: quoteData.createdAt ? dayjs(quoteData.createdAt) : null,
-        lastModifiedDate: quoteData.updatedAt ? dayjs(quoteData.updatedAt) : null,
+        type: quoteData.type || '',
         notes: quoteData.notes || '',
         validityDate: quoteData.validityDate ? dayjs(quoteData.validityDate) : null,
         warrantyStartDate: quoteData.warrantyStartDate ? dayjs(quoteData.warrantyStartDate) : null,
@@ -174,6 +174,7 @@ function Quote() {
     // Trasforma i dati nel formato atteso dall'API
     const quoteToSave = {
       status: formState.status,
+      type: formState.type,
       notes: formState.notes,
       validityDate: formState.validityDate ? formState.validityDate.toISOString() : null,
       warrantyStartDate: formState.warrantyStartDate ? formState.warrantyStartDate.toISOString() : null,
@@ -356,15 +357,19 @@ function Quote() {
                 
                 <Grid item xs={12} sm={6} md={2.4}>
                   <FormControl fullWidth>
-                    <Typography variant="body2" gutterBottom>Data ultima modifica</Typography>
-                    <DatePicker 
-                      value={formState.lastModifiedDate} 
-                      onChange={(newValue) => handleInputChange('lastModifiedDate', newValue)} 
-                      format="DD/MM/YYYY"
-                      views={["day", "year", "month"]}
-                      slotProps={{ textField: { size: 'small' } }}
-                      readOnly={true}  // La data di modifica non dovrebbe essere modificabile
-                    />
+                    <Typography variant="body2" gutterBottom>Tipologia di preventivo</Typography>
+                    <Select
+                      value={formState.type}
+                      onChange={(e) => handleInputChange('type', e.target.value)}
+                      displayEmpty
+                      fullWidth
+                      size="small"
+                    >
+                      <MenuItem value="">Seleziona tipologia</MenuItem>
+                      <MenuItem value="New">Nuovo</MenuItem>
+                      <MenuItem value="Migration">Migrazione</MenuItem>
+                      <MenuItem value="Upgrade">Upgrade</MenuItem>
+                    </Select>
                   </FormControl>
                 </Grid>
 

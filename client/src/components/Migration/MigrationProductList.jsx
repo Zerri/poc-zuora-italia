@@ -89,10 +89,10 @@ function MigrationProductList({
       }}>
         <Box>
           <Typography variant="h6" component="h2" fontWeight="bold">
-            Prodotti Attuali ({products.length})
+            Procedura Lynfa Azienda
           </Typography>
           <Typography variant="bodySmallRegular" color="text.secondary">
-            Procedura Lynfa Azienda
+            Subscription: Prodotti Attuali ({products.length})
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

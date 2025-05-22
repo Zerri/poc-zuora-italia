@@ -8,7 +8,8 @@ const CustomerSchema = new mongoose.Schema({
   email: { type: String },
   ultimoContatto: { type: Date },
   valore: { type: Number },
-  valoreAnnuo: { type: String }
+  valoreAnnuo: { type: String },
+  migrabile: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model('Customer', CustomerSchema, 'Customers');

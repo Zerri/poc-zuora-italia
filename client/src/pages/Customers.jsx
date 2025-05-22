@@ -304,7 +304,7 @@ function CustomersPage() {
                         {createQuoteMutation.isPending ? 'Creazione...' : 'Nuova offerta'}
                       </Button>
                       
-                      {customer.tipo === 'Cliente' && (
+                      {customer.tipo === 'Cliente' && customer.migrabile && (
                         <Button 
                           variant="outlined" 
                           color="primary"
@@ -312,7 +312,7 @@ function CustomersPage() {
                           onClick={() => handleMigration(customer)}
                           disabled={createQuoteMutation.isPending}
                         >
-                          {createQuoteMutation.isPending ? 'Creazione...' : 'Migrazione'}
+                          Migrazione
                         </Button>
                       )}
                     </Box>

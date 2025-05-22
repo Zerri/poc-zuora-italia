@@ -132,7 +132,7 @@ function QuoteCard({
             component={Link}
             to={`/quote/${quote._id}`}
             startIcon={<VaporIcon icon={faPen} />}
-            sx={{ fontSize: '0.75rem', py: 0.75 }}
+            sx={{ fontSize: '0.9rem', py: 0.75 }}
           >
             Modifica
           </Button>

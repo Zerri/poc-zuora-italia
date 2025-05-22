@@ -8,16 +8,13 @@ import {
   VaporToolbar, 
   CircularProgress, 
   Alert, 
-  Card, 
-  CardContent, 
-  Tag, 
   Chip,
-  Divider, 
   Grid, 
   Box,
 } from "@vapor/v3-components";
 import SearchBar from "@vapor/v3-components/SearchBar";
 import { Link } from 'react-router-dom';
+import CustomerCard from '../components/CustomerCard';
 
 /**
  * @component CustomersPage
@@ -80,12 +77,6 @@ function CustomersPage() {
       alert('Impossibile creare il preventivo. Riprova più tardi.');
     }
   });
-
-  // Funzione per formattare la data
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('it-IT');
-  };
   
   // Funzione per cambiare il filtro
   const handleFilterChange = (newFilter) => {
@@ -238,86 +229,12 @@ function CustomersPage() {
           <Grid container spacing={3}>
             {filteredCustomers.map((customer) => (
               <Grid item xs={12} md={6} lg={4} xl={3} key={customer._id}>
-                <Card sx={{ 
-                  height: '100%', 
-                  display: 'flex', 
-                  flexDirection: 'column',
-                  boxShadow: 2,
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: 4
-                  }
-                }}>
-                  <CardContent>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                      <Typography variant="h6" component="h2" fontWeight="bold">
-                        {customer.nome}
-                      </Typography>
-                      <Tag 
-                        label={customer.tipo} 
-                        type={customer.tipo === 'Cliente' ? 'tone3' : 'tone7'}
-                        size="medium"
-                        variant='duotone'
-                      />
-                    </Box>
-                    
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      {customer.settore}
-                    </Typography>
-                    
-                    <Typography variant="body2">
-                      {customer.email}
-                    </Typography>
-                    
-                    <Divider sx={{ my: 2 }} />
-                    
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                      <Typography variant="body2" color="text.secondary">
-                        Ultimo contatto
-                      </Typography>
-                      <Typography variant="body2" fontWeight="medium">
-                        {formatDate(customer.ultimoContatto)}
-                      </Typography>
-                    </Box>
-                    
-                    {customer.valoreAnnuo && (
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography variant="body2" color="text.secondary">
-                          Valore
-                        </Typography>
-                        <Typography variant="body2" fontWeight="bold">
-                          {customer.valoreAnnuo}
-                        </Typography>
-                      </Box>
-                    )}
-                    
-                    <Box sx={{ display: 'flex', gap: 2, mt: 3, justifyContent: 'flex-end' }}>
-                      <Button 
-                        variant="contained" 
-                        color="primary"
-                        size="small"
-                        startIcon={<span>+</span>}
-                        onClick={() => handleNewQuote(customer)}
-                        disabled={createQuoteMutation.isPending}
-                      >
-                        {createQuoteMutation.isPending ? 'Creazione...' : 'Nuova offerta'}
-                      </Button>
-                      
-                      {customer.tipo === 'Cliente' && customer.migrabile && (
-                        <Button 
-                          variant="outlined" 
-                          color="primary"
-                          size="small"
-                          onClick={() => handleMigration(customer)}
-                          disabled={createQuoteMutation.isPending}
-                        >
-                          Migrazione
-                        </Button>
-                      )}
-                    </Box>
-                  </CardContent>
-                </Card>
+                <CustomerCard
+                  customer={customer}
+                  onNewQuote={handleNewQuote}
+                  onMigration={handleMigration}
+                  isCreatingQuote={createQuoteMutation.isPending}
+                />
               </Grid>
             ))}
           </Grid>

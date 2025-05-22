@@ -8,11 +8,7 @@ import {
   VaporToolbar, 
   CircularProgress, 
   Alert, 
-  Card, 
-  CardContent, 
-  Tag, 
   Chip,
-  Divider, 
   Grid, 
   Box,
   VaporIcon,
@@ -20,16 +16,17 @@ import {
   DataGrid,
   ButtonGroup,
   IconButton,
-  Tooltip
+  Tooltip,
 } from "@vapor/v3-components";
-import { faCirclePlus } from "@fortawesome/pro-regular-svg-icons/faCirclePlus";
 import { faArrowLeft } from "@fortawesome/pro-regular-svg-icons/faArrowLeft";
 import { faInfoCircle } from "@fortawesome/pro-regular-svg-icons/faInfoCircle";
 import { faTableCells } from "@fortawesome/pro-regular-svg-icons/faTableCells";
 import { faTableCellsLarge } from "@fortawesome/pro-regular-svg-icons/faTableCellsLarge";
+import { faCirclePlus } from "@fortawesome/pro-regular-svg-icons/faCirclePlus";
 import SearchBar from "@vapor/v3-components/SearchBar";
 import { Link } from 'react-router-dom';
 import ProductDrawerAlt from '../components/ProductDrawerAlt';
+import ProductCard from '../components/ProductCard';
 // Importa l'hook per utilizzare il context del ruolo utente
 import { useUserRole } from '../context/UserRoleContext';
 
@@ -358,21 +355,6 @@ function CatalogPage() {
       )
     },
     { 
-      field: 'categoria', 
-      headerName: 'Categoria', 
-      flex: 0.8,
-      renderCell: (params) => (
-        <Box sx={{ py: 1 }}>
-          <Tag 
-            label={translateCategory(params.value)} 
-            type={getCategoryTagType(params.value)}
-            size="small"
-            variant='duotone'
-          />
-        </Box>
-      )
-    },
-    { 
       field: 'productRatePlans', 
       headerName: 'Rate Plans', 
       flex: 1.5,
@@ -588,85 +570,18 @@ function CatalogPage() {
             </Alert>
           ) : (
             <>
-              {/* VISTA A SCHEDE (CARDS) */}
+              {/* VISTA A SCHEDE (CARDS) - Utilizzando il nuovo componente ProductCard */}
               {viewMode === 'cards' && (
                 <Grid container spacing={3}>
                   {filteredProducts.map((product) => (
                     <Grid item xs={12} md={6} lg={4} xl={3} key={product.id}>
-                      <Card sx={{ 
-                        height: '100%', 
-                        display: 'flex', 
-                        flexDirection: 'column',
-                        boxShadow: 2,
-                        transition: 'transform 0.2s, box-shadow 0.2s',
-                        '&:hover': {
-                          transform: 'translateY(-4px)',
-                          boxShadow: 4
-                        }
-                      }}>
-                        <CardContent sx={{ 
-                          flex: 1, 
-                          display: 'flex', 
-                          flexDirection: 'column',
-                          p: 2,
-                        }}>
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                            <Typography variant="h6" component="h2" fontWeight="bold" sx={{ flex: 1 }}>
-                              {product.name}
-                            </Typography>
-                            <Tag 
-                              label={translateCategory(product.categoria)} 
-                              type={getCategoryTagType(product.categoria)}
-                              size="medium"
-                              variant='duotone'
-                            />
-                          </Box>
-                          
-                          <Typography variant="body2" color="text.secondary" gutterBottom sx={{ minHeight: '40px' }}>
-                            {product.description || 'Nessuna descrizione disponibile.'}
-                          </Typography>
-                          
-                          <Divider sx={{ my: 2 }} />
-                          
-                          <Box sx={{ flex: 1 }}>
-                            <Typography variant="body2" color="text.secondary" gutterBottom>
-                              Rate plans:
-                            </Typography>
-                            <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                              {product.productRatePlans && product.productRatePlans.slice(0, 3).map((ratePlan, index) => (
-                                <Typography component="li" variant="body2" key={index}>
-                                  {ratePlan.name}
-                                </Typography>
-                              ))}
-                              {product.productRatePlans && product.productRatePlans.length > 3 && (
-                                <Typography component="li" variant="body2" fontStyle="italic">
-                                  e altro...
-                                </Typography>
-                              )}
-                            </ul>
-                          </Box>
-                          
-                          <Divider sx={{ my: 2 }} />
-                          
-                          <Box sx={{ 
-                            display: 'flex', 
-                            gap: 2, 
-                            justifyContent: 'flex-end',
-                            mt: 'auto',
-                            pt: 2
-                          }}>                        
-                            <Button 
-                              variant="contained" 
-                              color="primary"
-                              size="small"
-                              onClick={() => handleOpenDrawer(product)}
-                              startIcon={<VaporIcon icon={faCirclePlus} />}
-                            >
-                              {quoteId ? 'Aggiungi al preventivo' : 'Aggiungi'}
-                            </Button>
-                          </Box>
-                        </CardContent>
-                      </Card>
+                      <ProductCard
+                        product={product}
+                        onAddProduct={handleOpenDrawer}
+                        translateCategory={translateCategory}
+                        getCategoryTagType={getCategoryTagType}
+                        isAddingToQuote={!!quoteId}
+                      />
                     </Grid>
                   ))}
                 </Grid>

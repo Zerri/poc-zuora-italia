@@ -31,6 +31,7 @@ import { faArrowLeft } from "@fortawesome/pro-regular-svg-icons/faArrowLeft";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons/faPlus";
 import { faTableCells } from "@fortawesome/pro-regular-svg-icons/faTableCells";
 import { faTableCellsLarge } from "@fortawesome/pro-regular-svg-icons/faTableCellsLarge";
+import QuoteCard from '../components/QuoteCard';
 
 /**
  * @component QuotesPage
@@ -59,7 +60,7 @@ function QuotesPage() {
 
   // Mappa per tradurre i tipi di preventivo in italiano
   const typeTranslations = {
-    'New': 'Nuovo',
+    'New': 'Nuova offerta',
     'Migration': 'Migrazione',
     'Upgrade': 'Upgrade'
   };
@@ -438,7 +439,7 @@ function QuotesPage() {
               </IconButton>
             </Tooltip>
           </ButtonGroup>
-        </Box>
+        </Box>  
         
         {/* Visualizzazione delle quotes */}
         {isLoading ? (
@@ -455,95 +456,23 @@ function QuotesPage() {
           </Alert>
         ) : (
           <>
-            {/* VISTA A SCHEDE (CARDS) */}
+            {/* VISTA A SCHEDE (CARDS) - Utilizzando il nuovo componente QuoteCard */}
             {viewMode === 'cards' && (
               <Grid container spacing={3}>
                 {quotes.map((quote) => (
                   <Grid item xs={12} md={6} lg={4} xl={3} key={quote._id}>
-                    <Card sx={{ 
-                      height: '100%', 
-                      display: 'flex', 
-                      flexDirection: 'column',
-                      boxShadow: 2,
-                      transition: 'transform 0.2s, box-shadow 0.2s',
-                      '&:hover': {
-                        transform: 'translateY(-4px)',
-                        boxShadow: 4
-                      }
-                    }}>
-                      <CardContent>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                          <Typography variant="h6" component="h2" fontWeight="bold" sx={{ flex: 1 }}>
-                            {quote.customer.name}
-                          </Typography>
-                          <Box sx={{ display: 'flex', gap: 1 }}>
-                            <Tag 
-                              label={typeTranslations[quote.type]} 
-                              type="warning"
-                              size="medium"
-                              variant={getTypeTagVariant(quote.type)}
-                            />
-                            <Tag 
-                              label={statusTranslations[quote.status]} 
-                              type={getStatusTagType(quote.status)}
-                              size="medium"
-                              variant={getStatusTagVariant(quote.status)}
-                            />
-                          </Box>
-                        </Box>
-                        
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
-                          {quote.customer.sector}
-                        </Typography>
-                        
-                        <Typography variant="subtitle1" fontWeight="medium" sx={{ mt: 2 }}>
-                          Preventivo #{quote.number}
-                        </Typography>
-                        
-                        <Divider sx={{ my: 2 }} />
-                        
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                          <Box>
-                            <Typography variant="body2" color="text.secondary">
-                              Creato il
-                            </Typography>
-                            <Typography variant="body1">
-                              {formatDate(quote.createdAt)}
-                            </Typography>
-                          </Box>
-                          
-                          <Box sx={{ textAlign: 'right' }}>
-                            <Typography variant="body2" color="text.secondary">
-                              Valore
-                            </Typography>
-                            <Typography variant="body1" fontWeight="bold">
-                              {formatCurrency(quote.products && quote.products.length > 0 ? calculateQuoteValue(quote.products) : quote.value)}/anno
-                            </Typography>
-                          </Box>
-                        </Box>
-                        
-                        <Box sx={{ display: 'flex', gap: 2, mt: 2, justifyContent: 'flex-end' }}>
-                          <Button 
-                            variant="contained" 
-                            color="primary"
-                            size="small"
-                            component={Link}
-                            to={`/quote/${quote._id}`}
-                            startIcon={<VaporIcon icon={faPen} />}
-                          >
-                            Modifica
-                          </Button>
-                          <IconButton 
-                            variant="outlined" 
-                            color="primary"
-                            size="small"
-                            onClick={() => handleOpenDrawer(quote)}
-                          >
-                            <VaporIcon icon={faEllipsisVertical} size="xl" />
-                          </IconButton>
-                        </Box>
-                      </CardContent>
-                    </Card>
+                    <QuoteCard
+                      quote={quote}
+                      onOpenDrawer={handleOpenDrawer}
+                      calculateQuoteValue={calculateQuoteValue}
+                      formatDate={formatDate}
+                      formatCurrency={formatCurrency}
+                      getStatusTagType={getStatusTagType}
+                      getStatusTagVariant={getStatusTagVariant}
+                      getTypeTagVariant={getTypeTagVariant}
+                      statusTranslations={statusTranslations}
+                      typeTranslations={typeTranslations}
+                    />
                   </Grid>
                 ))}
               </Grid>

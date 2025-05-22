@@ -366,7 +366,7 @@ function Quote() {
                       size="small"
                     >
                       <MenuItem value="">Seleziona tipologia</MenuItem>
-                      <MenuItem value="New">Nuovo</MenuItem>
+                      <MenuItem value="New">Nuova vendita</MenuItem>
                       <MenuItem value="Migration">Migrazione</MenuItem>
                       <MenuItem value="Upgrade">Upgrade</MenuItem>
                     </Select>

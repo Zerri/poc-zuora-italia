@@ -63,18 +63,15 @@ function DatabaseStatus() {
   const getDatabaseInfo = () => {
     if (!dbInfo) return { type: 'Unknown', color: 'default', icon: faDatabase };
 
-    const isLocal = dbInfo.host?.includes('localhost') || dbInfo.host?.includes('127.0.0.1');
-    const isAzure = dbInfo.host?.includes('cosmos.azure.com') || dbInfo.host?.includes('documents.azure.com');
-    const isDocker = dbInfo.connectionString?.includes('admin:password123');
-
-    if (isDocker || isLocal) {
+    // Usa l'informazione 'environment' che il backend ci fornisce già
+    if (dbInfo.environment === 'local') {
       return {
         type: 'Docker Local',
         color: 'success',
         icon: faServer,
         description: `DB: ${dbInfo.database} | Host: ${dbInfo.host}`
       };
-    } else if (isAzure) {
+    } else if (dbInfo.environment === 'azure') {
       return {
         type: 'Azure Cosmos',
         color: 'primary',

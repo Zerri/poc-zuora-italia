@@ -17,8 +17,9 @@ import {
 } from "@vapor/v3-components";
 import { faGrid } from "@fortawesome/pro-regular-svg-icons/faGrid";
 import { faUserTag } from "@fortawesome/pro-regular-svg-icons/faUserTag";
-// Importa il context
+// Importa il context e il nuovo componente
 import { useUserRole } from '../context/UserRoleContext';
+import DatabaseStatus from './DatabaseStatus';
 
 /**
  * @component AppShell
@@ -75,6 +76,11 @@ function AppShell({ children }) {
           toggleDrawer={toggleDrawer}
           rightContent={
             <>
+              {/* Database Status - Nuovo componente */}
+              <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
+                <DatabaseStatus />
+              </Box>
+              
               <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
                 <FormControl 
                   size="small"
@@ -85,7 +91,6 @@ function AppShell({ children }) {
                     borderRadius: 1,
                     '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
                     '& .MuiSelect-select': { 
-                      
                       display: 'flex',
                       alignItems: 'center',
                       py: 1,

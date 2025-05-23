@@ -25,7 +25,6 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   console.log('Running in development mode - authentication disabled');
 }
-
 app.use(cors());
 app.use(express.json());
 
@@ -33,6 +32,7 @@ app.use(express.json());
 connectDB();
 
 // Importazione routes
+const healthRoutes = require('./routes/health');
 const itemRoutes = require('./routes/items');
 const customerRoutes = require('./routes/customers');
 const productRoutes = require('./routes/products');
@@ -41,6 +41,7 @@ const statsRoutes = require('./routes/stats');
 const quotesRoutes = require('./routes/quotes');
 
 // Utilizzo routes
+app.use('/api/health', healthRoutes);
 app.use('/api/items', itemRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/products', productRoutes);

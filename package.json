@@ -9,7 +9,13 @@
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "build": "./build-frontend.sh",
     "seed": "cd server && npm run seed",
-    "start": "cd server && npm start"
+    "start": "cd server && npm start",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f mongodb",
+    "docker:dev": "npm run docker:up && npm run dev",
+    "docker:seed": "npm run docker:up && sleep 5 && npm run seed",
+    "docker:reset": "docker-compose down -v && docker-compose up -d"
   },
   "keywords": [
     "react",

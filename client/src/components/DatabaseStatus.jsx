@@ -107,12 +107,6 @@ function DatabaseStatus() {
             fontSize: '0.75rem'
           }}
         />
-        {/* Indicatore aggiuntivo per ambiente di sviluppo */}
-        {process.env.NODE_ENV === 'development' && (
-          <Typography variant="caption" color="text.secondary" sx={{ ml: 0.5 }}>
-            DEV
-          </Typography>
-        )}
       </Box>
     </Tooltip>
   );

@@ -10,6 +10,7 @@ const CustomerSchema = new mongoose.Schema({
   valore: { type: Number },
   valoreAnnuo: { type: String },
   migrabile: { type: Boolean, default: false },
+  subscriptionId: { type: String },
 });
 
 module.exports = mongoose.model('Customer', CustomerSchema, 'Customers');

@@ -39,6 +39,7 @@ const productRoutes = require('./routes/products');
 const product1Routes = require('./routes/products1');
 const statsRoutes = require('./routes/stats');
 const quotesRoutes = require('./routes/quotes');
+const migrationRoutes = require('./routes/migrations');
 
 // Utilizzo routes
 app.use('/api/health', healthRoutes);
@@ -48,6 +49,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/products1', product1Routes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/quotes', quotesRoutes);
+app.use('/api/migrations', migrationRoutes);
 
 // API health check
 app.get('/api/health', (req, res) => {

@@ -6,35 +6,33 @@ const User = require('../models/User');
 // GET - Ottieni tutti gli utenti con paginazione e filtri
 router.get('/', async (req, res) => {
   try {
-    // Parametri di paginazione
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
-    
     // Costruzione filtri
     const filter = {};
-    if (req.query.status) {
-      filter.status = req.query.status;
-    }
-    if (req.query.role) {
-      filter.role = req.query.role;
-    }
+    if (req.query.status) filter.status = req.query.status;
+    if (req.query.role) filter.role = req.query.role;
     if (req.query.search) {
       filter.$or = [
         { fullName: { $regex: req.query.search, $options: 'i' } },
         { email: { $regex: req.query.search, $options: 'i' } }
       ];
     }
-    
-    // Query al database SENZA ordinamento
+
+    // Se noPagination=true => restituisci tutti i risultati senza paginazione
+    if (req.query.noPagination === 'true') {
+      const users = await User.find(filter);
+      return res.json({ items: users });
+    }
+
+    // Altrimenti, applica paginazione
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
     const total = await User.countDocuments(filter);
-    const users = await User.find(filter)
-      .skip(skip)
-      .limit(limit);
-    
-    // Costruzione risposta con paginazione
+    const users = await User.find(filter).skip(skip).limit(limit);
+
     res.json({
-      users,
+      items: users,
       pagination: {
         total,
         page,
@@ -48,6 +46,7 @@ router.get('/', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
 
 // GET - Ottieni un utente specifico per ID
 router.get('/:id', async (req, res) => {

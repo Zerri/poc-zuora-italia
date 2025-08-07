@@ -40,6 +40,7 @@ const product1Routes = require('./routes/products1');
 const statsRoutes = require('./routes/stats');
 const quotesRoutes = require('./routes/quotes');
 const migrationRoutes = require('./routes/migrations');
+const userRoutes = require('./routes/users');
 
 // Utilizzo routes
 app.use('/api/health', healthRoutes);
@@ -50,6 +51,7 @@ app.use('/api/products1', product1Routes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/quotes', quotesRoutes);
 app.use('/api/migrations', migrationRoutes);
+app.use('/api/users', userRoutes);
 
 // API health check
 app.get('/api/health', (req, res) => {

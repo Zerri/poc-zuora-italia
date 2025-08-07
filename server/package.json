@@ -6,6 +6,8 @@
   "scripts": {
     "seed": "node seed-data.js",
     "seed-product-users": "node seed-product-users.js",
+    "seed-users": "node seed-users.js",
+    "seed-all": "npm run seed && npm run seed-product-users && npm run seed-users",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -19,6 +19,17 @@ router.get('/', async (req, res) => {
       filter.type = req.query.type;
     }
     
+    // Filtro per salesAgent (se disponibile nel tuo schema)
+    if (req.query.salesAgent && req.query.salesAgent !== 'All') {
+      filter.salesAgent = req.query.salesAgent;
+    }
+    
+    // Filtro per periodo (se disponibile)
+    if (req.query.period && req.query.period !== 'All') {
+      // Implementa la logica per i periodi se necessario
+      // filter.period = req.query.period;
+    }
+    
     // Filtro per ricerca (nome cliente o numero quote)
     if (req.query.search) {
       filter.$or = [
@@ -46,7 +57,19 @@ router.get('/', async (req, res) => {
     if (req.query.sortBy) {
       const sortBy = req.query.sortBy;
       const sortOrder = req.query.sortOrder === 'asc' ? 1 : -1;
-      sortOptions = { [sortBy]: sortOrder };
+      
+      // Mappa i campi di ordinamento ai campi del database
+      const sortFieldMapping = {
+        'customer': 'customer.name',
+        'date': 'createdAt',
+        'value': 'value',
+        'status': 'status',
+        'type': 'type',
+        'number': 'number'
+      };
+      
+      const dbSortField = sortFieldMapping[sortBy] || sortBy;
+      sortOptions = { [dbSortField]: sortOrder };
     }
 
     // RETROCOMPATIBILITÀ: Se non ci sono parametri di paginazione, restituisci il formato vecchio

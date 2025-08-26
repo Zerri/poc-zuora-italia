@@ -33,6 +33,7 @@ connectDB();
 
 // Importazione routes
 const healthRoutes = require('./routes/health');
+const meRoutes = require('./routes/me');
 const itemRoutes = require('./routes/items');
 const customerRoutes = require('./routes/customers');
 const productRoutes = require('./routes/products');
@@ -44,6 +45,7 @@ const userRoutes = require('./routes/users');
 
 // Utilizzo routes
 app.use('/api/health', healthRoutes);
+app.use('/api/me', meRoutes);
 app.use('/api/items', itemRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/products', productRoutes);

@@ -47,6 +47,9 @@ router.get('/', (req, res) => {
           USER_MANAGEMENT: false,
           SYSTEM_SETTINGS: false
         }
+      },
+      featureFlags: {
+        aiDrawer: true,
       }
     });
   }
@@ -76,6 +79,12 @@ router.get('/', (req, res) => {
         USER_MANAGEMENT: true,
         SYSTEM_SETTINGS: true
       }
+    },
+    featureFlags: {
+      aiDrawer: true,
+      newDashboard: true,
+      betaExportCSV: false,
+      advancedReporting: true,
     }
   });
 });
